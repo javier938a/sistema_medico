@@ -15,7 +15,7 @@
         $iva=13/100;
         $precio=0;
         $sql1 = "SELECT p.id_producto, p.barcode, p.descripcion, p.perecedero, p.exento, p.id_categoria, p.id_sucursal,s.id_stock,s.stock, s.id_sucursal, s.precio_unitario, s.costo_unitario
-        FROM ".db_expediente2.".producto AS p, ".db_expediente2.".stock AS s WHERE p.id_producto = s.id_producto AND p.id_producto ='$id_producto' ";
+        FROM ".EXTERNAL.".producto AS p, ".EXTERNAL.".stock AS s WHERE p.id_producto = s.id_producto AND p.id_producto ='$id_producto' ";
         $stock1=_query($sql1);
         $row1=_fetch_array($stock1);
         $nrow1=_num_rows($stock1);
@@ -34,7 +34,7 @@
             $fecha_hoy2=date("d-m-Y");
             //consultar si es perecedero
             $sql_existencia = "SELECT su.id_ubicacion, su.id_producto, su.cantidad, su.id_ubicacion, u.id_sucursal, u.bodega
-            FROM ".db_expediente2.".stock_ubicacion as su, ".db_expediente2.".ubicacion as u
+            FROM ".EXTERNAL.".stock_ubicacion as su, ".EXTERNAL.".ubicacion as u
             WHERE su.id_producto = '$id_producto' AND su.id_ubicacion = u.id_ubicacion AND u.id_ubicacion = '$id_usb' ORDER BY su.id_ubicacion ASC";
             $resul_existencia = _query($sql_existencia);
             $cuenta_existencia = _num_rows($resul_existencia);
@@ -70,16 +70,16 @@
         $preciop=0;
         $descripcionp=0;
         if($existencia_real == 0){
-            $sqlCE = "SELECT ".db_expediente2.".presentacion.nombre, ".db_expediente2.".presentacion_producto.descripcion,".db_expediente2.".presentacion_producto.id_presentacion,
-            ".db_expediente2.".presentacion_producto.unidad,".db_expediente2.".presentacion_producto.precio FROM ".db_expediente2.".presentacion_producto JOIN ".db_expediente2.".presentacion ON ".db_expediente2.".presentacion.id_presentacion=".db_expediente2.".presentacion_producto.presentacion
-            LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".presentacion_producto.id_producto LEFT  JOIN ".db_expediente2.".stock_ubicacion on ".db_expediente2.".stock_ubicacion.id_producto = ".db_expediente2.".producto.id_producto
-            WHERE ".db_expediente2.".presentacion_producto.id_producto=$id_producto AND ".db_expediente2.".presentacion_producto.activo =1  GROUP BY ".db_expediente2.".presentacion_producto.id_presentacion";
+            $sqlCE = "SELECT ".EXTERNAL.".presentacion.nombre, ".EXTERNAL.".presentacion_producto.descripcion,".EXTERNAL.".presentacion_producto.id_presentacion,
+            ".EXTERNAL.".presentacion_producto.unidad,".EXTERNAL.".presentacion_producto.precio FROM ".EXTERNAL.".presentacion_producto JOIN ".EXTERNAL.".presentacion ON ".EXTERNAL.".presentacion.id_presentacion=".EXTERNAL.".presentacion_producto.presentacion
+            LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto LEFT  JOIN ".EXTERNAL.".stock_ubicacion on ".EXTERNAL.".stock_ubicacion.id_producto = ".EXTERNAL.".producto.id_producto
+            WHERE ".EXTERNAL.".presentacion_producto.id_producto=$id_producto AND ".EXTERNAL.".presentacion_producto.activo =1  GROUP BY ".EXTERNAL.".presentacion_producto.id_presentacion";
         }
         else{
-            $sqlCE = "SELECT ".db_expediente2.".presentacion.nombre, ".db_expediente2.".presentacion_producto.descripcion,".db_expediente2.".presentacion_producto.id_presentacion,
-            ".db_expediente2.".presentacion_producto.unidad,".db_expediente2.".presentacion_producto.precio FROM ".db_expediente2.".presentacion_producto JOIN ".db_expediente2.".presentacion ON ".db_expediente2.".presentacion.id_presentacion=".db_expediente2.".presentacion_producto.presentacion
-            LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".presentacion_producto.id_producto LEFT  JOIN ".db_expediente2.".stock_ubicacion on ".db_expediente2.".stock_ubicacion.id_producto = ".db_expediente2.".producto.id_producto
-            WHERE ".db_expediente2.".presentacion_producto.id_producto=$id_producto AND ".db_expediente2.".presentacion_producto.activo =1  and ".db_expediente2.".presentacion_producto.unidad <= $existencia_real GROUP BY ".db_expediente2.".presentacion_producto.id_presentacion";
+            $sqlCE = "SELECT ".EXTERNAL.".presentacion.nombre, ".EXTERNAL.".presentacion_producto.descripcion,".EXTERNAL.".presentacion_producto.id_presentacion,
+            ".EXTERNAL.".presentacion_producto.unidad,".EXTERNAL.".presentacion_producto.precio FROM ".EXTERNAL.".presentacion_producto JOIN ".EXTERNAL.".presentacion ON ".EXTERNAL.".presentacion.id_presentacion=".EXTERNAL.".presentacion_producto.presentacion
+            LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto LEFT  JOIN ".EXTERNAL.".stock_ubicacion on ".EXTERNAL.".stock_ubicacion.id_producto = ".EXTERNAL.".producto.id_producto
+            WHERE ".EXTERNAL.".presentacion_producto.id_producto=$id_producto AND ".EXTERNAL.".presentacion_producto.activo =1  and ".EXTERNAL.".presentacion_producto.unidad <= $existencia_real GROUP BY ".EXTERNAL.".presentacion_producto.id_presentacion";
         }
         $sql_p=_query($sqlCE);
         $select="<select class='sel id_pres form-control' id='id_presentacion'>";
@@ -122,7 +122,7 @@
         $id_recepcion=$_POST['idRecepcion'];
         $id_usb = $_POST['id_usb'];
         $tabla_buscar = $_POST['tabla_buscar'];
-        $sql_ins="SELECT  ".db_expediente2.".producto.id_producto, ".db_expediente2.".producto.descripcion, db_expediente2.".$tabla_buscar.".id_insumo ,db_expediente2.".$tabla_buscar.".cantidad, ".db_expediente2.".presentacion_producto.precio, ".db_expediente2.".presentacion_producto.id_presentacion, ".db_expediente2.".presentacion_producto.unidad FROM ".db_expediente2.".producto LEFT JOIN db_expediente2.".$tabla_buscar." on db_expediente2.".$tabla_buscar.".id_producto = ".db_expediente2.".producto.id_producto LEFT JOIN ".db_expediente2.".presentacion_producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".presentacion_producto.id_producto WHERE db_expediente2.".$tabla_buscar.".deleted is NULL and db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion  AND db_expediente2.".$tabla_buscar.".producto = 1 AND ".db_expediente2.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion";
+        $sql_ins="SELECT  ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".producto.descripcion, db_expediente2.".$tabla_buscar.".id_insumo ,db_expediente2.".$tabla_buscar.".cantidad, ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.id_presentacion, ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".producto LEFT JOIN db_expediente2.".$tabla_buscar." on db_expediente2.".$tabla_buscar.".id_producto = ".EXTERNAL.".producto.id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto WHERE db_expediente2.".$tabla_buscar.".deleted is NULL and db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion  AND db_expediente2.".$tabla_buscar.".producto = 1 AND ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion";
         //echo $sql_ins;
         $res_ins=_query($sql_ins);
         $n=_num_rows($res_ins);
@@ -141,7 +141,7 @@
                 'id_insumo' => $row['id_insumo'],
             );
         }
-        $sql_serv="SELECT ".db_expediente2.".servicios_hospitalarios.id_servicio, ".db_expediente2.".servicios_hospitalarios.descripcion, db_expediente2.".$tabla_buscar.".id_insumo , db_expediente2.".$tabla_buscar.".hora_de_aplicacion, db_expediente2.".$tabla_buscar.".cantidad, ".db_expediente2.".servicios_hospitalarios.precio FROM ".db_expediente2.".servicios_hospitalarios LEFT JOIN db_expediente2.".$tabla_buscar." on ".db_expediente2.".servicios_hospitalarios.id_servicio = db_expediente2.".$tabla_buscar.".id_servicio WHERE db_expediente2.".$tabla_buscar.".id_recepcion =$id_recepcion AND db_expediente2.".$tabla_buscar.".servicio = 1 AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+        $sql_serv="SELECT ".EXTERNAL.".servicios_hospitalarios.id_servicio, ".EXTERNAL.".servicios_hospitalarios.descripcion, db_expediente2.".$tabla_buscar.".id_insumo , db_expediente2.".$tabla_buscar.".hora_de_aplicacion, db_expediente2.".$tabla_buscar.".cantidad, ".EXTERNAL.".servicios_hospitalarios.precio FROM ".EXTERNAL.".servicios_hospitalarios LEFT JOIN db_expediente2.".$tabla_buscar." on ".EXTERNAL.".servicios_hospitalarios.id_servicio = db_expediente2.".$tabla_buscar.".id_servicio WHERE db_expediente2.".$tabla_buscar.".id_recepcion =$id_recepcion AND db_expediente2.".$tabla_buscar.".servicio = 1 AND db_expediente2.".$tabla_buscar.".deleted is NULL";
         $res_serv=_query($sql_serv);
         $nr=_num_rows($res_serv);
         for($j=0;$j<$nr;$j++){
@@ -271,7 +271,7 @@
                             $id_producto_actual = $row_verificacion_cantidad_actual['id_producto'];
                             $id_presentacion_actual = $row_verificacion_cantidad_actual['id_presentacion'];
                             $cantidad_actual = $row_verificacion_cantidad_actual['cantidad'];
-                            $consulta_stock_general = "SELECT ".db_expediente2.".stock.stock, ".db_expediente2.".stock.id_stock FROM ".db_expediente2.".stock WHERE ".db_expediente2.".stock.id_producto = '$id_producto' AND ".db_expediente2.".stock.id_sucursal = '$id_sucursal'";
+                            $consulta_stock_general = "SELECT ".EXTERNAL.".stock.stock, ".EXTERNAL.".stock.id_stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto = '$id_producto' AND ".EXTERNAL.".stock.id_sucursal = '$id_sucursal'";
                             $query_consulta_stock_general = _query($consulta_stock_general);
                             if(_num_rows($query_consulta_stock_general) > 0){
                                 $row_consulta_stock_general = _fetch_array($query_consulta_stock_general);
@@ -287,17 +287,17 @@
                                 if($cantidad_actual == $cantidad_total){
                                     $cantidad_nueva_stock_general = $cantidad_actual_stock;
                                 }
-                                $tabla_actualizar_stock_general = "".db_expediente2.".stock";
+                                $tabla_actualizar_stock_general = "".EXTERNAL.".stock";
                                 $form_data_stock_general= array(
                                     'stock' => $cantidad_nueva_stock_general
                                 );
                                 $where_stock_general = " WHERE id_stock = '$id_stock_general'";
                                 $update_stock_general = _update($tabla_actualizar_stock_general,$form_data_stock_general,$where_stock_general);
                                 if($update_stock_general){
-                                    $consulta_stock_ubicacion = "SELECT * FROM ".db_expediente2.".stock_ubicacion WHERE id_producto='$id_producto' AND ".db_expediente2.".stock_ubicacion.id_ubicacion='$id_usb' AND ".db_expediente2.".stock_ubicacion.id_sucursal = '$id_sucursal' ORDER BY id_ubicacion DESC LIMIT 1";
+                                    $consulta_stock_ubicacion = "SELECT * FROM ".EXTERNAL.".stock_ubicacion WHERE id_producto='$id_producto' AND ".EXTERNAL.".stock_ubicacion.id_ubicacion='$id_usb' AND ".EXTERNAL.".stock_ubicacion.id_sucursal = '$id_sucursal' ORDER BY id_ubicacion DESC LIMIT 1";
                                     $query_consulta_stock_ubicacion = _query($consulta_stock_ubicacion);
                                     if(_num_rows($query_consulta_stock_ubicacion) > 0){
-                                        $consulta_presentacion_producto = "SELECT ".db_expediente2.".presentacion_producto.precio, ".db_expediente2.".presentacion_producto.costo FROM ".db_expediente2.".presentacion_producto WHERE ".db_expediente2.".presentacion_producto.id_presentacion = '$id_presentacion'";
+                                        $consulta_presentacion_producto = "SELECT ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.costo FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_presentacion = '$id_presentacion'";
                                         $query_presentacion_producto = _query($consulta_presentacion_producto);
                                         $precio_producto = 0;
                                         $costo_producto = 0;
@@ -343,7 +343,7 @@
                                         if($cantidad_actual == $cantidad_total){
                                             $cantidad_nueva_stock_ubicacion = $cantidad_stock_ubicacion_actual;
                                         }
-                                        $tabla_actualizar_stock_ubicacion = "".db_expediente2.".stock_ubicacion";
+                                        $tabla_actualizar_stock_ubicacion = "".EXTERNAL.".stock_ubicacion";
                                         $form_data_stock_ubicacion= array(
                                             'cantidad' => $cantidad_nueva_stock_ubicacion
                                         );
@@ -556,7 +556,7 @@
             $hora1=date("H:i:s");
             $dia1 =date('Y-m-d');
             if(!empty($array_cargas)){
-                $sql_num = _query("SELECT di FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num = _query("SELECT di FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["di"]+1;
                 $numero_doc=$ult.'_DI';
@@ -564,14 +564,14 @@
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="".db_expediente2.".correlativo";
+                $table="".EXTERNAL.".correlativo";
                 $form_data = array(
                     'di' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table="".db_expediente2.".movimiento_producto";
+                    $table="".EXTERNAL.".movimiento_producto";
                     $form_data = array(
                         'id_sucursal' => $id_sucursal,
                         'correlativo' => $numero_doc,
@@ -598,7 +598,7 @@
                     $id_movimiento=_insert_id();
                     if($insert_mov){
                         foreach ($array_cargas as $array_cargas1) {
-                            $table1= "".db_expediente2.".movimiento_producto_detalle";
+                            $table1= "".EXTERNAL.".movimiento_producto_detalle";
                             $form_data1 = array(
                                 'id_movimiento'=>$id_movimiento,
                                 'id_producto' => $array_cargas1['id_producto'],
@@ -634,7 +634,7 @@
             }
             if(!empty($array_descargas)){
                 $descarga_de_inventario = 1;
-                $sql_num = _query("SELECT ti FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num = _query("SELECT ti FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["ti"]+1;
                 $numero_doc=$ult.'_TI';
@@ -642,14 +642,14 @@
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="".db_expediente2.".correlativo";
+                $table="".EXTERNAL.".correlativo";
                 $form_data = array(
                   'ti' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table="".db_expediente2.".movimiento_producto";
+                    $table="".EXTERNAL.".movimiento_producto";
                     $form_data = array(
                       'id_sucursal' => $id_sucursal,
                       'correlativo' => $numero_doc,
@@ -677,7 +677,7 @@
                     if($insert_mov){
                         $id_descarga_movimiento = $id_movimiento;
                         foreach ($array_descargas as $array_cargas1) {
-                            $table1= "".db_expediente2.".movimiento_producto_detalle";
+                            $table1= "".EXTERNAL.".movimiento_producto_detalle";
                             $form_data1 = array(
                                 'id_movimiento'=>$id_movimiento,
                                 'id_producto' => $array_cargas1['id_producto'],
@@ -714,7 +714,7 @@
             if($error2 == 0){
                 $error3=0;
                 $algun_producto = 0;
-                $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".db_expediente2.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".db_expediente2.".presentacion_producto on ".db_expediente2.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
+                $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
                 //echo $sqlx;
                 $consultax = _query($sqlx);
                 while($rowx = _fetch_array($consultax)){
@@ -794,19 +794,19 @@
                                 $precio_total_eliminado+= $value1['precio'];
                             }
                         }
-                        $sql_num = _query("SELECT ti FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                        $sql_num = _query("SELECT ti FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                         $datos_num = _fetch_array($sql_num);
                         $ult = $datos_num["ti"]+1;
                         $numero_doc=$ult.'_TI';
                         /*actualizar los correlativos de AI*/
-                        $tableC="".db_expediente2.".correlativo";
+                        $tableC="".EXTERNAL.".correlativo";
                         $form_dataC = array(
                             'ti' =>$ult
                         );
                         $where_clause_cC="id_sucursal='".$id_sucursal."'";
                         $up_corrC=_update($tableC,$form_dataC,$where_clause_cC);
                         if($up_corrC){
-                            $table="".db_expediente2.".movimiento_producto";
+                            $table="".EXTERNAL.".movimiento_producto";
                             $form_data = array(
                                 'id_sucursal' => $id_sucursal,
                                 'correlativo' => $numero_doc,
@@ -841,33 +841,33 @@
                                         $consultaD = _query($sqlD);
                                         $registroD = _fetch_array($consultaD);
                                         $cantidad = $registroD['cantidad'];
-                                        $sql_consulta_sg = "SELECT ".db_expediente2.".stock.id_stock, ".db_expediente2.".stock.stock FROM ".db_expediente2.".stock WHERE ".db_expediente2.".stock.id_producto = $id_producto_eliminado AND ".db_expediente2.".stock.id_sucursal = 1";
+                                        $sql_consulta_sg = "SELECT ".EXTERNAL.".stock.id_stock, ".EXTERNAL.".stock.stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto = $id_producto_eliminado AND ".EXTERNAL.".stock.id_sucursal = 1";
                                         $consulta_sql_sg = _query($sql_consulta_sg);
                                         $registros_sql_sql = _fetch_array($consulta_sql_sg);
                                         $id_stock_original = $registros_sql_sql['id_stock'];
                                         $cantidad_stock_original = $registros_sql_sql['stock'];
-                                        $sql_consulta_su = "SELECT ".db_expediente2.".stock_ubicacion.id_su, ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto_eliminado AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".db_expediente2.".stock_ubicacion.id_sucursal = 1";
+                                        $sql_consulta_su = "SELECT ".EXTERNAL.".stock_ubicacion.id_su, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto_eliminado AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".EXTERNAL.".stock_ubicacion.id_sucursal = 1";
                                         $consulta_sql_su = _query($sql_consulta_su);
                                         $registros_sql_su = _fetch_array($consulta_sql_su);
                                         $id_ubicacion = $registros_sql_su['id_su'];
                                         $cantidad_stock_ubicacion = $registros_sql_su['cantidad'];
                                         $cantidad_nueva_so = $cantidad_stock_original+$cantidad;
                                         $cantidad_nueva_su = $cantidad_stock_ubicacion+$cantidad;
-                                        $tabla3x = "".db_expediente2.".stock";
+                                        $tabla3x = "".EXTERNAL.".stock";
                                         $fd3x= array(
                                             'stock' => $cantidad_nueva_so
                                         );
                                         $where3x = " WHERE id_stock = '$id_stock_original'";
                                         $ins3x = _update($tabla3x,$fd3x,$where3x);
                                         if($ins3x){
-                                            $tabla4x = "".db_expediente2.".stock_ubicacion";
+                                            $tabla4x = "".EXTERNAL.".stock_ubicacion";
                                             $fd4x= array(
                                                 'cantidad' => $cantidad_nueva_su
                                             );
                                             $where4x = " WHERE id_su = '$id_ubicacion'";
                                             $ins4x = _update($tabla4x,$fd4x,$where4x);
                                             if($ins4x){
-                                                $table1x= "".db_expediente2.".movimiento_producto_detalle";
+                                                $table1x= "".EXTERNAL.".movimiento_producto_detalle";
                                                 $form_data1x = array(
                                                     'id_movimiento'=>$id_movimientox,
                                                     'id_producto' => $value['id_producto'],
@@ -1047,9 +1047,9 @@
         $tabla_buscar = $_REQUEST['tabla_buscar'];
         $id_presentacion =$_REQUEST['id_presentacion'];
         $id_recepcion =$_REQUEST['id_recepcion'];
-        $id_P = _fetch_array(_query("SELECT ".db_expediente2.".producto.id_producto, ".db_expediente2.".presentacion_producto.precio, ".db_expediente2.".presentacion_producto.unidad, ".db_expediente2.".presentacion_producto.descripcion FROM ".db_expediente2.".producto LEFT JOIN ".db_expediente2.".presentacion_producto on ".db_expediente2.".presentacion_producto.id_producto = ".db_expediente2.".producto.id_producto WHERE ".db_expediente2.".presentacion_producto.id_presentacion = $id_presentacion"));
+        $id_P = _fetch_array(_query("SELECT ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.unidad, ".EXTERNAL.".presentacion_producto.descripcion FROM ".EXTERNAL.".producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_producto = ".EXTERNAL.".producto.id_producto WHERE ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion"));
         $id_producto = $id_P['id_producto'];
-        $sql=_fetch_array(_query("SELECT ".db_expediente2.".stock_ubicacion.id_producto, SUM(".db_expediente2.".stock_ubicacion.cantidad) total FROM ( SELECT ".db_expediente2.".stock_ubicacion.id_producto, ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion) stock_ubicacion GROUP BY ".db_expediente2.".stock_ubicacion.id_producto "));
+        $sql=_fetch_array(_query("SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto "));
         $precio=$id_P['precio'];
         $unidad=$id_P['unidad'];
         $descripcion=$id_P['descripcion'];
@@ -1075,16 +1075,16 @@
         if (isset($_REQUEST['id_presentacion'])){
             $id_presentacion=$_REQUEST['id_presentacion'];
         }
-        $sql = "SELECT ".db_expediente2.".stock_ubicacion.id_producto, SUM(".db_expediente2.".stock_ubicacion.cantidad) total FROM ( SELECT ".db_expediente2.".stock_ubicacion.id_producto, ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".db_expediente2.".stock_ubicacion.id_producto ";
+        $sql = "SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto ";
         //echo $sql;
         $consulta = _query($sql);
         $row = _fetch_array($consulta);
         $xdatos['total'] = $row['total'];
         if($id_presentacion == ""){
-            $sql2 ="SELECT ".db_expediente2.".presentacion_producto.unidad FROM ".db_expediente2.".presentacion_producto WHERE ".db_expediente2.".presentacion_producto.id_producto = $id_producto";
+            $sql2 ="SELECT ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_producto = $id_producto";
         }
         else{
-            $sql2 ="SELECT ".db_expediente2.".presentacion_producto.unidad FROM ".db_expediente2.".presentacion_producto WHERE ".db_expediente2.".presentacion_producto.id_producto = $id_producto AND ".db_expediente2.".presentacion_producto.id_presentacion = $id_presentacion";
+            $sql2 ="SELECT ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_producto = $id_producto AND ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion";
         }
         $consulta2 = _query($sql2);
         $i = 0;
@@ -1109,15 +1109,15 @@
         $id_presentacion = $_POST['id_presentacion'];
         $id_usb = $_POST['id_usb'];
         $tabla_buscar = $_POST['tabla_buscar'];
-        $sql = "SELECT ".db_expediente2.".stock_ubicacion.id_producto, SUM(".db_expediente2.".stock_ubicacion.cantidad) total FROM ( SELECT ".db_expediente2.".stock_ubicacion.id_producto, ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".db_expediente2.".stock_ubicacion.id_producto ";
+        $sql = "SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto ";
         $consulta = _query($sql);
         $row = _fetch_array($consulta);
         $total = $row['total'];
         $numero_unidades =  $cantidad_especifica;
-        $consulta_select="SELECT ".db_expediente2.".presentacion.nombre, ".db_expediente2.".presentacion_producto.descripcion,".db_expediente2.".presentacion_producto.id_presentacion,
-        ".db_expediente2.".presentacion_producto.unidad,".db_expediente2.".presentacion_producto.precio FROM ".db_expediente2.".presentacion_producto JOIN ".db_expediente2.".presentacion ON ".db_expediente2.".presentacion.id_presentacion=".db_expediente2.".presentacion_producto.presentacion
-        LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".presentacion_producto.id_producto LEFT  JOIN ".db_expediente2.".stock_ubicacion on ".db_expediente2.".stock_ubicacion.id_producto = ".db_expediente2.".producto.id_producto
-        WHERE ".db_expediente2.".presentacion_producto.id_producto=$id_producto AND ".db_expediente2.".presentacion_producto.activo =1 and ".db_expediente2.".presentacion_producto.unidad <= $numero_unidades GROUP BY ".db_expediente2.".presentacion_producto.id_presentacion";
+        $consulta_select="SELECT ".EXTERNAL.".presentacion.nombre, ".EXTERNAL.".presentacion_producto.descripcion,".EXTERNAL.".presentacion_producto.id_presentacion,
+        ".EXTERNAL.".presentacion_producto.unidad,".EXTERNAL.".presentacion_producto.precio FROM ".EXTERNAL.".presentacion_producto JOIN ".EXTERNAL.".presentacion ON ".EXTERNAL.".presentacion.id_presentacion=".EXTERNAL.".presentacion_producto.presentacion
+        LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto LEFT  JOIN ".EXTERNAL.".stock_ubicacion on ".EXTERNAL.".stock_ubicacion.id_producto = ".EXTERNAL.".producto.id_producto
+        WHERE ".EXTERNAL.".presentacion_producto.id_producto=$id_producto AND ".EXTERNAL.".presentacion_producto.activo =1 and ".EXTERNAL.".presentacion_producto.unidad <= $numero_unidades GROUP BY ".EXTERNAL.".presentacion_producto.id_presentacion";
         $sql_p = _query($consulta_select);
         $select="<select class='sel id_pres form-control' id='id_presentacion'>";
         while ($row=_fetch_array($sql_p)) {
@@ -1221,7 +1221,7 @@
             $seguir = 1;
             _begin();
             if($tipop=="P"){
-                $sql_pres="SELECT ".db_expediente2.".presentacion_producto.unidad FROM ".db_expediente2.".presentacion_producto WHERE ".db_expediente2.".presentacion_producto.id_presentacion='$id_presentacion' AND ".db_expediente2.".presentacion_producto.id_producto='$id_producto' ";
+                $sql_pres="SELECT ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_presentacion='$id_presentacion' AND ".EXTERNAL.".presentacion_producto.id_producto='$id_producto' ";
                 $unidadx = 1;
                 $res_pres=_query($sql_pres);
                 if(_num_rows($res_pres) > 0){
@@ -1268,13 +1268,13 @@
                         $ins2 = _insert($tabla,$fd2);
                     }
                     if($ins2){
-                        $cant_st_su = "SELECT ".db_expediente2.".stock_ubicacion.id_su, ".db_expediente2.".stock_ubicacion.cantidad, ".db_expediente2.".presentacion_producto.costo from ".db_expediente2.".stock_ubicacion LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".stock_ubicacion.id_producto LEFT JOIN ".db_expediente2.".presentacion_producto on ".db_expediente2.".producto.id_producto = ".db_expediente2.".presentacion_producto.id_producto WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".db_expediente2.".presentacion_producto.id_presentacion = $id_presentacion ";
+                        $cant_st_su = "SELECT ".EXTERNAL.".stock_ubicacion.id_su, ".EXTERNAL.".stock_ubicacion.cantidad, ".EXTERNAL.".presentacion_producto.costo from ".EXTERNAL.".stock_ubicacion LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".stock_ubicacion.id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion ";
                         $cant_stQuery_su=_query($cant_st_su);
                         $row_cant_su = _fetch_array($cant_stQuery_su);
                         $id_su = $row_cant_su['id_su'];
                         $cant_stock_su = $row_cant_su['cantidad'];
                         $costo = $row_cant_su['costo'];
-                        $cant_stock_original = "SELECT ".db_expediente2.".stock.id_stock, ".db_expediente2.".stock.stock FROM ".db_expediente2.".stock WHERE ".db_expediente2.".stock.id_producto = $id_producto AND ".db_expediente2.".stock.id_sucursal = $id_sucursal";
+                        $cant_stock_original = "SELECT ".EXTERNAL.".stock.id_stock, ".EXTERNAL.".stock.stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto = $id_producto AND ".EXTERNAL.".stock.id_sucursal = $id_sucursal";
                         $cant_stock_originalQuery=_query($cant_stock_original);
                         $row_cant_stock_original = _fetch_array($cant_stock_originalQuery);
                         $id_stock_ori = $row_cant_stock_original['id_stock'];
@@ -1329,14 +1329,14 @@
                             }
                         }
                         if($cambio_stock > 0){
-                            $tabla3 = "".db_expediente2.".stock";
+                            $tabla3 = "".EXTERNAL.".stock";
                             $fd3= array(
                                 'stock' => $stock_original_nuevo
                             );
                             $where3 = " WHERE id_stock = '$id_stock_ori'";
                             $ins3 = _update($tabla3,$fd3,$where3);
                             if($ins3){
-                                $tabla4 = "".db_expediente2.".stock_ubicacion";
+                                $tabla4 = "".EXTERNAL.".stock_ubicacion";
                                 $fd4= array(
                                     'cantidad' => $stock_ubicacion_nuevo
                                 );
@@ -1474,7 +1474,7 @@
             $hora1=date("H:i:s");
             $dia1 =date('Y-m-d');
             if(!empty($array_cargas)){
-                $sql_num = _query("SELECT di FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num = _query("SELECT di FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["di"]+1;
                 $numero_doc=$ult.'_DI';
@@ -1482,14 +1482,14 @@
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="".db_expediente2.".correlativo";
+                $table="".EXTERNAL.".correlativo";
                 $form_data = array(
                     'di' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table="".db_expediente2.".movimiento_producto";
+                    $table="".EXTERNAL.".movimiento_producto";
                     $form_data = array(
                       'id_sucursal' => $id_sucursal,
                       'correlativo' => $numero_doc,
@@ -1516,7 +1516,7 @@
                     $id_movimiento=_insert_id();
                     if($insert_mov){
                         foreach ($array_cargas as $array_cargas1) {
-                            $table1= "".db_expediente2.".movimiento_producto_detalle";
+                            $table1= "".EXTERNAL.".movimiento_producto_detalle";
                             $form_data1 = array(
                                 'id_movimiento'=>$id_movimiento,
                                 'id_producto' => $array_cargas1['id_producto'],
@@ -1555,7 +1555,7 @@
             }
             if(!empty($array_descargas)){
                 $descarga_de_inventario = 1;
-                $sql_num = _query("SELECT ti FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num = _query("SELECT ti FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["ti"]+1;
                 $numero_doc=$ult.'_TI';
@@ -1563,14 +1563,14 @@
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="".db_expediente2.".correlativo";
+                $table="".EXTERNAL.".correlativo";
                 $form_data = array(
                   'ti' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table="".db_expediente2.".movimiento_producto";
+                    $table="".EXTERNAL.".movimiento_producto";
                     $form_data = array(
                       'id_sucursal' => $id_sucursal,
                       'correlativo' => $numero_doc,
@@ -1598,7 +1598,7 @@
                     if($insert_mov){
                         $id_descarga_movimiento = $id_movimiento;
                         foreach ($array_descargas as $array_cargas1) {
-                            $table1= "".db_expediente2.".movimiento_producto_detalle";
+                            $table1= "".EXTERNAL.".movimiento_producto_detalle";
                             $form_data1 = array(
                                 'id_movimiento'=>$id_movimiento,
                                 'id_producto' => $array_cargas1['id_producto'],
@@ -1643,7 +1643,7 @@
             $algun_producto=0;
             $error3=0;
             $array_base = array();
-            $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".db_expediente2.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".db_expediente2.".producto on ".db_expediente2.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".db_expediente2.".presentacion_producto on ".db_expediente2.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
+            $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
             $consultax = _query($sqlx);
             while($rowx = _fetch_array($consultax)){
                 $tipop = "";
@@ -1725,19 +1725,19 @@
                           $precio_total_eliminado+= $value1['precio'];
                         }
                     }
-                    $sql_num = _query("SELECT ti FROM ".db_expediente2.".correlativo WHERE id_sucursal='$id_sucursal'");
+                    $sql_num = _query("SELECT ti FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                     $datos_num = _fetch_array($sql_num);
                     $ult = $datos_num["ti"]+1;
                     $numero_doc=$ult.'_TI';
                     /*actualizar los correlativos de AI*/
-                    $tableC="".db_expediente2.".correlativo";
+                    $tableC="".EXTERNAL.".correlativo";
                     $form_dataC = array(
                         'ti' =>$ult
                     );
                     $where_clause_cC="id_sucursal='".$id_sucursal."'";
                     $up_corrC=_update($tableC,$form_dataC,$where_clause_cC);
                     if($up_corrC){
-                        $table="".db_expediente2.".movimiento_producto";
+                        $table="".EXTERNAL.".movimiento_producto";
                         $form_data = array(
                             'id_sucursal' => $id_sucursal,
                             'correlativo' => $numero_doc,
@@ -1772,33 +1772,33 @@
                                   $consultaD = _query($sqlD);
                                   $registroD = _fetch_array($consultaD);
                                   $cantidad = $registroD['cantidad'];
-                                  $sql_consulta_sg = "SELECT ".db_expediente2.".stock.id_stock, ".db_expediente2.".stock.stock FROM ".db_expediente2.".stock WHERE ".db_expediente2.".stock.id_producto = $id_producto_eliminado AND ".db_expediente2.".stock.id_sucursal = 1";
+                                  $sql_consulta_sg = "SELECT ".EXTERNAL.".stock.id_stock, ".EXTERNAL.".stock.stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto = $id_producto_eliminado AND ".EXTERNAL.".stock.id_sucursal = 1";
                                   $consulta_sql_sg = _query($sql_consulta_sg);
                                   $registros_sql_sql = _fetch_array($consulta_sql_sg);
                                   $id_stock_original = $registros_sql_sql['id_stock'];
                                   $cantidad_stock_original = $registros_sql_sql['stock'];
-                                  $sql_consulta_su = "SELECT ".db_expediente2.".stock_ubicacion.id_su, ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = $id_producto_eliminado AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".db_expediente2.".stock_ubicacion.id_sucursal = 1";
+                                  $sql_consulta_su = "SELECT ".EXTERNAL.".stock_ubicacion.id_su, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto_eliminado AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".EXTERNAL.".stock_ubicacion.id_sucursal = 1";
                                   $consulta_sql_su = _query($sql_consulta_su);
                                   $registros_sql_su = _fetch_array($consulta_sql_su);
                                   $id_ubicacion = $registros_sql_su['id_su'];
                                   $cantidad_stock_ubicacion = $registros_sql_su['cantidad'];
                                   $cantidad_nueva_so = $cantidad_stock_original+$cantidad;
                                   $cantidad_nueva_su = $cantidad_stock_ubicacion+$cantidad;
-                                  $tabla3x = "".db_expediente2.".stock";
+                                  $tabla3x = "".EXTERNAL.".stock";
                                   $fd3x= array(
                                       'stock' => $cantidad_nueva_so
                                   );
                                   $where3x = " WHERE id_stock = '$id_stock_original'";
                                   $ins3x = _update($tabla3x,$fd3x,$where3x);
                                   if($ins3x){
-                                      $tabla4x = "".db_expediente2.".stock_ubicacion";
+                                      $tabla4x = "".EXTERNAL.".stock_ubicacion";
                                       $fd4x= array(
                                           'cantidad' => $cantidad_nueva_su
                                       );
                                       $where4x = " WHERE id_su = '$id_ubicacion'";
                                       $ins4x = _update($tabla4x,$fd4x,$where4x);
                                       if($ins4x){
-                                          $table1x= "".db_expediente2.".movimiento_producto_detalle";
+                                          $table1x= "".EXTERNAL.".movimiento_producto_detalle";
                                           $form_data1x = array(
                                               'id_movimiento'=>$id_movimientox,
                                               'id_producto' => $value['id_producto'],
@@ -2038,17 +2038,17 @@
                 $id_presentacion = $row_productos['id_presentacion'];
                 $cantidad = $row_productos['cantidad'];
 
-                $sql_pcp = "SELECT ".db_expediente2.".presentacion_producto.precio, ".db_expediente2.".presentacion_producto.costo, ".db_expediente2.".presentacion_producto.unidad FROM ".db_expediente2.".presentacion_producto WHERE ".db_expediente2.".presentacion_producto.id_presentacion = '$id_presentacion'";
+                $sql_pcp = "SELECT ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.costo, ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_presentacion = '$id_presentacion'";
                 $query_pcp = _query($sql_pcp);
                 $row_pcp = _fetch_array($query_pcp);
                 $precio = $row_pcp['precio'];
                 $costo = $row_pcp['costo'];
                 $unidad = $row_pcp['unidad'];
-                $sql_stock = "SELECT ".db_expediente2.".stock.stock FROM ".db_expediente2.".stock WHERE ".db_expediente2.".stock.id_producto = '$id_producto' AND ".db_expediente2.".stock.id_sucursal = '$id_sucursal'";
+                $sql_stock = "SELECT ".EXTERNAL.".stock.stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto = '$id_producto' AND ".EXTERNAL.".stock.id_sucursal = '$id_sucursal'";
                 $query_stock = _query($sql_stock);
                 $row_stock = _fetch_array($query_stock);
                 $stock = $row_stock['stock'];
-                $sql_stock_ubicacion = "SELECT ".db_expediente2.".stock_ubicacion.cantidad FROM ".db_expediente2.".stock_ubicacion WHERE ".db_expediente2.".stock_ubicacion.id_producto = '$id_producto' AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".db_expediente2.".stock_ubicacion.id_sucursal = '$id_sucursal'";
+                $sql_stock_ubicacion = "SELECT ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = '$id_producto' AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".EXTERNAL.".stock_ubicacion.id_sucursal = '$id_sucursal'";
                 $query_stock_ubicacion = _query($sql_stock_ubicacion);
                 $row_stock_ubicacion = _fetch_array($query_stock_ubicacion);
                 $cantidad_stock_ubicacion = $row_stock_ubicacion['cantidad'];
@@ -2060,8 +2060,8 @@
                 $form_data_stock_ubicacion = array(
                     'cantidad' => $cantidad_nueva_stock_ubicacion
                 );
-                $actualizar_stock = _update('".db_expediente2.".stock', $form_data_stock, " WHERE ".db_expediente2.".stock.id_producto = '$id_producto' AND ".db_expediente2.".stock.id_sucursal = '$id_sucursal'");
-                $actualizar_stock_ubicacion = _update('".db_expediente2.".stock_ubicacion', $form_data_stock_ubicacion, " WHERE ".db_expediente2.".stock_ubicacion.id_producto = '$id_producto' AND ".db_expediente2.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".db_expediente2.".stock_ubicacion.id_sucursal = '$id_sucursal'");
+                $actualizar_stock = _update('".EXTERNAL.".stock', $form_data_stock, " WHERE ".EXTERNAL.".stock.id_producto = '$id_producto' AND ".EXTERNAL.".stock.id_sucursal = '$id_sucursal'");
+                $actualizar_stock_ubicacion = _update('".EXTERNAL.".stock_ubicacion', $form_data_stock_ubicacion, " WHERE ".EXTERNAL.".stock_ubicacion.id_producto = '$id_producto' AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' AND ".EXTERNAL.".stock_ubicacion.id_sucursal = '$id_sucursal'");
                 if(!$actualizar_stock || !$actualizar_stock_ubicacion){
                     $bueno = 0;
                 }
@@ -2084,13 +2084,13 @@
             }
         }
         if($bueno == 1){
-            $sql_num = _query("SELECT ti FROM ".db_expediente2.".stock_ubicacion WHERE id_sucursal='$id_sucursal'");
+            $sql_num = _query("SELECT ti FROM ".EXTERNAL.".stock_ubicacion WHERE id_sucursal='$id_sucursal'");
             $datos_num = _fetch_array($sql_num);
             $ult = $datos_num["ti"]+1;
             $numero_doc=$ult.'_TI';
             $corr=1;
             $up=1;
-            $table="".db_expediente2.".stock_ubicacion";
+            $table="".EXTERNAL.".stock_ubicacion";
             $form_data = array(
             'ti' =>$ult
             );
@@ -2099,7 +2099,7 @@
             if($up_corr){
                 $hora1=date("H:i:s");
                 $dia1 =date('Y-m-d');
-                $table="".db_expediente2.".movimiento_producto";
+                $table="".EXTERNAL.".movimiento_producto";
                 $form_dataxxxxx = array(
                     'id_sucursal' => $id_sucursal,
                     'correlativo' => $numero_doc,
@@ -2133,7 +2133,7 @@
                         $costo = $value['costo'];
                         $stock_anterior = $value['stock_anterior'];
                         $stock_actual = $value['stock_actual'];
-                        $table1= "".db_expediente2.".movimiento_producto_detalle";
+                        $table1= "".EXTERNAL.".movimiento_producto_detalle";
                         $form_data1 = array(
                             'id_movimiento'=>$id_movimiento,
                             'id_producto' => $id_producto,
