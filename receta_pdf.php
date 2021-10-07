@@ -72,7 +72,7 @@ $infoext =  array(
     'telefono1' => $telefono1,
     'telefono2' => $telefono2,
     'email' => $email,
-    //'logo' => $logo,
+    'logo' => $logo,
     'nombre_paciente' => $nombre_paciente,
     'nombre_doctor' => $nombre_doctor,
     'sexo_paciente' => $sexo_paciente,
@@ -610,7 +610,7 @@ class PDF extends FPDF{
             $this->SetFillColor(255,255,255);
 
             $this->AddFont('latin','','latin.php');
-            //$this->Image($this->infoext['logo'],$set_x,$set_y,190,45);
+            $this->Image($this->infoext['logo'],$set_x,$set_y,190,45);
             $this->SetDrawColor(0,0,0);
             $this->SetFont('Courier', 'B', 19);
             $this->SetTextColor(25, 65, 96);
