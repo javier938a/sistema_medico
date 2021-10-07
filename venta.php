@@ -325,7 +325,14 @@ function consultar_stock()
   $precio=0;
   $categoria="";
 
-  $sql1 = "SELECT p.id_producto,p.id_categoria, p.barcode, p.descripcion, p.estado, p.perecedero, p.exento, p.id_categoria, p.id_sucursal,SUM(su.cantidad) as stock FROM ".EXTERNAL.".producto AS p JOIN ".EXTERNAL.".stock_ubicacion as su ON su.id_producto=p.id_producto JOIN ".EXTERNAL.".ubicacion as u ON u.id_ubicacion=su.id_ubicacion  WHERE  p.id_producto ='$id_producto' AND u.bodega=0 AND su.id_sucursal=$id_sucursal";
+  $sql1 = "SELECT p.id_producto,p.id_categoria, p.barcode, p.descripcion, p.estado, p.perecedero, p.exento, p.id_categoria,
+   p.id_sucursal,SUM(su.cantidad) as stock 
+   FROM ".EXTERNAL.".producto AS p JOIN 
+   ".EXTERNAL.".stock_ubicacion as su ON 
+   su.id_producto=p.id_producto JOIN ".EXTERNAL.".ubicacion as u
+    ON u.id_ubicacion=su.id_ubicacion  WHERE  
+    p.id_producto ='$id_producto' AND 
+    u.bodega=0 AND su.id_sucursal=$id_sucursal";
   $stock1=_query($sql1);
   $row1=_fetch_array($stock1);
   $nrow1=_num_rows($stock1);
@@ -591,7 +598,7 @@ function insertar_preventa()
 
           if ($id_factura=="0") {
             # code...
-            
+
             $table_fact= EXTERNAL.".factura";
             $form_data_fact = array(
               'id_server' => '0',

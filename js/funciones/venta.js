@@ -1112,7 +1112,7 @@ function guardar_preventa()
 					var subtotal = $(this).find("#subtotal_fin").val();
 					var servicio = 0;
 					if ($(this).hasClass('service')) {
-						servicio = 1;	
+						servicio = 1;
 					}
 					if (cantidad && precio_venta) {
 						var obj = new Object();

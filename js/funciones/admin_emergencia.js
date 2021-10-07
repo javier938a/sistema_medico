@@ -47,9 +47,11 @@ $(document).ready(function() {
             var prod0 = selection;
             var prod = prod0.split("|");
             var id_prod = prod[0];
+            alert(id_prod);
             var descrip = prod[2];
             var tipo = prod[3];
             var cantidad_general = 0;
+            alert(selection);
             $("#inventable tr").each(function() {
                 if ($(this).find("#tipopr").val() == "P") {
                     var id = $(this).find("td:eq(0)").text();
@@ -58,18 +60,19 @@ $(document).ready(function() {
                         var unidad = $(this).find("#unidadp").val();
                         var total = parseInt(cantidad) * parseInt(unidad);
                         cantidad_general = cantidad_general + total;
+                        
                     }
                 }
             });
             $.ajax({
                 type: 'POST',
-                url: urlprocess_enviar,
+                url: urlprocess_enviar,//urlprocess_enviar='agregar_insumos_modulo.php'
                 data: {
                     process: 'consultar_existencias',
-                    idRecepcion: idRecepcion,
-                    id_producto: id_prod,
-                    'id_usb': id_usb_enviar,
-                    'tabla_buscar': tabla_buscar_enviar
+                    idRecepcion: idRecepcion,//id_recepcion=id de la recepcion
+                    id_producto: id_prod,//id_prod=id del producto
+                    'id_usb': id_usb_enviar,//id_usb=1 es el id de la ubicacion en la que esta el producto
+                    'tabla_buscar': tabla_buscar_enviar//tabla_buscar='insumos_emergencia'
                 },
                 dataType: 'JSON',
                 async: false,

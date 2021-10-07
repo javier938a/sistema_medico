@@ -4,6 +4,8 @@
 ?>
 <?php
     function initial(){
+        echo"<h1>Aqui esta o debe</h1>";
+print_r($_POST);
         $title="Insumos Utilizados por Hospitalizacion";
         $_PAGE = array();
         $_PAGE ['title'] = $title;
@@ -44,6 +46,15 @@
         $resultado = _fetch_array($consulta);
         $hora_hoy = _hora_media_decode(date("H:i:s"));
         $idRecepcion = $resultado['id_recepcion'];
+        //calculando el iva
+        $sql_iva="SELECT iva,monto_retencion1,monto_retencion10,monto_percepcion FROM ".EXTERNAL.".sucursal WHERE id_sucursal=1";
+        $result_IVA=_query($sql_iva);
+        $row_IVA=_fetch_array($result_IVA);
+        $iva=$row_IVA['iva']/100;
+        $monto_retencion1=$row_IVA['monto_retencion1'];
+        $monto_retencion10=$row_IVA['monto_retencion10'];
+        $monto_percepcion=$row_IVA['monto_percepcion'];
+
         ?>
 <style type="text/css">
 .datepicker table tr td,
@@ -92,6 +103,7 @@
                                 <input type="text" id="examen_buscar" name="examen_buscar" class="form-control"
                                     placeholder="Ingrese  Descripcion de examen" data-provide="typeahead"
                                     style="border-radius:0px">
+                                <input type="hidden" name="id_sucursal" id="id_sucursal" value=<?php echo $id_sucursal ?>>
 
                             </div>
                             <div class="form-group col-md-4">
@@ -146,29 +158,26 @@
                                                 <div class="wrap-table1001">
                                                     <div class="table100 ver1 m-b-10">
                                                         <div class="table100-head">
-                                                            <table id="inventable1">
+                                                            <table id="inventable1" class="table table-striped table-bordered">
                                                                 <thead>
-                                                                    <tr class="row100 head">
-                                                                        <th class="success cell100 column10">ID</th>
-                                                                        <th class='success  cell100 column30'>
-                                                                            DESCRIPCI&Oacute;N</th>
-                                                                        <th class='success  cell100 column10'>STOCK</th>
-                                                                        <th class='success  cell100 column15'>
-                                                                            PRESENTACI&Oacute;N</th>
-                                                                        <th class='success  cell100 column10'>PRECIO
-                                                                        </th>
-                                                                        <th class='success  cell100 column5'>CANT</th>
-                                                                        <th class='success  cell100 column10'>SUBTOT
-                                                                        </th>
-                                                                        <th class='success  cell100 column10'>
-                                                                            ACCI&Oacute;N</th>
-                                                                    </tr>
+                                                                    <th style='display:none'>ID</th>
+                                                                    <th class="col-lg-3">Descripcion</th>
+                                                                    <th class="col-lg-1">Stock</th>
+                                                                    <th class="col-lg-1">Cantidad</th>
+                                                                    <th class="col-lg-2">Presentacion</th>
+                                                                    <th class="col-lg-1 descp">Presentacion</th>
+                                                                    <th class="col-lg-1">Precio</th>
+                                                                    <th class="col-lg-2">$</th>
+                                                                    <th class="col-lg-2">Subtotal</th>
+                                                                    <th class="col-lg-1">Accion</th>
                                                                 </thead>
                                                             </table>
                                                         </div>
                                                         <div class="table100-body js-pscroll">
-                                                            <table>
-                                                                <tbody id="inventable"></tbody>
+                                                            <table class="table table-striped table-bordered">
+                                                                <tbody id="inventable">
+                                                                    
+                                                                </tbody>
                                                             </table>
                                                         </div>
                                                         <div class="table101-body">
@@ -209,6 +218,16 @@
                                             </div>
                                         </div>
                                         <!--valores ocultos para referencia -->
+                                        <input type='hidden' name='porc_iva' id='porc_iva' value='<?php echo $iva; ?>'>
+                                        <input type='hidden' name='monto_retencion1' id='monto_retencion1'
+                                            value='<?php echo $monto_retencion1 ?>'>
+                                        <input type='hidden' name='monto_retencion10' id='monto_retencion10'
+                                            value='<?php echo $monto_retencion10 ?>'>
+                                        <input type='hidden' name='monto_percepcion' id='monto_percepcion' value='100'>
+                                        <input type='hidden' name='porc_retencion1' id='porc_retencion1' value=0>
+                                        <input type='hidden' name='porc_retencion10' id='porc_retencion10' value=0>
+                                        <input type='hidden' name='porc_percepcion' id='porc_percepcion' value=0>
+                                        <input type='hidden' name='porcentaje_descuento' id='porcentaje_descuento' value=0>
                                         <input type='hidden' name='id_empleado' id='id_empleado'>
                                         <input type='hidden' name='numero_doc' id='numero_doc'>
                                         <input type='hidden' name='id_factura' id='id_factura'>
@@ -1110,32 +1129,120 @@
             <?php
 
     function consultar_existencias(){
-        $id_recepcion=$_POST['idRecepcion'];
-        $id_producto = $_POST['id_producto'];
-        $id_presentacion="";
-        if (isset($_REQUEST['id_presentacion'])){
-            $id_presentacion=$_REQUEST['id_presentacion'];
-        }
-        $sql = "SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total FROM ( SELECT tblStock_Ubicacion.id_producto, tblStock_Ubicacion.cantidad FROM tblStock_Ubicacion WHERE tblStock_Ubicacion.id_producto = $id_producto AND tblStock_Ubicacion.id_ubicacion = 2 UNION ALL SELECT tblInsumos_Emergencia.id_producto, tblInsumos_Emergencia.cantidad FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_producto = $id_producto AND tblInsumos_Emergencia.id_recepcion = $id_recepcion AND tblInsumos_Emergencia.deleted is NULL ) tblStock_Ubicacion GROUP BY tblStock_Ubicacion.id_producto ";
-        $consulta = _query($sql);
-        $row = _fetch_array($consulta);
-        $xdatos['total'] = $row['total'];
-        if($id_presentacion == ""){
-            $sql2 ="SELECT tblPresentacion_Productos.unidad FROM tblPresentacion_Productos WHERE tblPresentacion_Productos.id_producto_PP = $id_producto";
+
+        $id_producto = $_REQUEST['id_producto'];
+        $id_usuario=$_SESSION["id_usuario"];
+      
+        $precios= 7;
+        $limit="";
+        if ($precios==0) {
+          $limit="LIMIT 1";
         }
         else{
-            $sql2 ="SELECT tblPresentacion_Productos.unidad FROM tblPresentacion_Productos WHERE tblPresentacion_Productos.id_producto_PP = $id_producto AND tblPresentacion_Productos.id_presentacion_producto = $id_presentacion";
+          $limit="LIMIT 7";
         }
-        $consulta2 = _query($sql2);
-        $i = 0;
-        while ($row1=_fetch_array($consulta2)) {
-            if ($i==0) {
-                $unidadp=$row1['unidad'];
+        $id_sucursal=$_REQUEST['id_sucursal'];
+        $id_factura=$_REQUEST['id_factura'];
+        $precio=0;
+        $categoria="";
+      
+        $sql1 = "SELECT p.id_producto,p.id_categoria, p.barcode, p.descripcion, p.estado, p.perecedero, p.exento, p.id_categoria, p.id_sucursal,SUM(su.cantidad) as stock FROM ".EXTERNAL.".producto AS p JOIN ".EXTERNAL.".stock_ubicacion as su ON su.id_producto=p.id_producto JOIN ".EXTERNAL.".ubicacion as u ON u.id_ubicacion=su.id_ubicacion  WHERE p.id_producto =$id_producto AND u.bodega=0 AND su.id_sucursal=$id_sucursal";
+        $stock1=_query($sql1);
+        $row1=_fetch_array($stock1);
+        $nrow1=_num_rows($stock1);
+        if ($nrow1>0)
+        {
+          $hoy=date("Y-m-d");
+          $perecedero=$row1['perecedero'];
+          $barcode = $row1["barcode"];
+          $descripcion = $row1["descripcion"];
+          $estado = $row1["estado"];
+          $perecedero = $row1["perecedero"];
+          $exento = $row1["exento"];
+          $categoria=$row1['id_categoria'];
+          $sql_res_pre=_fetch_array(_query("SELECT SUM(factura_detalle.cantidad) as reserva FROM ".EXTERNAL.".factura JOIN ".EXTERNAL.".factura_detalle ON factura_detalle.id_factura=factura.id_factura WHERE factura_detalle.id_prod_serv=$id_producto AND factura.id_sucursal=$id_sucursal AND factura.fecha = '$hoy' AND factura.finalizada=0 "));
+          $reserva=$sql_res_pre['reserva'];
+      
+          $sql_res_esto=_fetch_array(_query("SELECT SUM(factura_detalle.cantidad) as reservado FROM ".EXTERNAL.".factura JOIN ".EXTERNAL.".factura_detalle ON factura_detalle.id_factura=factura.id_factura WHERE factura_detalle.id_prod_serv=$id_producto AND factura.id_factura=$id_factura"));
+          $reservado=$sql_res_esto['reservado'];
+      
+      
+          $stock= $row1["stock"]-$reserva+$reservado;
+          if($stock<0)
+          {
+            $stock=0;
+          }
+      
+          $i=0;
+          $unidadp=0;
+          $preciop=0;
+          $descripcionp=0;
+          $select_rank="<select class='sel_r form-control'>";
+          $sql_p=_query("SELECT presentacion.nombre, presentacion_producto.descripcion,presentacion_producto.id_presentacion,presentacion_producto.unidad,presentacion_producto.precio FROM ".EXTERNAL.".presentacion_producto JOIN ".EXTERNAL.".presentacion ON presentacion.id_presentacion=presentacion_producto.presentacion WHERE presentacion_producto.id_producto=$id_producto AND presentacion_producto.activo=1 AND presentacion_producto.id_sucursal=$id_sucursal ORDER BY presentacion_producto.unidad ASC");
+          $select="<select class='sel form-control'>";
+          while ($row=_fetch_array($sql_p))
+          {
+            if ($i==0)
+            {
+              $unidadp=$row['unidad'];
+              $preciop=$row['precio'];
+              $descripcionp=$row['descripcion'];
+      
+              $xc=0;
+      
+              $sql_rank=_query("SELECT presentacion_producto_precio.id_prepd,presentacion_producto_precio.desde,presentacion_producto_precio.hasta,presentacion_producto_precio.precio FROM ".EXTERNAL.".presentacion_producto_precio WHERE presentacion_producto_precio.id_presentacion=".$row['id_presentacion']." AND presentacion_producto_precio.id_sucursal=$id_sucursal AND presentacion_producto_precio.precio!=0 ORDER BY presentacion_producto_precio.precio DESC $limit");
+      
+                if(_num_rows($sql_rank)==0)
+                {
+                  $select_rank.="<option value='$preciop'>$preciop</option>";
+                }
+      
+                while ($rowr=_fetch_array($sql_rank)) {
+                  # code...
+                  $select_rank.="<option value='$rowr[precio]'";
+                  if($xc==0)
+                  {
+                    $select_rank.="selected";
+                    $preciop=$rowr['precio'];
+                    $xc=1;
+                  }
+                  $select_rank.=">$rowr[precio]</option>";
+                }
+                $select_rank.="</select>";
+              }
+              $select.="<option value='$row[id_presentacion]'>$row[nombre]</option>";
+              $i=$i+1;
             }
-            $i=$i+1;
-        }
-        $xdatos['unidad'] = $unidadp;
-        echo json_encode($xdatos);
+      
+      
+            $select.="</select>";
+            $xdatos['perecedero']=$perecedero;
+            $xdatos['descripcion']= $descripcion;
+            $xdatos['select']= $select;
+            $xdatos['select_rank']= $select_rank;
+            $xdatos['stock']= $stock;
+            $xdatos['preciop']= $preciop;
+      
+            $sql_e=_fetch_array(_query("SELECT exento FROM ".EXTERNAL.".producto WHERE id_producto=$id_producto"));
+            $exento=$sql_e['exento'];
+            if ($exento==1) {
+              # code...
+              $xdatos['preciop_s_iva']=$preciop;
+            }
+            else {
+              # code...
+              $sqkl=_fetch_array(_query("SELECT iva FROM ".EXTERNAL.".sucursal WHERE id_sucursal=$id_sucursal"));
+              $iva=$sqkl['iva']/100;
+              $iva=1+$iva;
+              $xdatos['preciop_s_iva']= round(($preciop/$iva),8,PHP_ROUND_HALF_DOWN);
+            }
+            $xdatos['unidadp']= $unidadp;
+            $xdatos['descripcionp']= $descripcionp;
+            $xdatos['exento']=$exento;
+            $xdatos['categoria']=$categoria;
+      
+            echo json_encode($xdatos); //Return the JSON Array
+          }
     }
 ?>
 
@@ -1174,10 +1281,12 @@
 ?>
 
             <?php
-if (!isset($_REQUEST['process']))
+if (!isset($_REQUEST['process']) && !isset($_REQUEST['form-data']))
 {
   initial();
+
 }
+
 if (isset($_REQUEST['process']))
 {
   switch ($_REQUEST['process'])
@@ -1203,6 +1312,9 @@ if (isset($_REQUEST['process']))
     case 'consultar_selects':
       consultar_selects();
       break;
+    case 'total_texto':
+        break;
   }
 }
+
 ?>

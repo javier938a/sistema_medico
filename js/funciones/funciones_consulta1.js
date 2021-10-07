@@ -7,7 +7,7 @@ $(document).ready(function() {
 
         $("#imprimir_receta_a").attr("href", "receta_pdf.php?id_cita=" + id_cita + "&id_paciente=" + id_paciente + "&id_doctor=" + (this.value));
     });
-    /* ACA EMPIEZA LA SECUENCIA DE CONTROL DE CLICKS QUE SE UTILIZARA PARA 
+    /* ACA EMPIEZA LA SECUENCIA DE CONTROL DE CLICKS QUE SE UTILIZARA PARA
     EL ARCHIVO DE CONSULTA 1 */
 
     $("#datos-fisicos-tab").click(function() {
@@ -15,7 +15,7 @@ $(document).ready(function() {
     });
 
 
-    /* ACA TERMINA LA SECUENCIA DE CONTROL DE CLICKS QUE SE UTILIZARA PARA 
+    /* ACA TERMINA LA SECUENCIA DE CONTROL DE CLICKS QUE SE UTILIZARA PARA
     EL ARCHIVO DE CONSULTA 1 */
 
     $(".select").select2();
@@ -585,9 +585,9 @@ function finalizar() {
         success: function(datax) {
             display_notify(datax.typeinfo, datax.msg);
             if (datax.typeinfo == "Success") {
-                setInterval(function() {
-                    location.href = "consulta.php";
-                }, 1500);
+              setInterval(function() {
+      					location.href = "venta.php?id="+id;
+      				}, 1500);
             }
         }
     });

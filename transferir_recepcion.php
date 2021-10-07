@@ -41,6 +41,7 @@ function initial(){
                                 <label>Transferir a<span style="color:red;">*</span></label>
                                 <br>
                                 <select class="form-control select" name="tipo_recepcion_transferir" id="tipo_recepcion_transferir" style="width:100%;">
+                                    <option value="">Seleccione donde enviarlo</option>
                                 <?php
                                     $sql_tipo = "SELECT * FROM tipo_recepcion where activo = '1' AND tipo_recepcion.id_tipo_recepcion != '$id_tipo_recepcion'";
                                     $query_tipo = _query($sql_tipo);
@@ -166,22 +167,7 @@ function transferir_paciente(){
     
     //tabla a actualizar
     $table='recepcion';
-    $form_data=array();/*array(
-        'recepcion_emergencia'=>0,
-        'recepcion_hospitalizacion'=>0,
-        'recepcion_pediatria'=>0,
-        'recepcion_estacion_enfermeria_a'=>0,
-        'recepcion_estacion_enfermeria_b'=>0,
-        'recepcion_enfermeria_sala_estar'=>0,
-        'recepcion_nefrologia'=>0,
-        'recepcion_rayosx'=>0,
-        'recepcion_uci'=>0,
-        'recepcion_terapia_respiratoria'=>0,
-        'recepcion_laboratorio'=>0,
-        'recepcion_sala_operaciones'=>0,
-        'recepcion_microcirugia'=>0,
-        'recepcion_consulta'=>0
-    );*/
+    $form_data=array();
     $form_data['id_tipo_recepcion']=$id_tipo_transferir_seleccionado;
     switch($text_tipo_seleccionado){
         case 'EMERGENCIA':#campo recepcion_emergencia

@@ -1,10 +1,11 @@
 <?php
 include("_core.php");   
- $sql_empresa=_query("SELECT * FROM empresa ");
+ 	$sql_empresa=_query("SELECT * FROM empresa ");
 	$array_empresa=_fetch_array($sql_empresa);
 	$nombre_empresa=$array_empresa['nombre'];
 	$telefono=$array_empresa['telefono1'];
-	$logo_empresa=$array_empresa['logo'];
+	//$logo_empresa=$array_empresa['logo'];
+	
 ?>
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -144,3 +145,4 @@ include("_core.php");
             <div class='modal-content'></div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+	

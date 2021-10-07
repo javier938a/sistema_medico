@@ -285,7 +285,7 @@ function initial(){
                                         <div class="panel-heading">
                                             <h4 class='text-success'><a data-toggle="collapse" href="#collapse00"
                                                     class="change" act="down">Última Consulta
-                                                    <?php 
+                                                    <?php
                                                     if($n_exis_a > 0){
                                                         echo "($fecha_cita_ant a las $hora_cita_ant)";
                                                     }
@@ -298,7 +298,7 @@ function initial(){
                                         <div id="collapse00" class="collapse panel-collapse in">
                                             <div class="panel-body">
                                                 <div class="widget-content">
-                                                    <?php 
+                                                    <?php
                                                     if($n_exis_a > 0){
                                                     ?>
                                                     <?php if($motivo != ""){ ?>
@@ -1959,14 +1959,9 @@ function buscar_dat($idc)
         $email=$row["email"];
         $sexo = $row["sexo"];
         $fecha = ED($row["fecha_nacimiento"]);
-        $_array_fecha=calcular_meses_dias($fecha);
-        //print_r("Hola Mundo");
-        //print_r($_array_fecha);
         $datos_fecha = explode("-", $fecha);
         $anio_nac  = $datos_fecha[2];
         $edad = date("Y") - $anio_nac;
-        //verificando si mostar solo la edad en anios o la edad completa
-
         $direccion = $row["direccion"].", ".$row["nombre_municipio"].", ".$row["nombre_departamento"];
         $padecimientos = $row["padecimientos"];
         $medicamentos = $row["medicamento_permanente"];
@@ -1980,10 +1975,10 @@ function buscar_dat($idc)
             <td style="width: 37%;">'.$apellido.'</td>
         </tr>
         <tr>
-            <td>Edad</td>
-            <td>'.$edad.' años</td>
-            <td>'.$_array_fecha['edad_meses'].' meses y</td>
-            <td>'.$_array_fecha['edad_dias'].' dias</td>
+            <td>Edad:</td>
+            <td>'.$edad.'</td>
+            <td>Género:</td>
+            <td>'.$sexo.'</td>
         </tr>
         <tr>
             <td>Dirección:</td>
@@ -2057,24 +2052,6 @@ function buscar_dat($idc)
     $xdatt['typeinfo']="Success";
     echo json_encode($xdatt);
 }
-
-function calcular_meses_dias($fecha_nacimiento_param){
-    $fecha_nacimiento=new DateTime(date('Y/m/d',strtotime($fecha_nacimiento_param)));
-    //print_r($fecha_nacimiento);
-    $fecha_hoy=new DateTime(date('Y/m/d', time()));
-    $val_edad=date_diff($fecha_hoy, $fecha_nacimiento);
-    $edad_anios=$val_edad->format('%Y');
-    $edad_meses=$val_edad->format('%m');
-    $edad_dias=$val_edad->format('%d');
-    
-    $edades=array(
-        'edad_anios'=>$edad_anios,
-        'edad_meses'=>$edad_meses,
-        'edad_dias'=>$edad_dias
-    );
-    return $edades;
-}
-
 function diagnostico()
 {
     $id = $_POST["id"];

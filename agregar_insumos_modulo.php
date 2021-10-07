@@ -122,7 +122,7 @@
         $id_recepcion=$_POST['idRecepcion'];
         $id_usb = $_POST['id_usb'];
         $tabla_buscar = $_POST['tabla_buscar'];
-        $sql_ins="SELECT  ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".producto.descripcion, db_expediente2.".$tabla_buscar.".id_insumo ,db_expediente2.".$tabla_buscar.".cantidad, ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.id_presentacion, ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".producto LEFT JOIN db_expediente2.".$tabla_buscar." on db_expediente2.".$tabla_buscar.".id_producto = ".EXTERNAL.".producto.id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto WHERE db_expediente2.".$tabla_buscar.".deleted is NULL and db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion  AND db_expediente2.".$tabla_buscar.".producto = 1 AND ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion";
+        $sql_ins="SELECT  ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".producto.descripcion, ".EXTERNAL.".".$tabla_buscar.".id_insumo ,".EXTERNAL.".".$tabla_buscar.".cantidad, ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.id_presentacion, ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".producto LEFT JOIN ".EXTERNAL.".".$tabla_buscar." on ".EXTERNAL.".".$tabla_buscar.".id_producto = ".EXTERNAL.".producto.id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto WHERE ".EXTERNAL.".".$tabla_buscar.".deleted is NULL and ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion  AND ".EXTERNAL.".".$tabla_buscar.".producto = 1 AND ".EXTERNAL.".presentacion_producto.id_presentacion = ".EXTERNAL.".".$tabla_buscar.".id_presentacion";
         //echo $sql_ins;
         $res_ins=_query($sql_ins);
         $n=_num_rows($res_ins);
@@ -141,7 +141,7 @@
                 'id_insumo' => $row['id_insumo'],
             );
         }
-        $sql_serv="SELECT ".EXTERNAL.".servicios_hospitalarios.id_servicio, ".EXTERNAL.".servicios_hospitalarios.descripcion, db_expediente2.".$tabla_buscar.".id_insumo , db_expediente2.".$tabla_buscar.".hora_de_aplicacion, db_expediente2.".$tabla_buscar.".cantidad, ".EXTERNAL.".servicios_hospitalarios.precio FROM ".EXTERNAL.".servicios_hospitalarios LEFT JOIN db_expediente2.".$tabla_buscar." on ".EXTERNAL.".servicios_hospitalarios.id_servicio = db_expediente2.".$tabla_buscar.".id_servicio WHERE db_expediente2.".$tabla_buscar.".id_recepcion =$id_recepcion AND db_expediente2.".$tabla_buscar.".servicio = 1 AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+        $sql_serv="SELECT ".EXTERNAL.".servicios_hospitalarios.id_servicio, ".EXTERNAL.".servicios_hospitalarios.descripcion, ".EXTERNAL.".".$tabla_buscar.".id_insumo , ".EXTERNAL.".".$tabla_buscar.".hora_de_aplicacion, ".EXTERNAL.".".$tabla_buscar.".cantidad, ".EXTERNAL.".servicios_hospitalarios.precio FROM ".EXTERNAL.".servicios_hospitalarios LEFT JOIN ".EXTERNAL.".".$tabla_buscar." on ".EXTERNAL.".servicios_hospitalarios.id_servicio = ".EXTERNAL.".".$tabla_buscar.".id_servicio WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion =$id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".servicio = 1 AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
         $res_serv=_query($sql_serv);
         $nr=_num_rows($res_serv);
         for($j=0;$j<$nr;$j++){
@@ -159,7 +159,7 @@
             );
         }
 
-        $sql_examenes="SELECT labangel.examen.id_examen, labangel.examen.nombre_examen, db_expediente2.".$tabla_buscar.".id_insumo , db_expediente2.".$tabla_buscar.".hora_de_aplicacion, db_expediente2.".$tabla_buscar.".cantidad, labangel.examen.precio_examen FROM labangel.examen LEFT JOIN db_expediente2.".$tabla_buscar." on labangel.examen.id_examen = db_expediente2.".$tabla_buscar.".id_examen WHERE db_expediente2.".$tabla_buscar.".id_recepcion =$id_recepcion AND db_expediente2.".$tabla_buscar.".examen = 1 AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+        $sql_examenes="SELECT labangel.examen.id_examen, labangel.examen.nombre_examen, ".EXTERNAL.".".$tabla_buscar.".id_insumo , ".EXTERNAL.".".$tabla_buscar.".hora_de_aplicacion, ".EXTERNAL.".".$tabla_buscar.".cantidad, labangel.examen.precio_examen FROM labangel.examen LEFT JOIN ".EXTERNAL.".".$tabla_buscar." on labangel.examen.id_examen = ".EXTERNAL.".".$tabla_buscar.".id_examen WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion =$id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".examen = 1 AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
         $res_serv=_query($sql_examenes);
         $nr=_num_rows($res_serv);
         for($j=0;$j<$nr;$j++){
@@ -247,7 +247,7 @@
             //Iniciar la comprobacion de los tipos de insumos
             if($tipop == "P"){
                 //VERIFICAR QUE EXISTA UN REGISTRO IDENTICO
-                $sql_repetido_identico = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND db_expediente2.".$tabla_buscar.".id_recepcion = '$id_recepcion' AND db_expediente2.".$tabla_buscar.".producto = '1' AND db_expediente2.".$tabla_buscar.".id_producto = '$id_producto' AND db_expediente2.".$tabla_buscar.".cantidad = '$cantidad_total' AND db_expediente2.".$tabla_buscar.".total = '$precio_venta' AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".id_presentacion = '$id_presentacion'";
+                $sql_repetido_identico = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL."".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND ".EXTERNAL.".".$tabla_buscar.".id_recepcion = '$id_recepcion' AND ".EXTERNAL.".".$tabla_buscar.".producto = '1' ".EXTERNAL.".".$tabla_buscar.".id_producto = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".cantidad = '$cantidad_total' AND ".EXTERNAL.".".$tabla_buscar.".total = '$precio_venta' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".id_presentacion = '$id_presentacion'";
                 $query_repetido_identico = _query($sql_repetido_identico);
                 if(_num_rows($query_repetido_identico) > 0){
                     $array_tabla[]= array(
@@ -260,10 +260,10 @@
                 }
                 else{
                     //VERIFICAR QUE EXISTA UN REGISTRO REPETIDO PERO QUE NO COINCIDA CON LAS CANTIDADES NI PRESENTACIONES
-                    $sql_repetido_parcial = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND db_expediente2.".$tabla_buscar.".id_recepcion = '$id_recepcion' AND db_expediente2.".$tabla_buscar.".producto = '1' AND db_expediente2.".$tabla_buscar.".id_producto = '$id_producto' AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+                    $sql_repetido_parcial = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND ".EXTERNAL.".".$tabla_buscar.".id_recepcion = '$id_recepcion' AND ".EXTERNAL.".".$tabla_buscar.".producto = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_producto = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
                     $query_repetido_parcial = _query($sql_repetido_parcial);
                     if(_num_rows($query_repetido_parcial) > 0){
-                        $verificacion_cantidad_actual = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_presentacion, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND db_expediente2.".$tabla_buscar.".id_recepcion = '$id_recepcion' AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+                        $verificacion_cantidad_actual = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo, ".EXTERNAL.".".$tabla_buscar.".id_producto, ".EXTERNAL.".".$tabla_buscar.".id_presentacion, ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND ".EXTERNAL.".".$tabla_buscar.".id_recepcion = '$id_recepcion' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
                         $query_verificacion_cantidad_actual = _query($verificacion_cantidad_actual);
                         if(_num_rows($query_verificacion_cantidad_actual) > 0){
                             $row_verificacion_cantidad_actual = _fetch_array($query_verificacion_cantidad_actual);
@@ -412,7 +412,7 @@
                 }
             }
             if($tipop == "S"){
-                $verificacion_repetido = "SELECT * FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND deleted is NULL AND db_expediente2.".$tabla_buscar.".servicio = '1' AND db_expediente2.".$tabla_buscar.".id_servicio = '$id_producto' AND db_expediente2.".$tabla_buscar.".cantidad = '$cantidad_total'";
+                $verificacion_repetido = "SELECT * FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".servicio = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_servicio = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".cantidad = '$cantidad_total'";
                 $query_verificacion_repetido = _query($verificacion_repetido);
                 if(_num_rows($query_verificacion_repetido) > 0){
                     $array_tabla[]= array(
@@ -425,7 +425,7 @@
                 }
                 else{
                     //verificar que existe pero con otro valor
-                    $verificacion_existe = "SELECT * FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND deleted is NULL AND db_expediente2.".$tabla_buscar.".servicio = '1' AND db_expediente2.".$tabla_buscar.".id_servicio = '$id_producto'";
+                    $verificacion_existe = "SELECT * FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".servicio = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_servicio = '$id_producto'";
                     $query_verificacion_existe = _query($verificacion_existe);
                     //SI EXISTE
                     if(_num_rows($query_verificacion_existe) > 0){
@@ -479,7 +479,7 @@
             }
             if($tipop == "EXAMEN_AGREGADO" || $tipop == "E"){
                 //VERIFICAR SI EXISTE UN EXAMEN REPETIDO
-                $consulta_verificar_repetido = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND db_expediente2.".$tabla_buscar.".examen = '1' AND db_expediente2.".$tabla_buscar.".id_examen = '$id_producto' AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".cantidad = '$cantidad_total'";
+                $consulta_verificar_repetido = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND ".EXTERNAL.".".$tabla_buscar.".examen = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_examen = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".cantidad = '$cantidad_total'";
                 $query_verificar_repetido = _query($consulta_verificar_repetido);
                 //SI ESTA REPETIDO EXACTAMENTE
                 if(_num_rows($query_verificar_repetido) > 0){
@@ -494,7 +494,7 @@
                 //NO ESTA REPETIDO EXACTAMENTE
                 else{
                     //VERIFICAR QUE EXISTA POR LO MENOS PERO CON OTROS DATOS
-                    $sql_verificar_existe = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo' AND db_expediente2.".$tabla_buscar.".examen = '1' AND db_expediente2.".$tabla_buscar.".id_examen = '$id_producto' AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+                    $sql_verificar_existe = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo' AND ".EXTERNAL.".".$tabla_buscar.".examen = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_examen = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
                     $query_verificar_existe = _query($sql_verificar_existe);
                     //POR LO MENOS EXISTE
                     if(_num_rows($query_verificacion_existe) > 0){
@@ -714,7 +714,7 @@
             if($error2 == 0){
                 $error3=0;
                 $algun_producto = 0;
-                $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
+                $sqlx = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo, ".EXTERNAL.".".$tabla_buscar.".examen,".EXTERNAL.".".$tabla_buscar.".id_examen, ".EXTERNAL.".".$tabla_buscar.".total, ".EXTERNAL.".".$tabla_buscar.".id_producto, ".EXTERNAL.".".$tabla_buscar.".id_servicio, ".EXTERNAL.".".$tabla_buscar.".producto, ".EXTERNAL.".".$tabla_buscar.".servicio, ".EXTERNAL.".".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM ".EXTERNAL.".".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = ".EXTERNAL.".".$tabla_buscar.".id_presentacion WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
                 //echo $sqlx;
                 $consultax = _query($sqlx);
                 while($rowx = _fetch_array($consultax)){
@@ -775,7 +775,7 @@
                 if(!empty($array_base)){
                     if($algun_producto == 0){
                         foreach ($array_base as $key1 => $value1){
-                            $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                            $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                             $where = " WHERE id_insumo = ".$value1['id_insumo']." AND examen = 0";
                             $eliminar_insumo = _soft_delete($tabla_deleted,$where);
                             if($eliminar_insumo){
@@ -837,7 +837,7 @@
                                     $dia1 =date('Y-m-d');
                                     if($value['tipo'] == "P"){
                                         $id_producto_eliminado = $value['id_producto'];
-                                        $sqlD = "SELECT db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo =".$value['id_insumo'];
+                                        $sqlD = "SELECT ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo =".$value['id_insumo'];
                                         $consultaD = _query($sqlD);
                                         $registroD = _fetch_array($consultaD);
                                         $cantidad = $registroD['cantidad'];
@@ -889,7 +889,7 @@
                                                 );
                                                 $insert_mov_detx = _insert($table1x,$form_data1x);
                                                 if($insert_mov_detx){
-                                                    $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                                                    $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                                                     $eliminar_insumo = _soft_delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']." AND examen = 0");
                                                     if(!$eliminar_insumo){
                                                         $error3++;
@@ -908,14 +908,14 @@
                                         }
                                     }
                                     if($value['tipo'] == "S"){
-                                        $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                                        $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                                         $eliminar_insumo = _soft_delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']." AND examen = 0");
                                         if(!$eliminar_insumo){
                                             $error3++;
                                         }
                                     }
                                     if($value['tipo'] == "E"){
-                                        $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                                        $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                                         $tabla_delete_insumo = "labangel.examen_paciente_interno";
                                         $sql_verificacion_examen = "SELECT * FROM ".$tabla_delete_insumo." WHERE id_insumo = '".$value['id_insumo']."'";
                                         $query_verificacion_examen = _query($sql_verificacion_examen);
@@ -1049,7 +1049,7 @@
         $id_recepcion =$_REQUEST['id_recepcion'];
         $id_P = _fetch_array(_query("SELECT ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".presentacion_producto.precio, ".EXTERNAL.".presentacion_producto.unidad, ".EXTERNAL.".presentacion_producto.descripcion FROM ".EXTERNAL.".producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_producto = ".EXTERNAL.".producto.id_producto WHERE ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion"));
         $id_producto = $id_P['id_producto'];
-        $sql=_fetch_array(_query("SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto "));
+        $sql=_fetch_array(_query("SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT ".EXTERNAL.".".$tabla_buscar.".id_producto, ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_producto = $id_producto AND ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto "));
         $precio=$id_P['precio'];
         $unidad=$id_P['unidad'];
         $descripcion=$id_P['descripcion'];
@@ -1075,9 +1075,24 @@
         if (isset($_REQUEST['id_presentacion'])){
             $id_presentacion=$_REQUEST['id_presentacion'];
         }
-        $sql = "SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto ";
+
+        //select arreglado
+        /*$sql3='
+        SELECT cmf.stock_ubicacion.id_producto, cmf.stock_ubicacion.cantidad FROM cmf.stock_ubicacion
+        SELECT cmf.stock_ubicacion.id_producto, cmf.stock_ubicacion.cantidad FROM cmf.stock_ubicacion WHERE cmf.stock_ubicacion.id_ubicacion=1 
+        SELECT insumos_hospitalizacion.id_producto, insumos_hospitalizacion.cantidad FROM insumos_hospitalizacion WHERE insumos_hospitalizacion.id_producto=439 AND insumos_hospitalizacion.id_recepcion=4 AND insumos_hospitalizacion.deleted IS NULL
+        ';*/
+        $sql3='
+        SELECT sub_stock.id_producto, SUM(sub_stock.cantidad) FROM 
+        (SELECT stock.id_producto, stock.cantidad FROM cmf.stock_ubicacion AS stock WHERE stock.id_ubicacion=1 AND stock.id_producto=439
+         UNION ALL 
+         SELECT ins.id_producto, ins.cantidad FROM insumos_hospitalizacion as ins WHERE ins.id_producto=439 AND ins.id_recepcion=4 AND ins.deleted IS NULL) AS sub_stock
+         ORDER BY sub_stock.id_producto
+        ';
+
+
         //echo $sql;
-        $consulta = _query($sql);
+        $consulta = _query($sql3);
         $row = _fetch_array($consulta);
         $xdatos['total'] = $row['total'];
         if($id_presentacion == ""){
@@ -1109,7 +1124,7 @@
         $id_presentacion = $_POST['id_presentacion'];
         $id_usb = $_POST['id_usb'];
         $tabla_buscar = $_POST['tabla_buscar'];
-        $sql = "SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".producto = $id_producto AND db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto ";
+        $sql = "SELECT ".EXTERNAL.".stock_ubicacion.id_producto, SUM(".EXTERNAL.".stock_ubicacion.cantidad) total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = '$id_usb' UNION ALL SELECT ".EXTERNAL.".".$tabla_buscar.".id_producto, ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".producto = $id_producto AND ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL ) stock_ubicacion GROUP BY ".EXTERNAL.".stock_ubicacion.id_producto ";
         $consulta = _query($sql);
         $row = _fetch_array($consulta);
         $total = $row['total'];
@@ -1229,11 +1244,11 @@
                     $unidadx=$row['unidad'];
                 }
                 $cantidad_real=$cantidad*$unidadx;
-                $repetido = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".id_insumo = $id_insumo AND db_expediente2.".$tabla_buscar.".producto = '1' AND db_expediente2.".$tabla_buscar.".id_producto = '$id_producto' AND db_expediente2.".$tabla_buscar.".id_presentacion = $id_presentacion AND db_expediente2.".$tabla_buscar.".cantidad = $cantidad AND db_expediente2.".$tabla_buscar.".total = $precio_venta AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+                $repetido = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".id_insumo = $id_insumo AND ".EXTERNAL.".".$tabla_buscar.".producto = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_producto = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".id_presentacion = $id_presentacion AND ".EXTERNAL.".".$tabla_buscar.".cantidad = $cantidad AND ".EXTERNAL.".".$tabla_buscar.".total = $precio_venta AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
                 $repetidoQuery=_query($repetido);
                 $repe = _num_rows($repetidoQuery);
                 if($repe == 0){
-                    $existente = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_recepcion = '$id_recepcion' AND db_expediente2.".$tabla_buscar.".producto = '1' AND db_expediente2.".$tabla_buscar.".id_producto = '$id_producto' AND db_expediente2.".$tabla_buscar.".id_insumo = $id_insumo";
+                    $existente = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo, ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = '$id_recepcion' AND ".EXTERNAL.".".$tabla_buscar.".producto = '1' AND ".EXTERNAL.".".$tabla_buscar.".id_producto = '$id_producto' AND ".EXTERNAL.".".$tabla_buscar.".id_insumo = $id_insumo";
                     $existenteQuery=_query($existente);
                     $exist = _num_rows($existenteQuery);
                     $cantidad_anterior = 0;
@@ -1241,7 +1256,7 @@
                         $row = _fetch_array($existenteQuery);
                         $id_insumox = $row['id_insumo'];
                         $cantidad_anterior = $row['cantidad'];
-                        $tabla = "db_expediente2.".$tabla_buscar."";
+                        $tabla = "".EXTERNAL.".".$tabla_buscar."";
                         $fd2= array(
                             'id_recepcion' => $id_recepcion,
                             'id_producto' => $id_producto,
@@ -1255,7 +1270,7 @@
                         $ins2 = _update($tabla,$fd2,$where);
                     }
                     else{
-                        $tabla = "db_expediente2.".$tabla_buscar."";
+                        $tabla = "".EXTERNAL.".".$tabla_buscar."";
                         $fd2= array(
                             'id_recepcion' => $id_recepcion,
                             'id_producto' => $id_producto,
@@ -1372,7 +1387,7 @@
                 }
             }
             if($tipop == "EXAMEN_AGREGADO"){
-                $select = "SELECT * FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo = '$id_insumo_S' AND db_expediente2.".$tabla_buscar.".deleted is NULL";
+                $select = "SELECT * FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo = '$id_insumo_S' AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL";
                 $query_select = _query($select);
                 if(_num_rows($query_select) > 0){
                     if(is_numeric($id_insumo)){
@@ -1385,7 +1400,7 @@
                     }
                 }
                 else{
-                    $tabla = "db_expediente2.".$tabla_buscar."";
+                    $tabla = "".EXTERNAL.".".$tabla_buscar."";
                     $fd2= array(
                         'id_recepcion' => $id_recepcion,
                         'id_examen' => $id_producto,
@@ -1424,11 +1439,11 @@
                 $fecha_hora = unirFecha($f_h[0],$f_h[1], $f_h[2]);
                 $unidad=1;
                 $cantidad_real=$cantidad*$unidad;
-                $existente = "SELECT db_expediente2.".$tabla_buscar.".id_insumo FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion and db_expediente2.".$tabla_buscar.".servicio = 1 AND db_expediente2.".$tabla_buscar.".id_servicio = $id_producto AND db_expediente2.".$tabla_buscar.".total = $precio_venta AND db_expediente2.".$tabla_buscar.".hora_de_aplicacion = '$fecha_hora'  AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".id_insumo = $id_insumo_S";
+                $existente = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion and ".EXTERNAL.".".$tabla_buscar.".servicio = 1 AND ".EXTERNAL.".".$tabla_buscar.".id_servicio = $id_producto AND ".EXTERNAL.".".$tabla_buscar.".total = $precio_venta AND ".EXTERNAL.".".$tabla_buscar.".hora_de_aplicacion = '$fecha_hora'  AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".id_insumo = $id_insumo_S";
                 $servicioExistente=_query($existente);
                 $repe = _num_rows($servicioExistente);
                 if($repe == 0){
-                    $tabla = "db_expediente2.".$tabla_buscar."";
+                    $tabla = "".EXTERNAL.".".$tabla_buscar."";
                     $fd2= array(
                         'id_recepcion' => $id_recepcion,
                         'id_servicio' => $id_producto,
@@ -1643,7 +1658,7 @@
             $algun_producto=0;
             $error3=0;
             $array_base = array();
-            $sqlx = "SELECT db_expediente2.".$tabla_buscar.".id_insumo, db_expediente2.".$tabla_buscar.".examen,db_expediente2.".$tabla_buscar.".id_examen, db_expediente2.".$tabla_buscar.".total, db_expediente2.".$tabla_buscar.".id_producto, db_expediente2.".$tabla_buscar.".id_servicio, db_expediente2.".$tabla_buscar.".producto, db_expediente2.".$tabla_buscar.".servicio, db_expediente2.".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM db_expediente2.".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = db_expediente2.".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = db_expediente2.".$tabla_buscar.".id_presentacion WHERE db_expediente2.".$tabla_buscar.".id_recepcion = $id_recepcion AND db_expediente2.".$tabla_buscar.".deleted is NULL AND db_expediente2.".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
+            $sqlx = "SELECT ".EXTERNAL.".".$tabla_buscar.".id_insumo, ".EXTERNAL.".".$tabla_buscar.".examen,".EXTERNAL.".".$tabla_buscar.".id_examen, ".EXTERNAL.".".$tabla_buscar.".total, ".EXTERNAL.".".$tabla_buscar.".id_producto, ".EXTERNAL.".".$tabla_buscar.".id_servicio, ".EXTERNAL.".".$tabla_buscar.".producto, ".EXTERNAL.".".$tabla_buscar.".servicio, ".EXTERNAL.".".$tabla_buscar.".id_presentacion, ".EXTERNAL.".presentacion_producto.costo FROM ".EXTERNAL.".".$tabla_buscar." LEFT JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".".$tabla_buscar.".id_producto LEFT JOIN ".EXTERNAL.".presentacion_producto on ".EXTERNAL.".presentacion_producto.id_presentacion = ".EXTERNAL.".".$tabla_buscar.".id_presentacion WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = $id_recepcion AND ".EXTERNAL.".".$tabla_buscar.".deleted is NULL AND ".EXTERNAL.".".$tabla_buscar.".created_at != '$fecha_hora_ingresar'";
             $consultax = _query($sqlx);
             while($rowx = _fetch_array($consultax)){
                 $tipop = "";
@@ -1706,7 +1721,7 @@
             if(!empty($array_base)){
                 if($algun_producto == 0){
                     foreach ($array_base as $key1 => $value1){
-                        $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                        $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                         $where = " WHERE id_insumo = ".$value1['id_insumo']." AND examen = 0";
                         $eliminar_insumo = _soft_delete($tabla_deleted,$where);
                         if($eliminar_insumo){
@@ -1768,7 +1783,7 @@
                               $dia1 =date('Y-m-d');
                               if($value['tipo'] == "P"){
                                   $id_producto_eliminado = $value['id_producto'];
-                                  $sqlD = "SELECT db_expediente2.".$tabla_buscar.".cantidad FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_insumo =".$value['id_insumo'];
+                                  $sqlD = "SELECT ".EXTERNAL.".".$tabla_buscar.".cantidad FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_insumo =".$value['id_insumo'];
                                   $consultaD = _query($sqlD);
                                   $registroD = _fetch_array($consultaD);
                                   $cantidad = $registroD['cantidad'];
@@ -1820,7 +1835,7 @@
                                           );
                                           $insert_mov_detx = _insert($table1x,$form_data1x);
                                           if($insert_mov_detx){
-                                              $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                                              $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                                               $eliminar_insumo = _soft_delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']." AND examen = 0");
                                               if($eliminar_insumo){
 
@@ -1842,7 +1857,7 @@
                                   }
                               }
                               if($value['tipo'] == "S"){
-                                    $tabla_deleted="db_expediente2.".$tabla_buscar."";
+                                    $tabla_deleted="".EXTERNAL.".".$tabla_buscar."";
                                     $eliminar_insumo = _soft_delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']." AND examen = 0");
                                     if($eliminar_insumo){
 
@@ -2028,7 +2043,7 @@
         //anulara en 	$table1 = 'microcirugia_paciente';
         $array_salida = array();
         $bueno = 1;
-        $sql_productos = "SELECT * FROM db_expediente2.".$tabla_buscar." WHERE db_expediente2.".$tabla_buscar.".id_recepcion = '$id_recepcion'";
+        $sql_productos = "SELECT * FROM ".EXTERNAL.".".$tabla_buscar." WHERE ".EXTERNAL.".".$tabla_buscar.".id_recepcion = '$id_recepcion'";
         $query_productos = _query($sql_productos);
         while($row_productos = _fetch_array($query_productos)){
             $es_producto = $row_productos['producto'];
@@ -2077,7 +2092,7 @@
                 $total_salido += $row_productos['total'];
             }
             if($es_servicio == "1"){
-                $eliminar = _delete_total('db_expediente2.".$tabla_buscar."', 'WHERE id_insumo ='.$row_productos['id_insumo']);
+                $eliminar = _delete_total('".EXTERNAL.".".$tabla_buscar."', 'WHERE id_insumo ='.$row_productos['id_insumo']);
                 if(!$eliminar){
                     $bueno = 0;
                 }
@@ -2171,7 +2186,7 @@
             $error_final++;
         }
         if($error_final == 0){
-            $table_d2 = "db_expediente2.".$tabla_buscar."";
+            $table_d2 = "".EXTERNAL.".".$tabla_buscar."";
             $delete2 = _delete_total($table_d2, "where id_recepcion = '$id_recepcion'");
             if($delete2){
                 $tabla1 = 'recepcion';
