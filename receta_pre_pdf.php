@@ -1,5 +1,5 @@
 <?php
-    //error_reporting(E_ERROR | E_PARSE);
+    error_reporting(E_ERROR | E_PARSE);
     require("_core.php");
     require("num2letras.php");
     require('fpdf/fpdf.php');
@@ -302,130 +302,6 @@
         }
 
         function Header(){
-                $this->Image("img/ues.png",0,0,220,280);
-                $set_x = $this->getX();
-                $set_y = 2;
-                $this->SetLineWidth(.5);
-                $this->SetFillColor(255,255,255);
-
-                
-                $this->AddFont('latin','','latin.php');
-                $this->Image($this->encabezado['logo'],$set_x-6,$set_y,40,38);
-                $this->SetDrawColor(0,0,0);
-                $this->SetFont('Courier', 'B', 19);
-                $this->SetTextColor(25, 65, 96);
-                $set_y +=0;
-                $this->setY($set_y+5);
-                //$this->Cell(160,7,utf8_decode($this->infoext['nombre_empresa']),0,1,'L');
-                $set_y +=5;
-                $this->setY($set_y+5);
-                $this->SetFont('Courier', 'B', 16);
-                $this->setX(68);
-                $this->Cell(160,7,utf8_decode("Dr. ".$this->encabezado['doctor']),0,1,'L');
-                //Especialidades
-                $this->setY($set_y+12);
-                $this->setX(10);
-                $this->SetFont('Courier', 'B', 13);
-                $this->Cell(115,7,"JVPM No 14349",0,1,'R');
-
-                $this->setX(10);
-                $this->setY($set_y+18);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(160,7,utf8_decode("ULTRASONOGRAFISTA - MEDICINA GENERAL ADULTOS Y NIÑOS"),0,1,'R');
-
-                $this->setX(10);
-                $this->setY($set_y+25);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(140,7,utf8_decode("GRADUADO DE LA UNIVERSIDAD DE EL SALVADOR"),0,1,'R');
-    
-                $this->SetDrawColor(25,65,96);
-                $this->Line(13,39,203,39);
-                $this->Line(23,42,193,42);
-    
-                $this->SetTextColor(0, 0, 0);
-                $this->setY($set_y+36);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(160,7,Mayu(utf8_decode("PACIENTE : ".$this->encabezado['paciente'])),0,1,'L');
-                $this->setY($this->getY()-7);
-                $this->setX(150);
-                $this->Cell(160,7,Mayu(utf8_decode("EDAD :".$this->encabezado['edad']." AÑOS")),0,1,'L');
-                $this->setY($set_y+43);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(160,7,(utf8_decode("FECHA : ".$this->encabezado['fecha_cita']." a las ".$this->encabezado['hora_cita'])),0,1,'L');
-                $this->setY($this->getY()-7);
-                $this->setX(150);
-                $this->Cell(160,7,(utf8_decode("EXPEDIENTE :".str_pad($this->encabezado['expediente'], 6, '0', STR_PAD_LEFT))),0,1,'L');
-                //dibujando los rectangulos 
-                $this->RoundedRect(7, 59, 48,210, 1, '1234', '');
-                $this->RoundedRect(58, 59, 150, 163, 1, '1234', '');
-                
-                $especialidades=$this->barra_lateral['especialidades'];//obteniendo las especialidades
-                $this->SetFont('Courier', 'B', 9);
-                $y=60;
-                $i=0;
-                while($i<count($especialidades)){//recorriend todas las especialidades
-                    $this->setXY(7,$y);
-                    $this->Cell(35,4,(utf8_decode($especialidades[$i])),0,1,'L');
-                    $i++;
-                    $y+=4;
-                }
-                $y+=4;
-                $this->setXY(7,$y);
-                $this->Cell(35,5,(utf8_decode("ULTRASONOGRAFIA")),0,1,'L');
-                //Obteniendo las examenes
-                //obteniendo los examenes
-                $examenes=$this->barra_lateral['examenes'];
-                $y+=4;
-                $i=0;
-                while($i<count($examenes)){
-                    $this->setXY(7, $y);
-                    $this->Cell(35,4, utf8_decode($examenes[$i]),0,1,'L');
-                    $i++;
-                    $y+=4;
-                }
-                //
-                $y+=4;
-                $this->setXY(7,$y);
-                $this->Cell(35,5,(utf8_decode("BIOPSIA PERCUTANEAS")),0,1,'L');
-                $y+=4;
-
-                $this->setXY(7, $y);
-                $this->Cell(35, 5, (utf8_decode("GUADAS POR ")), 0, 1,'L');
-                $y+=4;
-
-                $this->setXY(7, $y);
-                $this->Cell(35, 5, (utf8_decode("ULTRASONIDO")), 0, 1, 'L');
-                $y+=4;
-                //Obteniendo LOS ultrasonido
-                $ultrasonido=$this->barra_lateral['ultrasonido'];
-                
-                $i=0;
-                while($i<count($ultrasonido)){
-                    $this->setXY(7, $y);
-                    $this->Cell(35, 4, utf8_decode($ultrasonido[$i]), 0, 1, 'L');
-                    $i++;
-                    $y+=4;
-                }
-                //Aqui enpieza la parte de su proxima cita sera..
-                $this->setXY(60, 215);
-                $fecha_proxima_cita=$this->datos_adicionales['fecha_proxima_cita'];
-                $this->Cell(35, 5, (utf8_decode("Su proxima cita sera: ".$fecha_proxima_cita)), 0, 1, 'L');
-                $this->setXY(145, 215);
-                $this->Cell(35, 5, (utf8_decode("F.________________________")), 0, 1, 'L');
-                //Informacion de el hospital
-                $this->setXY(60, 230);
-                $this->Multicell(135,5, (utf8_decode($this->datos_adicionales['direccion1'])), 0, 1, 'L');
-                $this->setXY(60, 240);
-                $this->Multicell(135, 5, (utf8_decode($this->datos_adicionales['horario1'])), 0,1,'L');
-                $this->setXY(60,245);
-                $this->Multicell(135, 5, (utf8_decode($this->datos_adicionales['direccion2'])), 0, 1, 'L');
-                $this->setXY(60, 250);
-                $this->Multicell(135, 5, (utf8_decode($this->datos_adicionales['horario2'])), 0, 1, 'L');
-                $this->setXY(70, 260);
-                $this->Cell(140, 5, (utf8_decode($this->datos_adicionales['final'])), 0, 1, 'L');
-                //Dibujando el ultimo rectangulo donde esta la direccion
-                $this->RoundedRect(58, 225, 150, 30, 1, '1234', '');
-                $this->RoundedRect(58, 257, 150, 10, 1, '1234', '');
 
         }
         function Footer(){
@@ -522,9 +398,10 @@
     $pdf->setBarraLateral($barra_lateral);
     $pdf->setDatosAdicionales($datos_adicionales);
     $jdas="";
-    $pdf->SetMargins(15,15);
-    $pdf->SetTopMargin(10);
-    $pdf->SetLeftMargin(13);
+    $pdf->SetMargins(20,20);
+    
+    //$pdf->SetTopMargin(10);
+    //$pdf->SetLeftMargin(13);
     $pdf->AliasNbPages();
     $pdf->SetAutoPageBreak(true,15);
     $pdf->AddFont('Georgia','','georgia.php');
@@ -541,8 +418,9 @@
     $set_y=$pdf->getY();
     $pdf->SetFont('Courier', 'B', 12);
     $count=70;
-    $pdf->setY($pdf->getY()-203);
-    
+    //echo "".$pdf->getY();
+    $pdf->setY($pdf->getY()+67);
+    //echo "".$pdf->getX();
     //obteniendo los medicamentos de la consulta
     $query_receta=_query("SELECT m.* , r.id_medicamento,r.dosis FROM receta as r, ".EXTERNAL.".producto as m WHERE m.id_producto=r.id_medicamento AND r.id_cita='$id_cita' AND r.id_paciente='$id_paciente'");
     //echo "Holaaa";

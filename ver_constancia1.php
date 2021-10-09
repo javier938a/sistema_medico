@@ -590,20 +590,21 @@ class PDF extends FPDF{
             $this->SetLineWidth(.5);
             $this->SetFillColor(255,255,255);
 
-            $this->Image($this->infoext['logo'],$set_x,$set_y,190,45);
+            $this->Image($this->infoext['logo'],$set_x-55,$set_y+4,120,45);
             $this->SetDrawColor(0,0,0);
             $this->SetFont('Courier', 'B', 19);
             $this->SetTextColor(25, 65, 96);
-            $set_y +=10;
-            $this->setY($set_y+5);
+            $this->setY($set_y);
             //$this->Cell(160,7,utf8_decode($this->infoext['nombre_empresa']),0,1,'L');
-            $set_y +=5;
-            $this->setY($set_y+15);
+            $set_y +=7;
+            $this->setY($set_y);
             $this->SetFont('Courier', 'B', 16);
-            $this->Cell(180,7,utf8_decode("Dr. ".$this->infoext['nombre_doctor']),0,1,'R');
-            $this->setY($set_y+23);
+            $this->Cell(160,7,utf8_decode("Dr. ".$this->infoext['nombre_doctor']),0,1,'R');
+            /*$set_y+=7;
+            $this->setY($set_y);
+            $this->SetX(10);
             $this->SetFont('Courier', 'B', 18);
-            $this->Cell(140,7,"CONSTANCIA MEDICA",0,1,'R');
+            $this->Cell(135,7,"CONSTANCIA MEDICA",0,1,'R');*/
 
             $texto_poner = "El infrascrito  médico, hace constar que ".Mayu($this->infoext['nombre_paciente']);
             $texto_poner.= " de ".$this->infoext['edad']." años de edad  consulto este día esta clínica con";

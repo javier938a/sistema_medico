@@ -769,7 +769,11 @@ $pdf->SetFont('Courier', 'B', 12);
 $count = 70;
 $pdf->setY($pdf->getY()-175);
 
-$query_receta = _query("SELECT m.* , r.id_medicamento,r.dosis FROM receta as r, medicamento as m WHERE m.id_medicamento=r.id_medicamento AND r.id_cita='$id_cita' AND r.id_paciente='$id_paciente'");
+$query_receta=_query("SELECT m.* , r.id_medicamento,r.dosis FROM 
+receta as r, ".EXTERNAL.".producto as m WHERE m.id_producto=r.id_medicamento AND 
+r.id_cita='$id_cita' AND r.id_paciente='$id_paciente");
+
+//$query_receta = _query("SELECT m.* , r.id_medicamento,r.dosis FROM receta as r, medicamento as m WHERE m.id_medicamento=r.id_medicamento AND r.id_cita='$id_cita' AND r.id_paciente='$id_paciente'");
 $pdf->SetFont('Courier', 'B', 12);
 if(_num_rows($query_receta)> 0){
     $pdf->setX(55);
