@@ -89,6 +89,12 @@
             $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."&process=recuperar' data-target='#deleteModal' data-refresh='true'><i class='fa fa-undo'></i> Recuperar</a></li>";
           }
           }
+          $filename='ingresar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
+          if($link!="NOT" || $admin=='1'){
+              $table.="<li><a  data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."' 
+              data-target='#add_datos_fisicos' data-refresh='true'>
+              <i class='fa fa-user-md'></i> Agregar Datos fisicos </a></li>";
+          }
           $filename='transferir_recepcion.php';
           if ($estadoRecepcion =='REALIZADO'){
             if ($link!='NOT' || $admin=='1'){

@@ -367,6 +367,7 @@ function autosave(val) {
 
 function agregar_diagnostico(id, nombre) {
     var dataString = "process=diagnostico&id=" + id + "&id_cita=" + $("#id_cita").val();
+    //alert(dataString);
     $.ajax({
         type: 'POST',
         url: "consulta1.php",
@@ -483,6 +484,7 @@ function guardar_otros() {
     var ta = $("#ta").val();
     var p = $("#p").val();
     var peso = $("#peso").val();
+    var altura=$("#altura").val();
     var fr = $("#fr").val();
     var id = $("#id_cita").val();
     var spo2 = $("#spo2").val();
@@ -496,19 +498,48 @@ function guardar_otros() {
     var otros_cobros = $("#otros_cobros").val();
     var saturacion = $("#saturacion").val();
 
-    var dataString = "process=otr&id=" + id + "&diagnostico=" + diagnostico + "&examen=" + examen + "&medicamento=" + medicamento;
-    dataString += "&motivo=" + motivo + "&t_o=" + t_o + "&ta=" + ta + "&p=" + p + "&peso=" + peso + "&fr=" + fr + "&spo2=" + spo2 + "&hemoglucotest=" + hemoglucotest;
-    dataString += "&hallazgo_fisico=" + hallazgo_fisico + "&historia_clinica=" + historia_clinica;
-    dataString += "&antecedente_personal=" + antecedente_personal + "&antecedente_familiar=" + antecedente_familiar;
-    dataString += "&ingreso_hospitalario=" + ingreso_hospitalario + "&indicacion_medica=" + indicacion_medica;
-    dataString += "&otros_cobros=" + otros_cobros + "&saturacion=" + saturacion;
+    var frecuencia_cardiaca=$("#fc").val();
+    var dx=$("#dx").val();
+    var plan=$("#plan").val();
 
+    var hx1=$("#hx1").val();
+
+    var data={
+        'process':'otr',
+        'id':id,
+        'diagnostico':diagnostico,
+        'examen':examen,
+        'medicamento':medicamento,
+        'motivo':motivo,
+        't_o':t_o,
+        'ta':ta,
+        'p':p,
+        'peso':peso,
+        'altura':altura,
+        'fr':fr,
+        'spo2':spo2,
+        'hemoglucotest':hemoglucotest,
+        'hallazgo_fisico':hallazgo_fisico,
+        'historia_clinica':historia_clinica,
+        'antecedente_personal':antecedente_personal,
+        'antecedente_familiar':antecedente_familiar,
+        'ingreso_hospitalario':ingreso_hospitalario,
+        'indicacion_medica':indicacion_medica,
+        'otros_cobros':otros_cobros,
+        'saturacion':saturacion,
+        'fc':frecuencia_cardiaca,
+        'dx':dx,
+        'plan':plan,
+        'hx1':hx1,
+    };
+    console.log(data);
     $.ajax({
         type: 'POST',
         url: "consulta1.php",
-        data: dataString,
+        data: data,
         dataType: 'json',
         success: function(datax) {
+
             display_notify(datax.typeinfo, datax.msg);
             /*if(datax.typeinfo == "Success")
             {
@@ -678,7 +709,9 @@ function show_data(id) {
         dataType: 'json',
         success: function(datax) {
             if (datax.typeinfo == "Success") {
+                //alert(datax.table);
                 $("#dato").html(datax.table);
+                
                 $("#signo").html(datax.signo);
             } else {}
         },

@@ -108,6 +108,14 @@
 							</div><!-- /.modal-content -->
 						</div><!-- /.modal-dialog -->
 					</div>
+
+					<div class="modal fade" id='add_datos_fisicos'  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						<div class='modal-dialog modal-md'>
+							<div class='modal-content modal-md'>
+
+							</div><!-- /.modal-content -->
+						</div><!-- /.modal-dialog -->
+					</div>
 					<!-- MODAL PARA BORRAR-->
 					<!-- /.modal -->
 					<!-- MODAL PARA BORRAR-->

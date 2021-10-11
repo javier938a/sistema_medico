@@ -138,6 +138,7 @@ function show_data(id, d=0)
 	if(d==0)
 	{
 		var id_doc = $("#id_doctor").val();
+		
 	}
 	else
 	{

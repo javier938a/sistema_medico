@@ -21,6 +21,8 @@ function initial()
     $_PAGE ['links'] .= '<link href="css/plugins/datapicker/datepicker3.css" rel="stylesheet">';
     $_PAGE ['links'] .= '<link href="css/animate.css" rel="stylesheet">';
     $_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
+    $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
+    
 
     include_once "header.php";
     include_once "main_menu.php"; 
@@ -78,7 +80,7 @@ function initial()
             <div class="ibox-content">
                 <form name="formulario_paciente" id="formulario_paciente" autocomplete='off'>
                     <div class="row">
-                        <div class="form-group has-info col-md-6">
+                        <div class="form-group has-info col-md-6 solo_mayu">
                             <label>Nombres <span style="color:red;">*</span></label>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $nombre; ?>">
                         </div>

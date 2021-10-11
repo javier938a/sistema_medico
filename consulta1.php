@@ -42,7 +42,10 @@ function initial(){
 
     $id = $_REQUEST["id"];
 	$acc = $_REQUEST["acc"];
-    $query = _query("SELECT fecha_cita, hora_cita, id_paciente, motivo_consulta, diagnostico, examen, medicamento, t_o, ta, p, peso, fr, spo2, hemoglucotest, antecedente_personal, antecedente_familiar, ingreso_hospitalario, indicacion_medica, otros_cobros, hallazgo_fisico, historia_clinica, saturacion FROM reserva_cita WHERE id ='$id'");
+    $query = _query("SELECT fecha_cita, hora_cita, id_paciente, motivo_consulta, diagnostico, 
+    examen, medicamento, t_o, ta, p, peso, fr, spo2, hemoglucotest, antecedente_personal,
+     antecedente_familiar, ingreso_hospitalario, indicacion_medica, otros_cobros, hallazgo_fisico, 
+     historia_clinica, saturacion, fc, dx, plan, hx, altura FROM reserva_cita WHERE id ='$id'");
     $datos = _fetch_array($query);
     $fecha_cita = nombre_dia($datos['fecha_cita']);
     $hora_cita = hora($datos['hora_cita']);
@@ -67,6 +70,13 @@ function initial(){
     $indicacion_medica = $datos['indicacion_medica'];
     $otros_cobros = $datos['otros_cobros'];
     $id_paciente_info = $datos['id_paciente'];
+    $fc=$datos['fc'];
+    $dx=$datos['dx'];
+    $plan=$datos['plan'];
+    $hx1=$datos['hx'];
+
+    $altura=$datos['altura'];
+
     $query_constancias = _query("SELECT * FROM constancia WHERE id_cita = '$id'");
     $numero_constancias = _num_rows($query_constancias);
     //echo "SELECT id, id_doctor FROM reserva_cita WHERE id_paciente='$id_paciente' AND id<'$id' AND estado='7' ORDER BY id DESC LIMIT 1";
@@ -75,7 +85,9 @@ function initial(){
     if($n_exis_a > 0)
     {
         $id_cita_ant = _fetch_array($query_exis)["id"];
-        $query_ant = _query("SELECT r.*,  CONCAT(d.nombres,' ',d.apellidos) as doctor FROM reserva_cita as r, doctor as d WHERE d.id_doctor=r.id_doctor AND r.id ='$id_cita_ant'");
+        $query_ant = _query("SELECT r.*,  CONCAT(d.nombres,' ',d.apellidos) as doctor 
+                            FROM reserva_cita as r, doctor as d 
+                            WHERE d.id_doctor=r.id_doctor AND r.id ='$id_cita_ant'");
         $datos_ant = _fetch_array($query_ant);
         $motivo_ant = $datos_ant["motivo_consulta"];
         $diagnostico_ant = $datos["diagnostico"];
@@ -88,6 +100,11 @@ function initial(){
         $p_ant = $datos_ant["p"];
         $peso_ant = $datos_ant["peso"];
         $fr_ant = $datos_ant["fr"];
+        $fc_ant=$datos_ant["fc"];
+        $dx_ant=$datos_ant["dx"];
+        $plan_ant=$datos_ant["plan"];
+        $hx_ant=$datos_ant["hx"];
+        $altura_ant=$datos['altura'];
 
         $spo2_ant = $datos_ant["spo2"];
         $hemoglucotest_ant = $datos_ant["hemoglucotest"];
@@ -107,7 +124,7 @@ function initial(){
         $query_examen_ant = _query("SELECT e.descripcion, ep.id_examen_paciente as id_examen, e.url, e.ver, ep.fecha_asignacion, ep.fecha_lectura FROM examen_paciente as ep, examen as e WHERE e.id_examen=ep.id_examen AND ep.id_cita='$id_cita_ant' AND ep.id_paciente='$id_paciente'");
         $num_examen_ant = _num_rows($query_examen_ant);
 
-        $query_receta_ant = _query("SELECT m.* , r.id_medicamento,r.dosis FROM receta as r, medicamento as m WHERE m.id_medicamento=r.id_medicamento AND r.id_cita='$id_cita_ant' AND r.id_paciente='$id_paciente'");
+        $query_receta_ant = _query("SELECT m.* , r.id_medicamento,r.dosis FROM receta as r, ".EXTERNAL.".producto as m WHERE m.id_producto=r.id_medicamento AND r.id_cita='$id_cita_ant' AND r.id_paciente='$id_paciente'");
         $num_receta_ant = _num_rows($query_receta_ant);
 
         $query_img_ant = _query("SELECT * FROM img_paciente WHERE id_cita='$id_cita_ant' AND id_paciente='$id_paciente' AND url LIKE '%.jpg'
@@ -176,7 +193,7 @@ function initial(){
 
     $query_examen = _query("SELECT e.descripcion, ep.id_examen FROM examen_paciente as ep, examen as e WHERE e.id_examen=ep.id_examen AND ep.id_cita='$id' AND ep.id_paciente='$id_paciente'");
 
-    $query_receta = _query("SELECT m.* ,  r.id_medicamento FROM receta as r, medicamento as m WHERE m.id_medicamento=r.id_medicamento AND r.id_cita='$id' AND r.id_paciente='$id_paciente'");
+    $query_receta = _query("SELECT m.* , r.id_medicamento FROM receta as r, ".EXTERNAL.".producto as m WHERE m.id_producto=r.id_medicamento AND r.id_cita='$id' AND r.id_paciente='$id_paciente'");
 
     $query_servicios_profesionales = _query("SELECT * FROM servicios_profesionales WHERE id_cita = '$id' AND id_paciente = '$id_paciente'");
 
@@ -301,17 +318,20 @@ function initial(){
                                                     <?php
                                                     if($n_exis_a > 0){
                                                     ?>
-                                                    <?php if($motivo != ""){ ?>
+                                                    <?php if($motivo_ant != ""){ ?>
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <h4 class='text-success'>Asunto/ Motivo/
-                                                                        Observaciones</h4>
+                                                                    <h4 class='text-success'>Motivo de consulta</h4>
                                                                 </div>
                                                                 <div class="panel-body">
                                                                     <div class="widget-content">
                                                                         <?php echo $motivo_ant; ?>
+                                                                    </div>
+                                                                    <div class="widget-content">
+                                                                        <label>Hx</label>
+                                                                        <?php echo $hx_ant; ?>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -373,7 +393,7 @@ function initial(){
                                                     </div>
                                                     <?php
                                                     }
-                                                    if($t_o_ant!="" || $peso_ant!="" || $ta_ant!="" || $p_ant !="" || $fr_ant !=""){ ?>
+                                                    if($t_o_ant!="" || $peso_ant!="" || $ta_ant!="" || $p_ant !="" || $fr_ant !="" || $fc_ant!="" || $dx_ant!="" || $plan_ant !=""){ ?>
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="panel panel-default">
@@ -391,19 +411,25 @@ function initial(){
                                                                                 <td><b>FR: </b></td>
                                                                                 <td><b>SpO2: </b></td>
                                                                                 <td><b>Hemoglucotest: </b></td>
+                                                                                <td><b>Altura</b></td>
                                                                                 <td><b>Saturacion: </b></td>
+                                                                                <td><b>FC:</b></td>
+                                                                                <td><b>Dx:</b></td>
+                                                                                <td><b>Plan:</b></td>
                                                                             </tr>
                                                                             <tr>
-
                                                                                 <td><?php echo $t_o_ant;?></td>
                                                                                 <td><?php echo $peso_ant;?></td>
                                                                                 <td><?php echo $ta_ant;?></td>
                                                                                 <td><?php echo $p_ant;?></td>
                                                                                 <td><?php echo $fr_ant;?></td>
                                                                                 <td><?php echo $spo2_ant;?></td>
-                                                                                <td><?php echo $hemoglucotest_ant;?>
-                                                                                </td>
+                                                                                <td><?php echo $hemoglucotest_ant;?></td>
+                                                                                <td><?php echo $altura_ant; ?></td>
                                                                                 <td><?php echo $saturacion_ant;?></td>
+                                                                                <td><?php echo $fc_ant; ?></td>
+                                                                                <td><?php echo $dx_ant; ?></td>
+                                                                                <td><?php echo $plan_ant; ?></td>
                                                                             </tr>
                                                                         </table>
                                                                     </div>
@@ -816,9 +842,19 @@ function initial(){
                                                                     class="form-control" value="<?php echo $t_o;?>">
                                                             </div>
                                                             <div class="form-group col-lg-6">
+                                                                <label>FC</label>
+                                                                <input type="text" name="fc" id="fc"
+                                                                    class="form-control" value="<?php echo $fc; ?>">
+                                                            </div>
+                                                            <div class="form-group col-lg-6">
                                                                 <label>Peso</label>
                                                                 <input type="text" name="peso" id="peso"
                                                                     class="form-control" value="<?php echo $peso;?>">
+                                                            </div>
+                                                            <div class="form-group col-lg-6">
+                                                                <label>Altura</label>
+                                                                <input type="text" name="altura" id="altura"
+                                                                    class="form-control" value="<?php echo $altura;?>">
                                                             </div>
                                                             <div class="form-group col-lg-6">
                                                                 <label>FR</label>
@@ -840,7 +876,19 @@ function initial(){
                                                                 <label>Saturacion</label>
                                                                 <input type="text" name="saturacion" id="saturacion"
                                                                     class="form-control"
-                                                                    value="<?php echo $saturacion;?>">
+                                                                    value="<?php echo $saturacion; ?>">
+                                                            </div>
+                                                            <div class="form-group col-lg-12">
+                                                                <label>Examen Dx</label>
+                                                                <textarea rows="4" class="from-control col-lg-12"
+                                                                    name="dx"
+                                                                    id="dx"><?php echo $dx; ?></textarea>
+                                                            </div>
+                                                            <div class="form-group col-lg-12">
+                                                            <label>Plan</label>
+                                                                <textarea rows="4" class="from-control col-lg-12"
+                                                                    name="plan"
+                                                                    id="plan"><?php echo $plan ?></textarea> 
                                                             </div>
                                                             <div class="col-lg-6"></div>
                                                             <a class="btn btn-primary pull-right otr_guardar"
@@ -906,15 +954,25 @@ function initial(){
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">
                                                     <h4 class='text-success'><a data-toggle="collapse" href="#collapse3"
-                                                            class="change" act="down">Asunto/ Motivo/ Observaciones<i
+                                                            class="change" act="down">Asunto/ Motivo/ Observaciones/Hx<i
                                                                 class="fa fa-angle-double-down pull-right"></i></a></h4>
                                                 </div>
                                                 <div id="collapse3" class="collapse panel-collapse in">
                                                     <div class="panel-body">
                                                         <div class="widget-content">
-                                                            <textarea rows="4" class="from-control col-lg-12"
-                                                                name="otr_motivo"
-                                                                id="otr_motivo"><?php echo $motivo; ?></textarea>
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <label>Motivo</label>
+                                                                    <input type="text" name="otr_motivo" id="otr_motivo" class="form-control col-lg-12" value="<?php echo $motivo ?>">
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <label for="">Hx.</label>
+                                                                    <textarea rows="4" class="from-control col-lg-12"
+                                                                    name="hx"
+                                                                    id="hx1"><?php echo $hx1; ?></textarea>
+                                                                </div>
+                                                            </div>
+
                                                             <a class="btn btn-primary pull-right otr_guardar"
                                                                 style="margin-top: 10px;">Guardar</a>
                                                         </div>
@@ -1879,6 +1937,8 @@ function finalizar()
 }
 function otr()
 {
+    $xdata=array();
+
     $diagnostico = trim($_POST["diagnostico"]);
     $examen = trim($_POST["examen"]);
     $medicamento = trim($_POST["medicamento"]);
@@ -1887,6 +1947,7 @@ function otr()
     $to = $_POST["t_o"];
     $p = $_POST["p"];
     $peso = $_POST["peso"];
+    $altura=$_POST["altura"];
     $fr =$_POST["fr"];
     $id = $_POST["id"];
     $spo2 = $_POST['spo2'];
@@ -1899,6 +1960,10 @@ function otr()
     $indicacion_medica = $_POST['indicacion_medica'];
     $otros_cobros = $_POST['otros_cobros'];
     $saturacion = $_POST['saturacion'];
+    $frecuencia_cardiaca=$_POST['fc'];
+    $dx=$_POST['dx'];
+    $plan=$_POST['plan'];
+    $hx1=$_POST['hx1'];
 
     $table = "reserva_cita";
     $form_data = array(
@@ -1910,6 +1975,7 @@ function otr()
         't_o' => $to,
         'p' => $p,
         'peso' => $peso,
+        'altura'=>$altura,
         'fr' => $fr,
         'spo2' => $spo2,
         'hemoglucotest' => $hemoglucotest,
@@ -1920,7 +1986,11 @@ function otr()
         'ingreso_hospitalario' => $ingreso_hospitalario,
         'indicacion_medica' => $indicacion_medica,
         'otros_cobros' => $otros_cobros,
-        'saturacion' => $saturacion
+        'saturacion' => $saturacion,
+        'fc'=>$frecuencia_cardiaca,
+        'dx'=>$dx,
+        'plan'=>$plan,
+        'hx'=>$hx1
     );
     $where_clause = "id = '".$id."'";
     $update = _update($table,$form_data,$where_clause);
@@ -1928,6 +1998,7 @@ function otr()
     {
         $xdata["typeinfo"]="Success";
         $xdata["msg"]="Informacion guardada correctamente";
+        //$xdatos['datos']=$update;
     }
     else
     {
@@ -1966,6 +2037,8 @@ function buscar_dat($idc)
         $padecimientos = $row["padecimientos"];
         $medicamentos = $row["medicamento_permanente"];
         $alergias = $row["alergias"];
+        $dui=$row['dui'];
+
         $dato ='<table class="table  table-checkable datatable">';
         $dato.='
         <tr>
@@ -1985,6 +2058,10 @@ function buscar_dat($idc)
             <td>'.$direccion.'</td>
             <td>Teléfono:</td>
             <td>'.$telefono1.'</td>
+        </tr>
+        <tr>
+            <td style="width: 37%;">DUI:</td>
+            <td style="width: 12%;">'.$dui.'</td>
         </tr>
         <tr>
             <td colspan="2"></td>

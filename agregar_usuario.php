@@ -20,6 +20,7 @@ function initial() {
 	$_PAGE ['links'] .= '<link href="css/plugins/dataTables/dataTables.tableTools.min.css" rel="stylesheet">';
 	$_PAGE ['links'] .= '<link href="css/animate.css" rel="stylesheet">';
     $_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
+    $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
 
 	include_once "header.php";
 	include_once "main_menu.php";	
@@ -51,17 +52,17 @@ function initial() {
                                 <div class="row">   
                                     <div class="form-group col-lg-6">
                                         <label>Nombre</label> 
-                                        <input type="text" placeholder="Ingresa nombre" class="form-control" id="nombre" name="nombre">
+                                        <input type="text" placeholder="Ingresa nombre" class="form-control solo_mayu" id="nombre" name="nombre">
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <label>Usuario</label> 
-                                        <input type="text" placeholder="Ingrese usuario" class="form-control" id="usuario" name="usuario">
+                                        <input type="text" placeholder="Ingrese usuario" class="form-control solo_mayu" id="usuario" name="usuario">
                                     </div>
                                 </div>
                                 <div class="row"> 
                                     <div class="form-group col-lg-6">
                                         <label>Clave</label> 
-                                        <input type="password" placeholder="Ingrese la contraseña " class="form-control" id="clave" name="clave">
+                                        <input type="password" placeholder="Ingrese la contraseña " class="form-control solo_mayu" id="clave" name="clave">
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <label>Tipo</label> 

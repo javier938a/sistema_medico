@@ -41,6 +41,7 @@ function initial(){
             //permiso del script
             if ($links!='NOT' || $admin=='1' ){
             ?>
+                
                 <div class="ibox-title">
                     <h3 style="color:#194160;"><i class="fa fa-check"></i> <b><?php echo $title;?></b></h3>
                 </div>
@@ -127,6 +128,8 @@ function buscar_dat($id_c)
     $sql="SELECT p.*, d.nombre_departamento, m.nombre_municipio FROM paciente AS p, departamento AS d, municipio AS m WHERE p.municipio = m.id_municipio AND m.id_departamento_municipio = d.id_departamento  AND p.id_paciente='$id'";
     $result = _query($sql);
     $numm = _num_rows($result);
+    $dato='';
+    $xdatt=array();
     if($numm>0)
     {
         $row = _fetch_array($result);

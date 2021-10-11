@@ -1,3 +1,4 @@
+
 function buscar() {
     var ini = $("#desde").val();
     var fin = $("#hasta").val();

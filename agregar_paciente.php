@@ -22,6 +22,7 @@ function initial()
     $_PAGE ['links'] .= '<link href="css/plugins/tour/bootstrap-tour.css" rel="stylesheet">';
     $_PAGE ['links'] .= '<link href="css/animate.css" rel="stylesheet">';
     $_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
+    $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
 
     include_once "header.php";
     include_once "main_menu.php";	
@@ -49,11 +50,11 @@ function initial()
                     <div class="row">
                         <div class="form-group has-info col-md-6" id="div_nombre">
                             <label>Nombres <span style="color:red;">*</span></label>
-                            <input type="text" placeholder="Nombres " class="form-control" id="nombre" name="nombre">
+                            <input type="text" placeholder="Nombres " class="form-control solo_mayu" id="nombre" name="nombre">
                         </div>
                         <div class="form-group has-info col-md-6">
                               <label>Apellidos <span style="color:red;">*</span></label>
-                              <input type="text" placeholder="Apellidos" class="form-control" id="apellido" name="apellido">
+                              <input type="text" placeholder="Apellidos" class="form-control solo_mayu" id="apellido" name="apellido">
                         </div>
                     </div>
                     <div class="row">                
@@ -84,7 +85,7 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Estado Civil</label>
-                                <input type="text"  placeholder="Soltero, Casado, Viudo" class="form-control" id="estado_civil" name="estado_civil">
+                                <input type="text"  placeholder="Soltero, Casado, Viudo" class="form-control solo_mayu" id="estado_civil" name="estado_civil">
                             </div>
                         </div>
                     </div>
@@ -92,13 +93,13 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Religión</label>
-                                <input type="text"  placeholder="Religión" class="form-control" id="religion" name="religion">
+                                <input type="text"  placeholder="Religión" class="form-control solo_mayu" id="religion" name="religion">
                             </div>
                         </div>    
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Escolaridad</label>
-                                <input type="text"  placeholder="Nivel o Grado de Escolaridad" class="form-control" id="escolaridad" name="escolaridad">
+                                <input type="text"  placeholder="Nivel o Grado de Escolaridad" class="form-control solo_mayu" id="escolaridad" name="escolaridad">
                             </div>
                         </div>
                     </div>
@@ -106,13 +107,13 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Nombre del Conyuge</label>
-                                <input type="text"  placeholder="Conyuge" class="form-control" id="conyuge" name="conyuge">
+                                <input type="text"  placeholder="Conyuge" class="form-control solo_mayu" id="conyuge" name="conyuge">
                             </div>
                         </div>    
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Grupo Sanguíneo</label>
-                                <input type="text"  placeholder="Grupo sanguíneo" class="form-control" id="grupo_sanguineo" name="grupo_sanguineo">
+                                <input type="text"  placeholder="Grupo sanguíneo" class="form-control solo_mayu" id="grupo_sanguineo" name="grupo_sanguineo">
                             </div>
                         </div>
                     </div>
@@ -160,13 +161,13 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Dirección <span style="color:red;">*</span></label> 
-                                <input type="text" placeholder="Dirección" class="form-control" id="direccion" name="direccion">
+                                <input type="text" placeholder="Dirección" class="form-control solo_mayu" id="direccion" name="direccion">
                             </div>        
                         </div>
                         <div class="col-md-6" hidden>                                
                             <div class="form-group has-info">
                                 <label>Email</label>
-                                <input type="text" placeholder="ejemplo@correo.com" class="form-control" id="email" name="email">
+                                <input type="text" placeholder="ejemplo@correo.com" class="form-control solo_mayu" id="email" name="email">
                             </div>       
                         </div>
                     </div>
@@ -174,7 +175,7 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Responsable</label>
-                                <input type="text" class="col-md-12 form-control" id="responsable" name="responsable">
+                                <input type="text" class="col-md-12 form-control solo_mayu" id="responsable" name="responsable">
                             </div>
                         </div>    
                         <div class="col-md-6">
@@ -198,13 +199,13 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Alergias</label>
-                                <textarea class="form-control col-md-12" rows="1" name='alergias' id='alergias'></textarea>
+                                <textarea class="form-control col-md-12 solo_mayu" rows="1" name='alergias' id='alergias'></textarea>
                             </div> 
                         </div>
                         <div class="col-md-6">
                             <div class="form-group has-info">
                                 <label>Padecimientos</label>
-                                <textarea class="form-control col-md-12" rows="1" name='padecimientos' id='padecimientos'></textarea>
+                                <textarea class="form-control col-md-12 solo_mayu" rows="1" name='padecimientos' id='padecimientos'></textarea>
                             </div> 
                         </div>
                     </div>
@@ -212,7 +213,7 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info"><br>
                                 <label>Medicamentos Permánentes</label>
-                                <textarea class="form-control col-md-12" rows="1" name='medicamentos' id='medicamentos'></textarea>
+                                <textarea class="form-control col-md-12 solo_mayu" rows="1" name='medicamentos' id='medicamentos'></textarea>
                             </div> 
                         </div>
                         <div class="col-md-6">
@@ -229,7 +230,7 @@ function initial()
                         <div class="col-md-6">
                             <div class="form-group has-info"><br>
                                 <label>Referido por</label>
-                                <input type="text" class="form-control" name='referido' id='referido'>
+                                <input type="text" class="form-control solo_mayu" name='referido' id='referido'>
                             </div> 
                         </div>
                     </div>
