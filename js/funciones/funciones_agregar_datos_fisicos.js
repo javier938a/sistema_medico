@@ -1,6 +1,8 @@
 $(document).ready(function(){
 
     $(".select").select2();
+    $(".timepicker").timepicker();
+
 
     $("#formulario_datos_fisicos").submit(function(evt){
         evt.preventDefault();
@@ -82,27 +84,28 @@ $(document).ready(function(){
         //creando cita para hoy y transfiriendo el paciente a consulta
         var txt_estatura=$("#txt_estatura").val();
         var txt_peso=$("#txt_peso").val();
-        var txt_motivo=$("#txt_peso").val();
-        var txt_peso=$("#txt_peso").val();
         var txt_motivo=$("#txt_motivo").val();
         var txt_hx=$("#txt_hx").val();
         var txt_antecedentes=$("#txt_antecedentes").val();
         var txt_antecedentes_fam=$("#txt_antecedentes_fam").val();
-        var txt_tx=$("#txt_ta").val();
+        var txt_ta=$("#txt_ta").val();
         var txt_fc=$("#txt_fc").val();
         var txt_fr=$("#txt_fr").val();
         var txt_temp=$("#txt_temp").val();
         var txt_dx=$("#txt_dx").val();
         var txt_plan=$("#txt_plan").val();
+        var txt_hora_cita=$("#hora_cita").val();
 
         var id_paciente=$("#id_paciente").val();
         var id_usuario=$("#id_usuario").val();
         var id_doctor=$("#id_medico").val();
+        var id_consultorio=$("#id_consultorio").val();
+        var id_recepcion=$("#id_recepcion").val();
 
         //alert(id_doctor);
 
         var process='trans_consulta';
-        
+        //alert(txt_dx);
         var datos ={
             'process':process,
             'estatura':txt_estatura,
@@ -111,7 +114,7 @@ $(document).ready(function(){
             'hx':txt_hx,
             'antecedente':txt_antecedentes,
             'antecedente_fam':txt_antecedentes_fam,
-            'tx':txt_tx,
+            'ta':txt_ta,
             'fc':txt_fc,
             'fr':txt_fr,
             'temp':txt_temp,
@@ -119,7 +122,10 @@ $(document).ready(function(){
             'plan':txt_plan,
             'id_paciente':id_paciente,
             'id_usuario':id_usuario,
-            'id_doctor':id_doctor
+            'id_doctor':id_doctor,
+            'id_consultorio':id_consultorio,
+            'id_recepcion':id_recepcion,
+            'hora_cita':txt_hora_cita
         };
         var dire='registrar_datos_fisicos.php';
         console.log(datos);
@@ -129,10 +135,22 @@ $(document).ready(function(){
             data:datos,
             dataType:'json',
             success:function(e){
-                
+                var typeinfo=e.typeinfo;
+                var msg=e.msg;
+                alert(e.form_cita);
+                if(typeinfo=='Success'){
+                    display_notify(typeinfo,msg);
+                    setTimeout(()=>{
+                        recargar();
+                    }, 1500);
+                }
             }
         });
 
+    }
+
+    function recargar(){
+        location.href='admin_recepcion.php';
     }
 
 

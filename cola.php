@@ -669,6 +669,7 @@ function editar1()
         $xdatos['typeinfo']='Error';
         $xdatos['msg']='Esta fecha es anterior a la fecha actual';
     }
+    
     echo json_encode($xdatos);
 }
 function update()
@@ -776,20 +777,58 @@ function lista($tipo = "")
         _rollback();
     }
     if($id_doctor == 0){
-        $sql1="SELECT cd.id_cola, c.hora_cita, c.estado, CONCAT(p.nombres,' ',p.apellidos) as paciente, CONCAT(d.nombres,' ',d.apellidos) as doctor, es.descripcion as consultorio FROM doctor as d, reserva_cita as c, paciente as p, espacio as es, cola_dia as cd WHERE c.id=cd.id_cita AND p.id_paciente=c.id_paciente AND d.id_doctor=c.id_doctor AND es.id_espacio=c.id_espacio AND cd.prioridad=0 AND cd.fecha='$now' AND c.fecha_cita='$now' ORDER BY c.hora_cita ASC";
+        $sql1="SELECT cd.id_cola, c.hora_cita, c.estado, 
+        CONCAT(p.nombres,' ',p.apellidos) as paciente, 
+        CONCAT(d.nombres,' ',d.apellidos) as doctor, 
+        es.descripcion as consultorio FROM doctor as d, 
+        reserva_cita as c, paciente as p, espacio as es,
+         cola_dia as cd WHERE c.id=cd.id_cita AND 
+         p.id_paciente=c.id_paciente AND 
+         d.id_doctor=c.id_doctor AND 
+         es.id_espacio=c.id_espacio AND 
+         cd.prioridad=0 AND cd.fecha='$now' AND 
+         c.fecha_cita='$now' ORDER BY c.hora_cita ASC";
+
         $query1 = _query($sql1);
         $num1 = _num_rows($query1);
     
-        $sql2="SELECT cd.id_cola, c.hora_cita, c.estado, CONCAT(p.nombres,' ',p.apellidos) as paciente, CONCAT(d.nombres,' ',d.apellidos) as doctor, es.descripcion as consultorio FROM doctor as d, reserva_cita as c, paciente as p, espacio as es, cola_dia as cd WHERE c.id=cd.id_cita AND p.id_paciente=c.id_paciente AND d.id_doctor=c.id_doctor AND es.id_espacio=c.id_espacio AND cd.prioridad>0 AND cd.fecha='$now' AND c.fecha_cita='$now' ORDER BY cd.prioridad ASC";
+        $sql2="SELECT cd.id_cola, c.hora_cita, c.estado, 
+        CONCAT(p.nombres,' ',p.apellidos) as paciente,
+         CONCAT(d.nombres,' ',d.apellidos) as doctor, 
+         es.descripcion as consultorio 
+         FROM doctor as d, reserva_cita as c, paciente as p, 
+         espacio as es, cola_dia as cd WHERE c.id=cd.id_cita AND 
+         p.id_paciente=c.id_paciente AND d.id_doctor=c.id_doctor AND
+         es.id_espacio=c.id_espacio AND cd.prioridad>0 AND cd.fecha='$now' AND 
+         c.fecha_cita='$now' ORDER BY cd.prioridad ASC";
+
         $query2 = _query($sql2);
         $num2 = _num_rows($query2);
     }
     else{
-        $sql1="SELECT cd.id_cola, c.hora_cita, c.estado, CONCAT(p.nombres,' ',p.apellidos) as paciente, CONCAT(d.nombres,' ',d.apellidos) as doctor, es.descripcion as consultorio FROM doctor as d, reserva_cita as c, paciente as p, espacio as es, cola_dia as cd WHERE c.id=cd.id_cita AND p.id_paciente=c.id_paciente AND d.id_doctor=c.id_doctor AND es.id_espacio=c.id_espacio AND cd.prioridad=0 AND cd.fecha='$now' AND c.fecha_cita='$now' AND c.id_doctor='$id_doctor' ORDER BY c.hora_cita ASC";
+        $sql1="SELECT cd.id_cola, c.hora_cita, c.estado, 
+        CONCAT(p.nombres,' ',p.apellidos) as paciente, 
+        CONCAT(d.nombres,' ',d.apellidos) as doctor, 
+        es.descripcion as consultorio FROM 
+        doctor as d, reserva_cita as c, paciente as p, espacio as es, cola_dia as cd
+        WHERE c.id=cd.id_cita AND 
+        p.id_paciente=c.id_paciente AND 
+        d.id_doctor=c.id_doctor AND 
+        es.id_espacio=c.id_espacio AND 
+        cd.prioridad=0 AND cd.fecha='$now' AND 
+        c.fecha_cita='$now' AND c.id_doctor='$id_doctor' ORDER BY c.hora_cita ASC";
         $query1 = _query($sql1);
         $num1 = _num_rows($query1);
     
-        $sql2="SELECT cd.id_cola, c.hora_cita, c.estado, CONCAT(p.nombres,' ',p.apellidos) as paciente, CONCAT(d.nombres,' ',d.apellidos) as doctor, es.descripcion as consultorio FROM doctor as d, reserva_cita as c, paciente as p, espacio as es, cola_dia as cd WHERE c.id=cd.id_cita AND p.id_paciente=c.id_paciente AND d.id_doctor=c.id_doctor AND es.id_espacio=c.id_espacio AND cd.prioridad>0 AND cd.fecha='$now' AND c.fecha_cita='$now' AND c.id_doctor='$id_doctor' ORDER BY cd.prioridad ASC";
+        $sql2="SELECT cd.id_cola, c.hora_cita, c.estado, 
+        CONCAT(p.nombres,' ',p.apellidos) as paciente, 
+        CONCAT(d.nombres,' ',d.apellidos) as doctor, 
+        es.descripcion as consultorio FROM doctor as d, 
+        reserva_cita as c, paciente as p, espacio as es, cola_dia as cd 
+        WHERE c.id=cd.id_cita AND p.id_paciente=c.id_paciente AND 
+        d.id_doctor=c.id_doctor AND es.id_espacio=c.id_espacio AND 
+        cd.prioridad>0 AND cd.fecha='$now' AND c.fecha_cita='$now' AND 
+        c.id_doctor='$id_doctor' ORDER BY cd.prioridad ASC";
         $query2 = _query($sql2);
         $num2 = _num_rows($query2);
     }
