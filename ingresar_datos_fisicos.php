@@ -4,7 +4,6 @@ include("_core.php");
 function initial(){
     
     
-    $id_usuario=$_SESSION["id_usuario"];
     $admin=$_SESSION["admin"];
     $uri=$_SERVER['SCRIPT_NAME'];
     $filename=get_name_script($uri);
