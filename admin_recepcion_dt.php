@@ -75,12 +75,12 @@
               $var1++;
             }
           }
-          $filename='anular_recepcion.php';
+          $filename="venta.php";
           $link=permission_usr($id_user,$filename);
           if ($estadoRecepcion!='ANULADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='FINALIZADO'){
               if ($link!='NOT' || $admin=='1'){
               //	echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
-              $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
+              $table.= "<li><a ' href='$filename?id=".$idRecepcion."'><i class='fa fa-eraser'></i>Agregar insumos</a></li>";
             }
           }
           if ($estadoRecepcion=='ANULADO'){
@@ -91,14 +91,14 @@
           }
           $filename='registrar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
           if($link!="NOT" || $admin=='1'){
-              $table.="<li><a  href='$filename?idRecepcion=".$idRecepcion."'>
+              $table.="<li><a  href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."'>
               <i class='fa fa-user-md'></i> Agregar Datos fisicos </a></li>";
           }
           $filename='transferir_recepcion.php';
           if ($estadoRecepcion =='REALIZADO'){
             if ($link!='NOT' || $admin=='1'){
               // echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
-              $table.= "<li><a  data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."' data-target='#transferenciaModal' data-refresh='true'><i class='fa fa-upload'></i> Transferir </a></li>";            }
+              $table.= "<li><a  data-toggle='modal' href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."' data-target='#transferenciaModal' data-refresh='true'><i class='fa fa-upload'></i> Transferir </a></li>";            }
           }
           $filename='transferir_recepcion.php';
           $link=permission_usr($id_user,$filename);

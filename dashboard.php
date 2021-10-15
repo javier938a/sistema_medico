@@ -224,7 +224,7 @@ else { ?>
                                 <i class='fa fa-info-circle fa-3x'></i>
                             </div>
                             <div class='ibox-content'>
-                                 <h3 class='no-margins'>$nombre_modulo</h3>
+                                 <h3 class='no-margins'>".utf8_decode($nombre_modulo)."</h3>
                             </div>
                         </div>
                     </a>

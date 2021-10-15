@@ -848,6 +848,8 @@ document.addEventListener('keydown', event => {
 					total=0;
 					var fecha_movimiento = $("#fecha").val();
 					var id_prod = 0;
+
+					var id_recepcion = $("#id_recepcion").val();
 					
 					var verificaempleado = 'noverificar';
 					var verifica = [];
@@ -915,6 +917,7 @@ document.addEventListener('keydown', event => {
 					dataString += '&tipo_impresion=' + tipo_impresion;
 					dataString += '&id_factura=' + id_factura;
 					dataString += '&id_sucursal=' + id_sucursal;
+					dataString += '&id_recepcion=' + id_recepcion;
 					if (id_cliente == "") {
 						msg = 'Seleccione un Cliente!';
 						sel_vendedor = 0;
@@ -939,6 +942,7 @@ document.addEventListener('keydown', event => {
 							dataType: 'json',
 							success: function(datax) {
 								if (datax.typeinfo == "Success") {
+									//alert(datax.infoRece);
 									swal({
 											html:true,
 											title: "<b>Referencia <i># "+datax.referencia+"</i><br>$ "+datax.tot+"</b>",
@@ -992,5 +996,5 @@ document.addEventListener('keydown', event => {
 
 
 	function reload1(){
-		location.href = 'dashboard.php';
+		location.href = 'admin_recepcion.php';
 	}

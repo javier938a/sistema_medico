@@ -18,7 +18,7 @@ $sql_details = array(
     'host' => $servidor
 );
 $joinQuery=" FROM reserva_cita as r, doctor as d, espacio as e, estado_cita as es, paciente as p";
-$extraWhere="  d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND es.id_estado=r.estado AND r.estado=7 AND r.fecha_cita BETWEEN '$ini' AND '$fin' AND p.id_paciente = r.id_paciente";
+$extraWhere="  d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND es.id_estado=r.estado AND r.estado=8 AND r.fecha_cita BETWEEN '$ini' AND '$fin' AND p.id_paciente = r.id_paciente";
 if($id_doctor != 0){
 	$extraWhere.= " AND d.id_doctor = '$id_doctor'";
 }
@@ -30,7 +30,15 @@ $columns = array(
     array( 'db' => "CONCAT(p.nombres,' ',p.apellidos)",   'dt' => 3, 'field' => 'paciente', 'as' => 'paciente'),
     array( 'db' => "CONCAT(d.nombres,' ',d.apellidos)",   'dt' => 4, 'field' => 'medico', 'as' => 'medico'),
 	array( 'db' => "e.descripcion", 'dt' => 5, 'field' => "descripcion"),
-    array( 'db' => 'r.id','dt' => 6,'formatter' => function($id){
+    //array( 'db' => "es.descripcion", 'dt' => 6, 'field' => "descripcion",),
+    array('db'=>"r.estado", 'dt'=>6, 'formatter'=>function($estado){
+        $sql="SELECT * FROM estado_cita WHERE id_estado=$estado";
+        $query=_query($sql);
+        $row=_fetch_array($query);
+        $var="<label class='badge' style='background:".$row['color']."; color:#FFF; font-weight:bold;'>".$row['descripcion']."</label>";
+        return $var;
+    }, 'field'=>"estado"),
+    array( 'db' => 'r.id','dt' => 7,'formatter' => function($id){
         return  dropdown($id);
     }, 'field' => 'id')
 );

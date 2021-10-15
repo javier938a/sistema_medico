@@ -1,5 +1,23 @@
 var tiempo = 0;+
 $(document).ready(function(){
+
+	$("#add_datos_fisicos").click(function(evt){
+		evt.preventDefault();
+		var id_cola=$("#id_cola").val();
+		$.ajax({
+			type:'POST',
+			url:'cola.php',
+			dataType:'json',
+			data:{
+				'process':'datos_previos',
+				'id_cola':id_cola,
+			},
+			success:function(data){
+				var id_cita=data.id_cita;
+				window.location.href="registrar_datos_fisicos.php?&lugar=cita&id_cita="+id_cita+"";
+			}
+		});
+	})
 	$(".select").select2();
 	show_list();
 	var date = $("#fechaoo").val();
@@ -326,12 +344,17 @@ function show_list()
 $(function(){
 
     $('body').on('click', '.list-group .list-group-item', function ()
-    {
+    {	
+		var id_cola=$(this).attr("id");
+		$("#id_cola").val(id_cola);
+		$("#add_datos_fisicos").prop('disabled', false)
+		//alert($(this).attr("id"));
     	uniexis($(this).attr("id"));
         $(this).toggleClass('active');
     });
     $('body').on('dblclick', '.list-group .list-group-item', function ()
     {
+		$("#add_datos_fisicos").prop('disabled', true)
     	var str  = $(this).text().split(" - ");
     	var paciente = str[1];
     	var hora = str[0];
@@ -340,7 +363,7 @@ $(function(){
         display_modal(id, paciente, hora, estado);
     });
     $('.list-arrows button').click(function ()
-    {
+    {	
         var $button = $(this), actives = '';
         if ($button.hasClass('move-left')) {
         	var count1 = parseInt($("#count1").text());

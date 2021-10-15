@@ -1914,7 +1914,7 @@ function finalizar()
         'p' => $p,
         'peso' => $peso,
         'fr' => $fr,
-        'estado' =>7,
+        'estado' =>8,//se actualiza el estado a pendiente de pago
     );
     $form_data2 =  array(
         'prioridad'=> -1
@@ -1925,6 +1925,10 @@ function finalizar()
     $update2 = _update($table2,$form_data2,$where_clause2);
     if($update && $update2)
     {
+        $estado_pago=8;
+        
+        //actualizando el estado de la consulta 
+
         $xdata["typeinfo"]="Success";
         $xdata["msg"]="Consulta Finalizada correctamente";
     }

@@ -84,6 +84,7 @@
 									<th>Paciente</th>
 									<th>Médico</th>
 									<th>Consultorio</th>
+									<th>Estado</th>
 									<th>Acción</th>
 								</tr>
 							</thead>

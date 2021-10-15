@@ -82,6 +82,7 @@ $(document).ready(function(){
 
     function reservar_y_transferir(){
         //creando cita para hoy y transfiriendo el paciente a consulta
+        var lugar = $("#lugar").val();
         var txt_estatura=$("#txt_estatura").val();
         var txt_peso=$("#txt_peso").val();
         var txt_motivo=$("#txt_motivo").val();
@@ -100,33 +101,63 @@ $(document).ready(function(){
         var id_usuario=$("#id_usuario").val();
         var id_doctor=$("#id_medico").val();
         var id_consultorio=$("#id_consultorio").val();
-        var id_recepcion=$("#id_recepcion").val();
+        
 
         //alert(id_doctor);
 
         var process='trans_consulta';
         //alert(txt_dx);
-        var datos ={
-            'process':process,
-            'estatura':txt_estatura,
-            'peso':txt_peso,
-            'motivo':txt_motivo,
-            'hx':txt_hx,
-            'antecedente':txt_antecedentes,
-            'antecedente_fam':txt_antecedentes_fam,
-            'ta':txt_ta,
-            'fc':txt_fc,
-            'fr':txt_fr,
-            'temp':txt_temp,
-            'dx':txt_dx,
-            'plan':txt_plan,
-            'id_paciente':id_paciente,
-            'id_usuario':id_usuario,
-            'id_doctor':id_doctor,
-            'id_consultorio':id_consultorio,
-            'id_recepcion':id_recepcion,
-            'hora_cita':txt_hora_cita
-        };
+        var datos=null;
+        if(lugar=="recepcion"){
+            var id_recepcion=$("#id_recepcion").val();
+            datos ={
+                'lugar':lugar,
+                'process':process,
+                'estatura':txt_estatura,
+                'peso':txt_peso,
+                'motivo':txt_motivo,
+                'hx':txt_hx,
+                'antecedente':txt_antecedentes,
+                'antecedente_fam':txt_antecedentes_fam,
+                'ta':txt_ta,
+                'fc':txt_fc,
+                'fr':txt_fr,
+                'temp':txt_temp,
+                'dx':txt_dx,
+                'plan':txt_plan,
+                'id_paciente':id_paciente,
+                'id_usuario':id_usuario,
+                'id_doctor':id_doctor,
+                'id_consultorio':id_consultorio,
+                'id_recepcion':id_recepcion,
+                'hora_cita':txt_hora_cita
+            };
+        }else if(lugar=="cita"){
+            var id_cita=$("#id_cita").val();
+            datos ={
+                'lugar':lugar,
+                'process':process,
+                'estatura':txt_estatura,
+                'peso':txt_peso,
+                'motivo':txt_motivo,
+                'hx':txt_hx,
+                'antecedente':txt_antecedentes,
+                'antecedente_fam':txt_antecedentes_fam,
+                'ta':txt_ta,
+                'fc':txt_fc,
+                'fr':txt_fr,
+                'temp':txt_temp,
+                'dx':txt_dx,
+                'plan':txt_plan,
+                'id_paciente':id_paciente,
+                'id_usuario':id_usuario,
+                'id_doctor':id_doctor,
+                'id_consultorio':id_consultorio,
+                'hora_cita':txt_hora_cita,
+                'id_cita':id_cita
+
+            };  
+        }
         var dire='registrar_datos_fisicos.php';
         console.log(datos);
         $.ajax({
@@ -137,21 +168,22 @@ $(document).ready(function(){
             success:function(e){
                 var typeinfo=e.typeinfo;
                 var msg=e.msg;
-                alert(e.form_cita);
+                var lugar=e.lugar;
                 if(typeinfo=='Success'){
+                    alert(e.typeinforeci);
                     display_notify(typeinfo,msg);
                     setTimeout(()=>{
-                        recargar();
+                        if(lugar=='recepcion'){
+                            location.href='admin_recepcion.php';
+                        }else if(lugar=='cita'){
+                            location.href='cola.php';
+                            //alert("entro aqui...");
+                        }
                     }, 1500);
                 }
             }
         });
 
     }
-
-    function recargar(){
-        location.href='admin_recepcion.php';
-    }
-
 
 });

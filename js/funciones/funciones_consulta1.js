@@ -617,7 +617,7 @@ function finalizar() {
             display_notify(datax.typeinfo, datax.msg);
             if (datax.typeinfo == "Success") {
               setInterval(function() {
-      					location.href = "venta.php?id="+id;
+      					location.href = "consulta.php";
       				}, 1500);
             }
         }

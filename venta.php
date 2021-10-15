@@ -142,6 +142,7 @@ tr .descp {
                         <input type='hidden' name='porc_retencion10' id='porc_retencion10' value=0>
                         <input type='hidden' name='porc_percepcion' id='porc_percepcion' value=0>
                         <input type='hidden' name='porcentaje_descuento' id='porcentaje_descuento' value=0>
+                        <input type="hidden" id='id_recepcion' name="id_recepcion" value="<?php echo $id; ?>">
 
                         <div class="form-group has-info col-md-12">
                             <table class="table table-striped table-bordered">
@@ -559,6 +560,7 @@ function insertar_preventa()
           $id_sucursal=$_POST["id_sucursal"];
           $fecha_actual = date('Y-m-d');
           $tipoprodserv = "PRODUCTO";
+          $id_recepcion=$_POST['id_recepcion'];
 
           $insertar_fact=false;
           $insertar_fact_dett=true;
@@ -738,6 +740,39 @@ function insertar_preventa()
             } //foreach ($array as $fila){
               if ($a&&$b&&$c)
               {
+                ///actualizando recepcion del empleado
+                $table_rece='recepcion';
+                $form_data=array(
+                  'id_estado_recepcion'=>4
+                );
+                $extra_where="id_recepcion=$id_recepcion";
+
+                $update_recepcion=_update($table_rece, $form_data, $extra_where);
+                if($update_recepcion){
+                  $xdatos['infoRece']='Cliente facturado exitosamente';
+                }else{
+                  $xdatos['infoRece']='Cliente no fue facturado exitosamente';
+                }
+                //actualizando los estados de reserva_cita
+                $table_cita='recepcion_cita';
+                $sql_cita="SELECT id_recepcion_cita, id_recepcion, id_reserva_cita FROM recepcion_cita WHERE id_recepcion=$id_recepcion";
+                $query_cita=_query($sql_cita);
+                $id_cita="";
+                while($row_cita=_num_rows($query_cita)){
+                  $id_cita=$row_cita['id_reserva_cita'];
+                }
+
+                if($id_cita!=''){
+                  $table_cita="reserva_cita";
+                  $form_cita=array(
+                    'estado'=>9
+                  );
+                  $extra_where="id=$id_cita";
+                  $update_estado_cita=_update($table_cita, $form_cita, $extra_where);
+                  if($update_estado_cita){
+                    $xdatos['infocita']='estado cita actualizado correctamente'
+                  }
+                }
                 _commit(); // transaction is committed
                 $xdatos['typeinfo']='Success';
                 $xdatos['msg']='Referenca Numero: <strong>'.$numero_doc.'</strong>  Guardado con Exito !';

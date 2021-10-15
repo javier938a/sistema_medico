@@ -81,15 +81,20 @@ function initial()
                         <div class="col-lg-6"></div>
                         <div class="col-lg-6">
                             <!--Display in modal-->
-                            <div class="form-group col-lg-4">
+                            <div class="form-group col-lg-3">
+                                <button class="text-success" id="add_datos_fisicos" style="font-size: 15px;" disabled><i class="fa fa-plus">
+                                        Agregar datos fisicos</i></button>
+                                        <input type="hidden" name="id_cola" id="id_cola" value="">
+                            </div>
+                            <div class="form-group col-lg-3">
                                 <a class="text-success" id="add_fast" style="font-size: 15px;"><i class="fa fa-plus">
                                         Nueva</i></a>
                             </div>
-                            <div class="form-group col-lg-4">
+                            <div class="form-group col-lg-3">
                                 <a class="text-success" href="admin_cita.php" style="font-size: 15px;"><i
                                         class="fa fa-list"> Ver Citas</i></a>
                             </div>
-                            <div class="form-group col-lg-4">
+                            <div class="form-group col-lg-3">
                                 <a class="text-success" id="reloadd" style="font-size: 15px;"><i class="fa fa-refresh">
                                         Recargar</i></a>
                             </div>
@@ -851,7 +856,7 @@ function lista($tipo = "")
     {
         if($row["estado"] == 4)
         {
-            $espera.= "<li class='list-group-item bg-green' id='$row[id_cola]' estado='$row[estado]'>".hora($row["hora_cita"])." - ".$row["paciente"]." - ".$row["doctor"]." (En consulta)</li>";
+            $espera.= "<li class='list-group-item bg-green' id='$row[id_cola]' estado='$row[estado]'>".hora($row["hora_cita"])." - ".$row["paciente"]." - ".$row["doctor"]." (En consulta)  </li>";
         }
         else
         {
@@ -862,6 +867,22 @@ function lista($tipo = "")
     $xdatos["citados"]=$citados;
     $xdatos["num1"]=$num1;
     $xdatos["num2"]=$num2;
+    echo json_encode($xdatos);
+}
+
+function obtener_idcita_para_ingresar_datos_previos(){
+    $id_cola=$_POST['id_cola'];
+    $sql_cola="SELECT id_cita FROM cola_dia WHERE id_cola=$id_cola";
+    $query_cola=_query($sql_cola);
+
+    $xdatos=array();
+    $id_cita='';
+    if(_num_rows($query_cola)>0){
+        while($row_cola=_fetch_array($query_cola)){
+            $id_cita=$row_cola['id_cita'];
+        }
+        $xdatos['id_cita']=$id_cita;
+    }
     echo json_encode($xdatos);
 }
 
@@ -898,6 +919,10 @@ else
             case 'list':
                 lista($tipo);
                 break;
+            case 'datos_previos':
+                obtener_idcita_para_ingresar_datos_previos();
+                break;
+                
         } 
     }           
 }
