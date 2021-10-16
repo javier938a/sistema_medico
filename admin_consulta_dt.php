@@ -18,7 +18,7 @@ $sql_details = array(
     'host' => $servidor
 );
 $joinQuery=" FROM reserva_cita as r, doctor as d, espacio as e, estado_cita as es, paciente as p";
-$extraWhere="  d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND es.id_estado=r.estado AND r.estado=8 AND r.fecha_cita BETWEEN '$ini' AND '$fin' AND p.id_paciente = r.id_paciente";
+$extraWhere="  d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND es.id_estado=r.estado AND r.estado>1 AND r.fecha_cita BETWEEN '$ini' AND '$fin' AND p.id_paciente = r.id_paciente";
 if($id_doctor != 0){
 	$extraWhere.= " AND d.id_doctor = '$id_doctor'";
 }

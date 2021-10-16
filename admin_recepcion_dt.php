@@ -49,9 +49,17 @@
 
       
 
-      $query=_query("SELECT estado_recepcion.id_estado_recepcion, estado_recepcion.estado FROM estado_recepcion INNER JOIN recepcion on estado_recepcion.id_estado_recepcion = recepcion.id_estado_recepcion WHERE recepcion.id_recepcion = $idRecepcion");
-      $row=_fetch_array($query);
-      $estadoRecepcion=$row['estado'];
+      $query=_query("SELECT re.id_recepcion, es.estado FROM recepcion as re 
+      LEFT JOIN estado_recepcion AS es on re.id_estado_recepcion=es.id_estado_recepcion 
+      WHERE re.id_recepcion = $idRecepcion");
+
+      $estadoRecepcion="";
+      while($row_estado=_fetch_array($query)){
+        $estadoRecepcion=$row_estado['estado'];
+      }
+
+      
+     
 
       $id_user=$_SESSION["id_usuario"];
     	$admin=$_SESSION["admin"];
@@ -60,21 +68,23 @@
         <a href='#' data-toggle='dropdown' class='btn btn-primary dropdown-toggle'><i class='fa fa-user icon-white'></i> Menu<span class='caret'></span></a>
         <ul class='dropdown-menu dropdown-primary'>";
         $var1=0;
-          if($estadoRecepcion == "PENDIENTE"){
+
+        if($estadoRecepcion != 'ANULADO' && $estadoRecepcion != 'FINALIZADO' && $estadoRecepcion != 'FACTURADO' && $estadoRecepcion !='EN CONSULTA'){
+          $filename='editar_recepcion.php';
+          $link=permission_usr($id_user,$filename);
+          if ($link!='NOT' || $admin=='1' ){
+            $table.="<li><a href='$filename?idRecepcion=".$idRecepcion."'><i class='fa fa-edit'></i> Editar</a></li>";
+            $var1++;
+          }
+
+        }
+          /*if($estadoRecepcion == "PENDIENTE"){
             $filename='realizar_recepcion.php';
             $link=permission_usr($id_user,$filename);
             if ($link!='NOT' || $admin=='1' ){
               $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."' data-target='#realizarModal1' data-refresh='true'><i class='fa fa-eye'></i> Realizar</a></li>";
             }
-          }
-          if($estadoRecepcion != 'ANULADO' && $estadoRecepcion != 'FINALIZADO' && $estadoRecepcion != 'FACTURADO'){
-            $filename='editar_recepcion.php';
-            $link=permission_usr($id_user,$filename);
-            if ($link!='NOT' || $admin=='1' ){
-              $table.="<li><a href='$filename?idRecepcion=".$idRecepcion."'><i class='fa fa-edit'></i> Editar</a></li>";
-              $var1++;
-            }
-          }
+          }*/
           $filename="venta.php";
           $link=permission_usr($id_user,$filename);
           if ($estadoRecepcion!='ANULADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='FINALIZADO'){
@@ -83,18 +93,21 @@
               $table.= "<li><a ' href='$filename?id=".$idRecepcion."'><i class='fa fa-eraser'></i>Agregar insumos</a></li>";
             }
           }
-          if ($estadoRecepcion=='ANULADO'){
+          /*if ($estadoRecepcion=='ANULADO'){
             if ($link!='NOT' || $admin=='1'){
             //	echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
             $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."&process=recuperar' data-target='#deleteModal' data-refresh='true'><i class='fa fa-undo'></i> Recuperar</a></li>";
           }
+          }*/
+          if($estadoRecepcion!="FACTURADO" && $estadoRecepcion!="CANCELADO"  && $estadoRecepcion!="FINALIZADO"){
+            $filename='registrar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
+            if($link!="NOT" || $admin=='1'){
+                $table.="<li><a  href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."'>
+                <i class='fa fa-user-md'></i> Transferir a Consulta</a></li>";
+            }
           }
-          $filename='registrar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
-          if($link!="NOT" || $admin=='1'){
-              $table.="<li><a  href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."'>
-              <i class='fa fa-user-md'></i> Agregar Datos fisicos </a></li>";
-          }
-          $filename='transferir_recepcion.php';
+
+          /*$filename='transferir_recepcion.php';
           if ($estadoRecepcion =='REALIZADO'){
             if ($link!='NOT' || $admin=='1'){
               // echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
@@ -110,7 +123,7 @@
           }
           $table.="<li><a href='estado_cuenta.php?id_recepcion=".$idRecepcion."' target='_blank'><i class=\"fa fa-print\"></i> Estado de cuenta</a></li>";
 
-          /*
+          
           $filename='agregar_servicio_recepcion.php';
           $link=permission_usr($id_user,$filename);
           if ($estadoRecepcion=='REALIZADO'){

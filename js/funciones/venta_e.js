@@ -942,7 +942,6 @@ document.addEventListener('keydown', event => {
 							dataType: 'json',
 							success: function(datax) {
 								if (datax.typeinfo == "Success") {
-									//alert(datax.infoRece);
 									swal({
 											html:true,
 											title: "<b>Referencia <i># "+datax.referencia+"</i><br>$ "+datax.tot+"</b>",

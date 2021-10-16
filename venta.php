@@ -758,7 +758,7 @@ function insertar_preventa()
                 $sql_cita="SELECT id_recepcion_cita, id_recepcion, id_reserva_cita FROM recepcion_cita WHERE id_recepcion=$id_recepcion";
                 $query_cita=_query($sql_cita);
                 $id_cita="";
-                while($row_cita=_num_rows($query_cita)){
+                while($row_cita=_fetch_array($query_cita)){
                   $id_cita=$row_cita['id_reserva_cita'];
                 }
 
@@ -770,10 +770,11 @@ function insertar_preventa()
                   $extra_where="id=$id_cita";
                   $update_estado_cita=_update($table_cita, $form_cita, $extra_where);
                   if($update_estado_cita){
-                    $xdatos['infocita']='estado cita actualizado correctamente'
+                    $xdatos['infocita']='estado cita actualizado correctamente';
                   }
                 }
                 _commit(); // transaction is committed
+                $xdatos['id_cita']=$id_cita;
                 $xdatos['typeinfo']='Success';
                 $xdatos['msg']='Referenca Numero: <strong>'.$numero_doc.'</strong>  Guardado con Exito !';
                 $xdatos['referencia']=$ult;

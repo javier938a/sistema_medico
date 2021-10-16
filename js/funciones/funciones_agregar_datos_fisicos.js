@@ -170,7 +170,7 @@ $(document).ready(function(){
                 var msg=e.msg;
                 var lugar=e.lugar;
                 if(typeinfo=='Success'){
-                    alert(e.typeinforeci);
+                    //alert(e.typeinforeci);
                     display_notify(typeinfo,msg);
                     setTimeout(()=>{
                         if(lugar=='recepcion'){

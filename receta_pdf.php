@@ -308,29 +308,28 @@
     
                 $this->SetTextColor(0, 0, 0);
 
-                $this->setY(30);
-                $this->setX(30);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(160,7,Mayu(utf8_decode("    ".$this->encabezado['paciente'])),0,1,'L');
+                $this->setY(5);
+                $this->setX(7.5);
+                $this->SetFont('Arial', 'B', 12);
+                $this->Cell(13.5,1,Mayu(utf8_decode($this->encabezado['paciente'])),0,1,'L');
 
-                $this->SetY(40);
-                $this->SetX(30);
-                $this->Cell(160,7,(utf8_decode("     ".str_pad($this->encabezado['expediente'], 6, '0', STR_PAD_LEFT))),0,1,'L');
+                $this->SetY(7);
+                $this->SetX(7.5);
+                $this->Cell(8,1,(utf8_decode(str_pad($this->encabezado['expediente'], 6, '0', STR_PAD_LEFT))),0,1,'L');
                 
-                $this->SetY(40);
-                $this->SetX(80);
-                $this->Cell(50,7,Mayu(utf8_decode("    ".$this->encabezado['edad']." AÑOS")),0,1,'L');
+                $this->SetY(7);
+                $this->SetX(14.5);
+                $this->Cell(2.5,1,Mayu(utf8_decode($this->encabezado['edad']." AÑOS")),0,1,'L');
                 
-                $this->SetY(40);
-                $this->SetX(140);
-                $this->SetFont('Courier', 'B', 12);
-                $this->Cell(160,7,(utf8_decode(""  .MD($this->encabezado['fecha_cita'])." a las ".$this->encabezado['hora_cita'])),0,1,'L');
+                $this->SetY(7);
+                $this->SetX(19);
+                $this->Cell(2.5,1,(utf8_decode(MD($this->encabezado['fecha_cita']))),0,1,'L');
                 
                 //esto iria al ultimo ya que es la fecha de la proxima cita
-                $this->SetY(230);
-                $this->SetX(100);
+                $this->SetY(23);
+                $this->SetX(9.5);
                 $fecha_proxima_cita=MD($this->datos_adicionales['fecha_proxima_cita']);
-                $this->Cell(120, 5, (utf8_decode("             ".$fecha_proxima_cita)), 0, 1, 'L');
+                $this->Cell(6.5, 1, (utf8_decode("             ".$fecha_proxima_cita)), 0, 1, 'L');
  
                 
 
@@ -424,14 +423,14 @@
     );
 
 
-    $pdf = new Reporte('P','mm', 'Letter');
+    $pdf = new Reporte('P','cm', 'Letter');
     $pdf->setEncabezado($encabezado);
     $pdf->setBarraLateral($barra_lateral);
     $pdf->setDatosAdicionales($datos_adicionales);
     $jdas="";
-    $pdf->SetMargins(15,15);
-    $pdf->SetTopMargin(10);
-    $pdf->SetLeftMargin(13);
+    $pdf->SetMargins(1.5,1.5);
+    $pdf->SetTopMargin(1);
+    $pdf->SetLeftMargin(1);
     $pdf->AliasNbPages();
     $pdf->SetAutoPageBreak(true,15);
     $pdf->AddFont('Georgia','','georgia.php');
@@ -462,30 +461,26 @@
     ");*/
     $pdf->SetFont('Courier', 'B', 12);
     if(_num_rows($query_receta)>0){//Verifica que hayan medicamentos recetads
-        $pdf->setY(10);
+        $pdf->setY(7);
         //$pdf->SetDrawColor(25, 65, 96);
         //$pdf->SetFillCOlor(255, 255, 255);
         //encabezado de la receta
-        $array_datos=array(
-            array("MEDICAMENTO", 100, "C"),
-            array("DOSIS", 45, "C"),
-        );
 
 
         //definiendo nuevo tamanio de letra 
-        $pdf->SetFont('Courier', 'B', 9);
+        $pdf->SetFont('Arial', 'B', 9);
         //obteniendo todos los medicamentos recesatos y escribiendolos
         $medic=0;//cuenta los medicamentos recetados
    
-        $set_y=70;//Inicia y en 70mm
-        $set_x+=53;//a x se le aumenta en 57
+        $set_y=$pdf->GetY()+1;
+        $set_x+=5.5;//a x se le aumenta en 57
         while($row=_fetch_array($query_receta)){
             $pdf->SetY($set_y);
             $pdf->SetX($set_x);
         
-            $pdf->MultiCell(130, 5, (Mayu($row['descripcion']).' '.Mayu($row['dosis'])),0, 'L',0);
+            $pdf->MultiCell(13, 2, (Mayu($row['descripcion']).' '.Mayu($row['dosis'])),0, 'L',0);
 
-            $set_y+=10;
+            $set_y+=1;
 
             $medic++;
             $salto=is_float($medic/23.0);//si salto es verdadero  entonces saltara de pagina
@@ -497,7 +492,7 @@
     }
 
     //escribiendo lo otros medicamentos
-    $pdf->SetFont('Courier', 'B', 12);
+    $pdf->SetFont('Arial', 'B', 12);
     $query_aux=_query("SELECT * FROM reserva_cita WHERE id='$id_cita'");
     $aux=_fetch_array($query_aux);
     $otros=$aux["medicamento"];
@@ -510,17 +505,17 @@
     if(count($otr)>0 && $otros!=""){
 
         //colocando el titulo
-        $set_y+=20;
+        $set_y+=1;
         $pdf->SetY($set_y);
-        $set_x+=48;
+        $set_x+=5.5;
         $pdf->SetX($set_x);
-        $pdf->Cell(135, 5, (utf8_decode(" Otros medicamentos.")), 0, 0, 'L');
+        $pdf->Cell(13, 3.5, (utf8_decode(" Otros medicamentos.")), 0, 0, 'L');
         $pdf->Ln();
 
         $pdf->SetFont('Courier', 'B', 9);
         //dibujando los otros medicamentos 
         $pdf->SetY($set_y);
-        $set_x+=10;
+        $set_x+=1;
         for($i=0;$i<count($otr); $i++){
             $pdf->SetY($set_y);
             $pdf->SetX($set_x);

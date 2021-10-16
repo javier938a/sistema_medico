@@ -2,7 +2,7 @@
 error_reporting(E_ERROR | E_PARSE);
 require("_core.php");
 require("num2letras.php");
-require('fpdf/fpdf.php');
+//require('fpdf/fpdf.php');
 class PDF extends FPDF{
     function drawTextBox($strText, $w, $h, $align='C', $valign='T', $border=true, $primero)
     {

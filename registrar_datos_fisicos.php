@@ -1,7 +1,7 @@
 <?php
     include_once "_core.php";
     function initial(){
-        $title='Registrar Datos';
+        $title='Ingresar datos previos antes de transferir a consulta';
         $_PAGE = array ();
         $_PAGE ['title'] = $title;
         $_PAGE ['links'] = null;
@@ -58,7 +58,12 @@
             //obteniendo el id del paciente en recepcion para meterlo en un hidden
         if($lugar=="recepcion"){
             $id_recepcion=$_GET['idRecepcion'];
-            $sql_recepcion="SELECT recepcion.id_tipo_recepcion, tipo_recepcion.tipo , paciente.id_paciente, paciente.nombres, paciente.apellidos, recepcion.evento FROM recepcion INNER JOIN paciente on recepcion.id_paciente_recepcion = paciente.id_paciente LEFT JOIN tipo_recepcion on recepcion.id_tipo_recepcion=tipo_recepcion.id_tipo_recepcion WHERE recepcion.id_recepcion =$id_recepcion";
+            $sql_recepcion="SELECT recepcion.id_tipo_recepcion, tipo_recepcion.tipo , paciente.id_paciente, 
+            paciente.nombres, paciente.apellidos, recepcion.evento FROM recepcion 
+            LEFT JOIN paciente on recepcion.id_paciente_recepcion = paciente.id_paciente 
+            LEFT JOIN tipo_recepcion on recepcion.id_tipo_recepcion=tipo_recepcion.id_tipo_recepcion
+            WHERE recepcion.id_recepcion =$id_recepcion";
+            
             $query_recepcion=_query($sql_recepcion);
             if(_num_rows($query_recepcion)>0){
                 
@@ -137,7 +142,7 @@
             </div>
             <div class="ibox-content">
                 <form name="formulario_datos_fisicos" id="formulario_datos_fisicos" autocomplete='off'>
-                <div class="row">
+                    <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group has-info text-center">
                                         <label for="">Medico a enviar</label>
@@ -145,7 +150,7 @@
                                             $sql_medicos="SELECT * FROM doctor WHERE 1";
                                             $query_medicos=_query($sql_medicos);
                                             if(_num_rows(_query($sql_medicos))==1){                                
-                                                echo '<select class="select" 
+                                                echo '<select class="form-control select" 
                                                     name="id_medico" id="id_medico" disabled>';    
                                                 while($_medico=_fetch_array($query_medicos)){  
                                                         echo "<option value='".$_medico["id_doctor"]."' selected>".$_medico["nombres"]." ".$_medico['apellidos']."</option>";
@@ -172,12 +177,12 @@
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group has-info text-center">
-                                        <label for="">Consultorios</label>
+                                        <label for="">Consultorios</label><br>
                                         <?php
                                             $sql_consultorios="SELECT * FROM espacio";
                                             $query_consultorios=_query($sql_consultorios);
                                             if(_num_rows($query_consultorios)==1){
-                                                echo '<select class="select" id="id_consultorio" name="id_consultorio" disabled>';
+                                                echo '<select class="select form-control" id="id_consultorio" name="id_consultorio" disabled>';
                                                     while($_consultorio=_fetch_array($query_consultorios)){
                                                         echo '<option value='.$_consultorio['id_espacio'].' selected>'.$_consultorio['descripcion'].'</option>';
                                                     }
