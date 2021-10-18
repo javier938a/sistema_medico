@@ -59,7 +59,7 @@
                 'id_paciente_recepcion' => $idPaciente,
                 'id_doctor_recepcion' => $idDoctor,
                 'id_usuario_recepcion' => $id_user,
-                'id_estado_recepcion'=>"1",
+                'id_estado_recepcion'=>"2",
                 'id_sucursal_recepcion'=>$id_sucursal,
                 'id_tipo_recepcion'=>$tipoRecepcion,
                 'recuperado_base'=>$recuperadoBase,
@@ -77,7 +77,7 @@
                 'id_paciente_recepcion' => $idPaciente,
                 'id_doctor_recepcion' => $idDoctor,
                 'id_usuario_recepcion' => $id_user,
-                'id_estado_recepcion'=>"1",
+                'id_estado_recepcion'=>"2",
                 'id_sucursal_recepcion'=>$id_sucursal,
                 'id_tipo_recepcion'=>$tipoRecepcion,
                 'recuperado_base'=>$recuperadoBase,
@@ -92,7 +92,12 @@
             $xdatos['process']='insert';
         }
         else{
-            $consulta = "SELECT paciente.nombres, paciente.apellidos, recepcion.fecha_de_entrada, estado_recepcion.estado FROM recepcion INNER JOIN estado_recepcion on estado_recepcion.id_estado_recepcion=recepcion.id_estado_recepcion INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion WHERE paciente.id_paciente = $idPaciente AND (estado_recepcion.id_estado_recepcion = 1 OR estado_recepcion.id_estado_recepcion = 2)";
+            $consulta = "SELECT paciente.nombres, paciente.apellidos, recepcion.fecha_de_entrada, 
+            estado_recepcion.estado FROM recepcion INNER JOIN estado_recepcion on 
+            estado_recepcion.id_estado_recepcion=recepcion.id_estado_recepcion INNER JOIN 
+            paciente on paciente.id_paciente = recepcion.id_paciente_recepcion WHERE 
+            paciente.id_paciente = $idPaciente AND (estado_recepcion.id_estado_recepcion = 1 
+            OR estado_recepcion.id_estado_recepcion = 2)";
             $sql_exis1 = _query($consulta);
             $num_exis1 = _num_rows($sql_exis1);
             if($num_exis1==0){

@@ -7,7 +7,7 @@
 
     require('ssp.customized.class.php');
     // DB table to use
-    $table = 'recepcion';
+    $table = 'view_pacientes_recepcion';
     // Table's primary key
     $primaryKey = 'id_recepcion';
 
@@ -26,32 +26,33 @@
     $filename=get_name_script($uri);
     $links=permission_usr($id_user, $filename);
 
-    $joinQuery = "
-        FROM recepcion INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion
-        LEFT JOIN doctor on doctor.id_doctor = recepcion.id_doctor_recepcion
-        INNER JOIN estado_recepcion on estado_recepcion.id_estado_recepcion = recepcion.id_estado_recepcion
-	  ";
-      $extraWhere = " recepcion.fecha_de_entrada BETWEEN '$fechai 00:00:00' AND '$fechaf 23:59:59'";
+    $joinQuery = "";
+      $extraWhere = " fecha_de_entrada BETWEEN '$fechai 00:00:00' AND '$fechaf 23:59:00'";
       
       $columns = array(
-      array( 'db' => "recepcion.id_recepcion", 'dt' => 0, 'field' => 'id_recepcion'  ),
-      array( 'db' => "CONCAT(paciente.nombres,' ', COALESCE(paciente.apellidos,'') )", 'dt' => 1, 'field' => "paciente", 'as'=>'paciente'),
-      array( 'db' => "CONCAT(doctor.nombres,' ',doctor.apellidos)", 'dt' => 2, 'field' => "doctor", 'as'=>'doctor'),
-      array( 'db' => "recepcion.fecha_de_entrada", 'dt' => 3, 'formatter' => function($fecha_ingreso){
+      array( 'db' => "id_recepcion", 'dt' => 0, 'field' => 'id_recepcion'  ),
+      array( 'db' => "nombre_paciente", 'dt' => 1, 'field' => "nombre_paciente"),
+      array( 'db' => "nombre_doctor", 'dt' => 2, 'field' => "doctor"),
+      array( 'db' => "fecha_de_entrada", 'dt' => 3, 'formatter' => function($fecha_ingreso){
         return  ED($fecha_ingreso);
       }, 'field' => 'fecha_de_entrada'),
-      array( 'db' => "recepcion.evento", 'dt' => 4, 'field' => 'evento'),
-		  array( 'db' => "estado_recepcion.estado", 'dt' => 5, 'formatter' => function($estadoRecepcion){
-            $estado = $estadoRecepcion;
-						return $estado;
+      array( 'db' => "evento", 'dt' => 4, 'field' => 'evento'),
+		  array( 'db' => "id_estado_recepcion", 'dt' => 5, 'formatter' => function($id_estado_recepcion){
+
+        $sql = "SELECT er.color, er.estado FROM estado_recepcion AS er WHERE er.id_estado_recepcion=$id_estado_recepcion";
+            $query=_query($sql);
+            $var="";
+            while($row_estado=_fetch_array($query)){
+              $var="<label class='badge' style='background:".$row_estado['color']."; color:#FFF; font-weight:bold;'>".$row_estado['estado']."</label>";  
+            }
+
+            
+            return $var;
 			}, 'field' => 'estado'),
-      array( 'db' => "recepcion.id_recepcion", 'dt' => 6, 'formatter' => function ($idRecepcion) {
+      array( 'db' => "id_recepcion", 'dt' => 6, 'formatter' => function ($idRecepcion) {
 
-      
-
-      $query=_query("SELECT re.id_recepcion, es.estado FROM recepcion as re 
-      LEFT JOIN estado_recepcion AS es on re.id_estado_recepcion=es.id_estado_recepcion 
-      WHERE re.id_recepcion = $idRecepcion");
+  
+      $query=_query("SELECT * FROM view_estado_paciente WHERE id_recepcion=$idRecepcion");
 
       $estadoRecepcion="";
       while($row_estado=_fetch_array($query)){
@@ -107,12 +108,13 @@
             }
           }
 
-          /*$filename='transferir_recepcion.php';
-          if ($estadoRecepcion =='REALIZADO'){
+          $filename='transferir_recepcion.php';
+          if ($estadoRecepcion != 'REALIZADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='CANCELADO' && $estadoRecepcion!='FINALIZADO'){
             if ($link!='NOT' || $admin=='1'){
               // echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
               $table.= "<li><a  data-toggle='modal' href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."' data-target='#transferenciaModal' data-refresh='true'><i class='fa fa-upload'></i> Transferir </a></li>";            }
           }
+          /*
           $filename='transferir_recepcion.php';
           $link=permission_usr($id_user,$filename);
           if ($estadoRecepcion =='REALIZADO'){

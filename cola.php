@@ -532,6 +532,7 @@ function editar()
     $doctor = $dats_aux["id_doctor"];
     $esta_ex = $dats_aux["estado"];
     $pendiente = true;
+    $xdatos=[];
     if($estado == 7 && $esta_ex<4)
     {
         $xdatos['typeinfo']='Error';
@@ -581,6 +582,27 @@ function editar()
                     {
                         $xdatos['typeinfo']='Success';
                         $xdatos['msg']='Estado editado correctamente';
+                        //Aqui es donde debo de actualizar el estado de la 
+                        //recepcion ya que una vez que se finalize la consulta tiene que pasar a recepcion a cancelar
+                        //actualizando el estado de la recepcion...
+                        if($estado==7){//7 es el id del estado finalizado
+                            $sql_recepcion_cita="SELECT id_recepcion FROM `recepcion_cita` WHERE id_reserva_cita=$id_cita";
+                            $query_recepcion_cita=_query($sql_recepcion_cita);
+                            $row_recepcion_cita=_fetch_array($query_recepcion_cita);
+                            $id_recepcion=$row_recepcion_cita['id_recepcion'];
+                            //una vez obtenida la recepcion se tiene que actualizar el estado de la recepcion
+                            $table="recepcion";
+                            $form_data_re=[
+                                'id_estado_recepcion'=>7
+                            ];
+                            $extra_where='id_recepcion='.$id_recepcion;
+                            $update_recepcion=_update($table, $form_data_re, $extra_where);
+                            if($update_recepcion){
+                                $xdatos['msgre']='Estado de recepcion actualizada correctamente.';
+                            }
+                        }
+
+
                         if($estado == 4)
                         {
                             $xdatos['id']= $id_cola;

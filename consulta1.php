@@ -1925,6 +1925,27 @@ function finalizar()
     $update2 = _update($table2,$form_data2,$where_clause2);
     if($update && $update2)
     {
+        //ahora que se ha actualizado cola y reserva_cita se tienq ue actualizar recepcion
+        //y pasarlo a factura pendiente
+        $sql_recepcion_cita="SELECT rc.id_recepcion FROM 
+                            recepcion_cita AS rc WHERE rc.id_reserva_cita=$id";//se busca la recepcion de 
+                            //esta cita
+        //obteniendo la recepcion de cita
+        $row_recepcion=_fetch_array(_query($sql_recepcion_cita));
+        
+        //obteniendo el id
+        $id_recepcion=$row_recepcion['id_recepcion'];
+        
+        $table_recepcion="recepcion";
+        $form_data3=[
+            'id_estado_recepcion'=>7,
+        ];
+        $extra_where='id_recepcion='.$id_recepcion;
+        
+        $update_rece=_update($table_recepcion, $form_data3, $extra_where);
+        if($update_rece){
+            $xdata['msgrec']="estado recepcion actualizada correctamente..";
+        }
         $estado_pago=8;
         
         //actualizando el estado de la consulta 

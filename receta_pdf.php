@@ -307,27 +307,32 @@
 
     
                 $this->SetTextColor(0, 0, 0);
-
-                $this->setY(5);
-                $this->setX(7.5);
+                $set_y=4.70;
+                $set_x=7.2;
+                $this->setY($set_y);
+                $this->setX($set_x);
                 $this->SetFont('Arial', 'B', 12);
                 $this->Cell(13.5,1,Mayu(utf8_decode($this->encabezado['paciente'])),0,1,'L');
 
-                $this->SetY(7);
-                $this->SetX(7.5);
+                $set_y+=1;
+                $this->SetY($set_y);
+                $this->SetX($set_x);
                 $this->Cell(8,1,(utf8_decode(str_pad($this->encabezado['expediente'], 6, '0', STR_PAD_LEFT))),0,1,'L');
                 
-                $this->SetY(7);
-                $this->SetX(14.5);
+                $set_x+=7.5;
+                $this->SetY($set_y);
+                $this->SetX($set_x);
                 $this->Cell(2.5,1,Mayu(utf8_decode($this->encabezado['edad']." AÑOS")),0,1,'L');
                 
-                $this->SetY(7);
-                $this->SetX(19);
+                $set_x+=3.5;
+                $this->SetY($set_y);
+                $this->SetX(18);
                 $this->Cell(2.5,1,(utf8_decode(MD($this->encabezado['fecha_cita']))),0,1,'L');
                 
                 //esto iria al ultimo ya que es la fecha de la proxima cita
-                $this->SetY(23);
-                $this->SetX(9.5);
+                $set_y+=16.80;
+                $this->SetY($set_y);
+                $this->SetX(8.5);
                 $fecha_proxima_cita=MD($this->datos_adicionales['fecha_proxima_cita']);
                 $this->Cell(6.5, 1, (utf8_decode("             ".$fecha_proxima_cita)), 0, 1, 'L');
  
@@ -432,7 +437,7 @@
     $pdf->SetTopMargin(1);
     $pdf->SetLeftMargin(1);
     $pdf->AliasNbPages();
-    $pdf->SetAutoPageBreak(true,15);
+    //$pdf->SetAutoPageBreak(true,15);
     $pdf->AddFont('Georgia','','georgia.php');
     $pdf->AddFont('Arial','','calibri.php');
     $pdf->AddFont('Arial','B','calibrib.php');
@@ -499,6 +504,7 @@
     $otr=explode("|", $otros);
     //obteniendo el y actual 
     $set_y=$pdf->GetY();
+    
     $set_x=$pdf->GetX();
    
     
@@ -506,6 +512,7 @@
 
         //colocando el titulo
         $set_y+=1;
+        //echo $set_y;
         $pdf->SetY($set_y);
         $set_x+=5.5;
         $pdf->SetX($set_x);
@@ -514,17 +521,19 @@
 
         $pdf->SetFont('Courier', 'B', 9);
         //dibujando los otros medicamentos 
+        $set_y+=2;
         $pdf->SetY($set_y);
-        $set_x+=1;
+        
         for($i=0;$i<count($otr); $i++){
             $pdf->SetY($set_y);
             $pdf->SetX($set_x);
             $pdf->SetFillColor(255, 255, 255);
             $pdf->SetTextColor(0, 0, 0);
 
-            $pdf->MultiCell(135,25, $otr[$i], 0, 'L', 0 );
-            $set_y+=10;
+            $pdf->MultiCell(9,1, $otr[$i], 0, 'L', 0 );
+            $set_y++;
         }
+        //echo $set_y;
 
     }
     /*ob_clean();*/
