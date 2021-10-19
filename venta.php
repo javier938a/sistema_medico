@@ -40,7 +40,7 @@ function initial(){
 
   $uri = $_SERVER['SCRIPT_NAME'];
   $filename=get_name_script($uri);
-  $links=permission_usr($id_user,"consulta1.php");
+  $links=permission_usr($id_user,$filename);
 
   $sql_iva="SELECT iva,monto_retencion1,monto_retencion10,monto_percepcion FROM ".EXTERNAL.".sucursal WHERE id_sucursal=1";
     $result_IVA=_query($sql_iva);

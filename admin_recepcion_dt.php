@@ -88,8 +88,8 @@
           }*/
           $filename="venta.php";
           $link=permission_usr($id_user,$filename);
-          if ($estadoRecepcion!='ANULADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='FINALIZADO'){
-              if ($link!='NOT' || $admin=='1'){
+          if ($estadoRecepcion!='ANULADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='FINALIZADO' && $estadoRecepcion!='EN CONSULTA'){
+            if ($link!='NOT' || $admin=='1'){
               //	echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
               $table.= "<li><a ' href='$filename?id=".$idRecepcion."'><i class='fa fa-eraser'></i>Agregar insumos</a></li>";
             }
@@ -100,8 +100,9 @@
             $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."&process=recuperar' data-target='#deleteModal' data-refresh='true'><i class='fa fa-undo'></i> Recuperar</a></li>";
           }
           }*/
-          if($estadoRecepcion!="FACTURADO" && $estadoRecepcion!="CANCELADO"  && $estadoRecepcion!="FINALIZADO"){
+          if($estadoRecepcion!="FACTURADO" && $estadoRecepcion!="CANCELADO"  && $estadoRecepcion!='PENDIENTE DE PAGO' && $estadoRecepcion!='EN CONSULTA'){
             $filename='registrar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
+            $link=permission_usr($id_user,$filename);
             if($link!="NOT" || $admin=='1'){
                 $table.="<li><a  href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."'>
                 <i class='fa fa-user-md'></i> Transferir a Consulta</a></li>";
@@ -109,7 +110,8 @@
           }
 
           $filename='transferir_recepcion.php';
-          if ($estadoRecepcion != 'REALIZADO' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='CANCELADO' && $estadoRecepcion!='FINALIZADO'){
+          $link=permission_usr($id_user,$filename);
+          if ($estadoRecepcion!='FACTURADO' && $estadoRecepcion!='CANCELADO' && $estadoRecepcion!='FINALIZADO' && $estadoRecepcion!='EN CONSULTA' && $estadoRecepcion!='FACTURADO' && $estadoRecepcion!='PENDIENTE DE PAGO'){
             if ($link!='NOT' || $admin=='1'){
               // echo "<li><a data-toggle='modal' href='$filename?id_microcirugia_pte=".$id_microcirugia_pte."&process=anular' data-target='#deleteModal' data-refresh='true'><i class='fa fa-eraser'></i> Anular</a></li>";
               $table.= "<li><a  data-toggle='modal' href='$filename?&lugar=recepcion&idRecepcion=".$idRecepcion."' data-target='#transferenciaModal' data-refresh='true'><i class='fa fa-upload'></i> Transferir </a></li>";            }

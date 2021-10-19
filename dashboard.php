@@ -194,7 +194,7 @@ if ($links!='NOT' || $admin=='1' )
 else { ?>
     <?php
     $id_usuario=$_SESSION["id_usuario"];
-
+    
     $sql_permisos="SELECT modulo.filename,modulo.descripcion FROM modulo,usuario_modulo WHERE id_usuario='$id_usuario' AND modulo.id_modulo=usuario_modulo.id_modulo AND modulo.admin='1' LIMIT 12";
 	$sql_user=_query($sql_permisos);
     echo"
