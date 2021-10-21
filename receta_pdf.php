@@ -329,12 +329,12 @@
                 $this->SetX(18);
                 $this->Cell(2.5,1,(utf8_decode(MD($this->encabezado['fecha_cita']))),0,1,'L');
                 
-                //esto iria al ultimo ya que es la fecha de la proxima cita
+               /* //esto iria al ultimo ya que es la fecha de la proxima cita
                 $set_y+=16.80;
                 $this->SetY($set_y);
                 $this->SetX(8.5);
                 $fecha_proxima_cita=MD($this->datos_adicionales['fecha_proxima_cita']);
-                $this->Cell(6.5, 1, (utf8_decode("             ".$fecha_proxima_cita)), 0, 1, 'L');
+                $this->Cell(6.5, 1, (utf8_decode("             ".$fecha_proxima_cita)), 0, 1, 'L');*/
  
                 
 

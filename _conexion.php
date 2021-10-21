@@ -369,12 +369,94 @@ function hora($hora)
 	$hora_pos = date_format($hora_pre, 'g:i A');
 	return $hora_pos;
 }
-function nombre_dia($fecha)
+
+function nombre_dia($fecha){
+	$fecha = substr($fecha, 0, 10);
+	$numeroDia = date('d', strtotime($fecha));
+	$dia = date('l', strtotime($fecha));
+	$mes = date('F', strtotime($fecha));
+	$anio = date('Y', strtotime($fecha));
+	$fecha_array=explode('-', $fecha);
+	$num_dia=$fecha_array[2];
+	$num_mes=$fecha_array[1];
+	$num_anio=$fecha_array[0];
+	//echo "".$mes;
+	$dia_es="";
+	$mes_es="";
+
+	switch($dia){
+		case "Monday":
+			$dia_es="Lunes";
+			break;
+		case "Tuesday":
+			$dia_es="Martes";
+			break;
+		case "Wednesday":
+			$dia_es="Miércoles";
+			break;
+		case "Thursday":
+			$dia_es="Jueves";
+			break;
+		case "Friday":
+			$dia_es="Viernes";
+			break;
+		case "Saturday":
+			$dia_es="Sábado";
+			break;
+		case "Sunday":
+			$dia_es="Domingo";
+			break;
+	}
+
+	switch($mes){
+		case "January":
+			$mes_es="Enero";
+			break;
+		case "February":
+			$mes_es="Febrero";
+			break;
+		case "March":
+			$mes_es="Marzo";
+			break;
+		case "April":
+			$mes_es="Abril";
+			break;
+		case "May":
+			$mes_es="Mayo";
+			break;
+		case "June":
+			$mes_es="Junio";
+			break;
+		case "July":
+			$mes_es="Julio";
+			break;
+		case "August":
+			$mes_es="Agosto";
+			break;
+		case "September":
+			$mes_es="Septiembre";
+			break;
+		case "October":
+			$mes_es="Octubre";
+			break;
+		case "November":
+			$mes_es="Noviembre";
+			break;
+		case "December":
+			$mes_es="Diciembre";
+			break;
+	}
+
+	$fecha_es=$dia_es." ".$num_dia." de ".$mes_es." de ".$num_anio;
+
+	return $fecha_es;
+}
+/*function nombre_dia($fecha)
 {
 	date_default_timezone_set('America/El_Salvador');
 	//var_dump(setlocale(LC_TIME , 'es_ES.UTF-8'));
 	return ucfirst(strftime("%A %d %B de %Y",strtotime($fecha)));
-}
+}*/
 function num_datos($tabla, $where = "")
 {
 

@@ -29,6 +29,7 @@ function initial(){
     $_PAGE['links'] .= '<link href="css/animate.css" rel="stylesheet">';
     $_PAGE['links'] .= '<link href="css/style.css" rel="stylesheet">';
     $_PAGE['links'] .= '<link href="css/plugins/timepicki/timepicki.css" rel="stylesheet">';
+    $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
 
     include_once "header.php";
     include_once "main_menu.php";
@@ -285,11 +286,11 @@ function initial(){
                                         href="#pills-ingresos" role="tab" aria-controls="pills-ingresos"
                                         aria-selected="false">Ingresos / Indicaciones</a>
                                 </li>-->
-                                <li class="nav-item">
+                                <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-consultas-tab" data-toggle="pill"
                                         href="#pills-consultas" role="tab" aria-controls="pills-consultas"
                                         aria-selected="false">Futuras Consultas</a>
-                                </li>
+                                </li>-->
                             </ul>
                         </div>
                         <div class="col-md-9" style="border:2px solid #194160; padding:10px">
@@ -409,7 +410,7 @@ function initial(){
                                                                                 <td><b>T°: </b></td>
                                                                                 <td><b>Peso: </b></td>
                                                                                 <td><b>FR: </b></td>
-                                                                                <td><b>SpO2: </b></td>
+                                                                                <td class="ocultar"><b>SpO2: </b></td>
                                                                                 <td><b>Hemoglucotest: </b></td>
                                                                                 <td><b>Altura</b></td>
                                                                                 <td><b>Saturacion: </b></td>
@@ -423,8 +424,8 @@ function initial(){
                                                                                 <td><?php echo $ta_ant;?></td>
                                                                                 <td><?php echo $p_ant;?></td>
                                                                                 <td><?php echo $fr_ant;?></td>
-                                                                                <td><?php echo $spo2_ant;?></td>
-                                                                                <td><?php echo $hemoglucotest_ant;?></td>
+                                                                                
+                                                                                <td class="ocultar"><?php echo $hemoglucotest_ant;?></td>
                                                                                 <td><?php echo $altura_ant; ?></td>
                                                                                 <td><?php echo $saturacion_ant;?></td>
                                                                                 <td><?php echo $fc_ant; ?></td>
@@ -861,7 +862,7 @@ function initial(){
                                                                 <input type="text" name="fr" id="fr"
                                                                     class="form-control" value="<?php echo $fr;?>">
                                                             </div>
-                                                            <div class="form-group col-lg-6">
+                                                            <div class="form-group col-lg-6 ocultar">
                                                                 <label>SpO2</label>
                                                                 <input type="text" name="spo2" id="spo2"
                                                                     class="form-control" value="<?php echo $spo2;?>">
@@ -1746,7 +1747,8 @@ function initial(){
                                     <!--EMPIEZAN LOS DATOS GENERALES DEL PACIENTE -->
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
-                                            <h4 class='text-success'><a data-toggle="collapse" href="#collapse18"
+                                            <h4 class='text-success'>
+                                                <a data-toggle="collapse" href="#collapse18"
                                                     class="change" act="down">Futuras Consultas<i
                                                         class="fa fa-angle-double-down pull-right"></i></a></h4>
                                         </div>
