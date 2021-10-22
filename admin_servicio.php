@@ -21,7 +21,7 @@
 	include_once "header.php";
 	include_once "main_menu.php";
 	
- 	$sql="SELECT * FROM servicio";
+ 	$sql="SELECT * FROM ".EXTERNAL.".servicios ";
  	$sql0 = _query("SELECT moneda, simbolo FROM empresa WHERE id_empresa='1'");
  	$datos_moneda = _fetch_array($sql0);
  	$simbolo = $datos_moneda["simbolo"];  
@@ -62,7 +62,6 @@
 								<tr>
 									<th style="width: 15%;">Id Servicio</th>
 									<th style="width: 55%;">Descripción</th>
-									<th style="width: 15%;">Precio</th>
 									<th style="width: 15%;">Acción</th>
 								</tr>
 							</thead>
@@ -73,12 +72,10 @@
 						for($i=0;$i<$count;$i++)
 						{
 							$row=_fetch_array($result);
-							$descripcion = $row["descripcion"];
-							$precio = $row["precio"];
+							$servicio = $row["servicio"];
 							echo "<tr>";
 							echo"<td>".$row["id_servicio"]."</td>
-								<td>".$descripcion."</td>
-								<td>".$simbolo."".number_format($precio,2,".",",")."</td>";
+								<td>".$servicio."</td>";
 							echo"<td><div class=\"btn-group\">
 								<a href=\"#\" data-toggle=\"dropdown\" class=\"btn btn-primary dropdown-toggle\"><i class=\"fa fa-user icon-white\"></i> Menu<span class=\"caret\"></span></a>
 								<ul class=\"dropdown-menu dropdown-primary\">";

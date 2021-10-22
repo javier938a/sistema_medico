@@ -37,7 +37,14 @@
         return  ED($fecha_ingreso);
       }, 'field' => 'fecha_de_entrada'),
       array( 'db' => "evento", 'dt' => 4, 'field' => 'evento'),
-		  array( 'db' => "id_estado_recepcion", 'dt' => 5, 'formatter' => function($id_estado_recepcion){
+      array('db'=>'id_tipo_recepcion', 'dt'=>5, 'formatter'=>function($id_tipo_recepcion){
+        $sql_tipo_recepcion="SELECT tr.descripcion FROM tipo_recepcion AS tr WHERE id_tipo_recepcion=$id_tipo_recepcion";
+        $query_tipo_recepcion=_query($sql_tipo_recepcion);
+        $array_tipo_recepcion=_fetch_array($query_tipo_recepcion);
+        $descripcion=$array_tipo_recepcion['descripcion'];
+        return $descripcion;
+      }, 'field'=>'id_tipo_recepcion'),
+		  array( 'db' => "id_estado_recepcion", 'dt' => 6, 'formatter' => function($id_estado_recepcion){
 
         $sql = "SELECT er.color, er.estado FROM estado_recepcion AS er WHERE er.id_estado_recepcion=$id_estado_recepcion";
             $query=_query($sql);
@@ -49,7 +56,7 @@
             
             return $var;
 			}, 'field' => 'estado'),
-      array( 'db' => "id_recepcion", 'dt' => 6, 'formatter' => function ($idRecepcion) {
+      array( 'db' => "id_recepcion", 'dt' => 7, 'formatter' => function ($idRecepcion) {
 
   
       $query=_query("SELECT * FROM view_estado_paciente WHERE id_recepcion=$idRecepcion");

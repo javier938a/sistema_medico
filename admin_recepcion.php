@@ -82,6 +82,7 @@
 									<th>Doctor Ref</th>
 									<th>Fecha</th>
 									<th>Evento</th>
+									<th>Tipo de Recepcion</th>
 									<th>Estado</th>
 									<th>Acci&oacute;n</th>
 								</tr>

@@ -15,7 +15,7 @@ function initial()
 
 	$id_servicio = $_REQUEST['id_servicio'];
 
-	$sql="SELECT * FROM servicio WHERE id_servicio='$id_servicio'";
+	$sql="SELECT * FROM ".EXTERNAL.".servicios WHERE id_servicio='$id_servicio'";
 	$result = _query($sql);
 ?>
 <div class="modal-header">
@@ -39,12 +39,12 @@ function initial()
 					<?php
 						$row = _fetch_array ($result);
 						$id_servicio=$row["id_servicio"];
-						$descripcion = $row["descripcion"];
-						$precio = $row["precio"];
+						$servicio = $row["servicio"];
+						//$precio = $row["precio"];
 						//$fecha_reg = ED($row["fecha_registro"]);
 						echo"<tr><td>Id Servicio</td><td>".$id_servicio."</td></tr>";
-						echo"<tr><td>Descripcion</td><td>".$descripcion."</td></tr>";											
-						echo"<tr><td>Precio</td><td>".$simbolo."".number_format($precio,2,".",",")."</td></tr>";											
+						echo"<tr><td>Descripcion</td><td>".$servicio."</td></tr>";											
+						//echo"<tr><td>Precio</td><td>".$simbolo."".number_format($precio,2,".",",")."</td></tr>";											
 					?>
 				</table>
 			</div>
@@ -67,7 +67,7 @@ else {
 }
 function deleted() {
 	$id_servicio = $_POST ['id_servicio'];
-	$table = 'servicio';
+	$table = EXTERNAL.'.servicios';
 	$where_clause = "id_servicio='" . $id_servicio . "'";
 	$delete = _delete ( $table, $where_clause );
 	if ($delete)

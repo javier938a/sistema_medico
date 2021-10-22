@@ -26,9 +26,9 @@ $(document).ready(function() {
             var prod = prod0.split("|");
             var id_p = prod[0];
             var nombre = prod[1];
-            var evento = prod[2];
-            var fecha = prod[3];
-            var hora = prod[4];
+            var evento = prod[3];
+            var fecha = prod[4];
+            var hora = prod[5];
             $.ajax({
                 type: 'POST',
                 url: 'agregar_hospitalizacion.php',

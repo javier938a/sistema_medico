@@ -52,16 +52,16 @@ function initial()
                     <div class="row"> 
                         <div class="col-md-12">
                             <div class="form-group has-info">
-                                <label>Descripción <span style="color:red;">*</span></label> 
+                                <label>Nombre del servicio <span style="color:red;">*</span></label> 
                                 <input type="text" placeholder="Descripción" class="form-control" id="descripcion" name="descripcion">
                             </div>        
                         </div>
-                        <div class="col-md-12">
+                        <!---<div class="col-md-12">
                             <div class="form-group has-info">
                                 <label>Precio <?php echo "(".$moneda." <label class='badge badge-default'>".$simbolo."</label>)"; ?><span style="color:red;">*</span></label> 
                                 <input type="text" placeholder="00.00" class="form-control numeric" id="precio" name="precio">
                             </div>        
-                        </div>
+                        </div>-->
                     </div>
                     <div class="row">      
                         <div class="col-md-12">
@@ -90,16 +90,16 @@ else
 function insertar()
 {
 
-    $descripcion=$_POST["descripcion"];
-    $precio=$_POST["precio"];
+    $servicio=$_POST["descripcion"];
+    //$precio=$_POST["precio"];
 
-    $table = 'servicio';
+    $table = EXTERNAL.'.servicios';
     
     $form_data = array(	
-    'descripcion' => $descripcion,
-    'precio' => $precio
+    'servicio' => $servicio,
+    //'precio' => $precio
     );   	
-    $sql_exis = _query("SELECT * FROM servicio WHERE descripcion='$descripcion' AND precio = '$precio'");
+    $sql_exis = _query("SELECT * FROM ".EXTERNAL.".servicios WHERE servicio='$servicio'");
     $num_exis = _num_rows($sql_exis);
     if($num_exis==0)
     {

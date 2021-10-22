@@ -41,10 +41,10 @@ function initial()
     $id_servicio=$_REQUEST["id_servicio"];
     
     //Get data from db
-    $sql=_query("SELECT * FROM servicio WHERE id_servicio='$id_servicio'");
+    $sql=_query("SELECT * FROM ".EXTERNAL.".servicios WHERE id_servicio='$id_servicio'");
     $row = _fetch_array($sql);
-    $descripcion = $row["descripcion"];//.", ".$row["nombre_municipio"].", ".$row["nombre_departamento"];
-    $precio = $row["precio"];//.", ".$row["nombre_municipio"].", ".$row["nombre_departamento"];
+    $servicio = $row["servicio"];//.", ".$row["nombre_municipio"].", ".$row["nombre_departamento"];
+    //$precio = $row["precio"];//.", ".$row["nombre_municipio"].", ".$row["nombre_departamento"];
 ?>
 <div class="wrapper wrapper-content  animated fadeInRight">
     <div class="row">
@@ -62,16 +62,17 @@ function initial()
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group has-info">
-                                <label>Descripción <span style="color:red;">*</span></label> 
-                                <input type="text" class="form-control" id="descripcion" name="descripcion" value="<?php echo $descripcion; ?>">
+                                <label>Nombre del servicio <span style="color:red;">*</span></label> 
+                                <input type="text" class="form-control" id="descripcion" name="descripcion" value="<?php echo $servicio; ?>">
                             </div>        
                         </div>
+                        <!--
                         <div class="col-md-12">
                             <div class="form-group has-info">
                                 <label>Precio <?php echo "(".$moneda." <label class='badge badge-default'>".$simbolo."</label>)"; ?><span style="color:red;">*</span></label> 
                                 <input type="text" class="form-control numeric" id="precio" name="precio" value="<?php echo $precio; ?>">
                             </div>        
-                        </div>
+                        </div>-->
                     </div>
                     <div class="row">      
                         <div class="col-md-12">
@@ -101,14 +102,14 @@ else
 function editar()
 {
     $id_servicio=$_POST["id_servicio"];
-    $descripcion=$_POST["descripcion"];
-    $precio=$_POST["precio"];
+    $servicio=$_POST["descripcion"];
+    //$precio=$_POST["precio"];
 
-    $table = 'servicio';
+    $table = EXTERNAL.'.servicios';
     
     $form_data = array( 
-    'descripcion' => $descripcion,
-    'precio' => $precio
+    'servicio' => $servicio,
+    //'precio' => $precio
     );      
     $where_clause = "id_servicio = '".$id_servicio."'";
     $update = _update($table,$form_data, $where_clause);
