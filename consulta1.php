@@ -272,11 +272,11 @@ function initial(){
                                     <a class="nav-link" id="pills-examen-tab" data-toggle="pill" href="#pills-examen"
                                         role="tab" aria-controls="pills-examen" aria-selected="false">Examenes</a>
                                 </li>
-                                <li class="nav-item">
+                                <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-constacia-tab" data-toggle="pill"
                                         href="#pills-constancia" role="tab" aria-controls="pills-constacia"
                                         aria-selected="false">Constancias</a>
-                                </li>
+                                </li>-->
                                 <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-cobros-tab" data-toggle="pill" href="#pills-cobros"
                                         role="tab" aria-controls="pills-cobros" aria-selected="false">Cobros</a>
@@ -772,6 +772,7 @@ function initial(){
                                         </div>
                                     </div>
                                 </div>
+                            
                                 <!--ACA TERMINA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DE LA ULTIMA
                                 CONSULTA QUE RECIBIO EL PACIENTE EN EL LOCAL -->
                                 <!--ACA EMPIEZA EL ESPACIO QUE SERVIRA PARA PODER VER LOS DATOS
@@ -880,7 +881,7 @@ function initial(){
                                                                     value="<?php echo $saturacion; ?>">
                                                             </div>
                                                             <div class="form-group col-lg-12">
-                                                                <label>Examen Dx</label>
+                                                                <label>Dx</label>
                                                                 <textarea rows="4" class="from-control col-lg-12"
                                                                     name="dx"
                                                                     id="dx"><?php echo $dx; ?></textarea>
@@ -1475,7 +1476,7 @@ function initial(){
                                                     </div>
                                                 </div>
                                             </div>
-
+                                                                                    
                                         </div>
                                         <div class="tab-pane fade active in" id="constancia-add" role="tabpanel"
                                             aria-labelledby="constancia-add-tab">
@@ -1811,6 +1812,7 @@ function initial(){
 
                 </div>
             </div>
+                                                
         </div>
 
 
@@ -1850,9 +1852,8 @@ function initial(){
     </div>
     <!-- Fin Modal Agregar Cita-->
 </div>
-</div>
-</div>
-</div>
+
+
 <div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls col-lg-12" data-start-slideshow="true">
     <div class="slides"></div>
     <h3 class="title"></h3>

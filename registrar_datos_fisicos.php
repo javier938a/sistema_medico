@@ -76,7 +76,7 @@
                 $query_cita=_query($sql_reserva_cita);
                 //verificando si hay una cita para este dia con este paciente
                 //print_r(_fetch_array($query_cita));
-                if(_num_rows($query_cita)==0){
+                if(_num_rows($query_cita)==1){
         
                     $datos_cita=_fetch_array($query_cita);
                     $altura=$datos_cita['altura'];
