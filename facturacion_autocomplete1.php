@@ -16,8 +16,8 @@ if ($numrows>0){
 	FROM stock_ubicacion as su, ubicacion as u
 	WHERE su.id_producto = '$id_producto' AND su.id_ubicacion = u.id_ubicacion AND u.bodega != 1 ORDER BY su.id_su ASC";
 	$resul_existencia = _query($sql_existencia);
-	$cuenta_existencia = _num_rows($resul_existencia);*/
-	
+	$cuenta_existencia = _num_rows($resul_existencia);
+	*/
 
 	while ($row = _fetch_assoc($result)) {
 			if ($row['barcode']=="")

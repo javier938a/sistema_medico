@@ -1081,12 +1081,18 @@
         SELECT cmf.stock_ubicacion.id_producto, cmf.stock_ubicacion.cantidad FROM cmf.stock_ubicacion
         SELECT cmf.stock_ubicacion.id_producto, cmf.stock_ubicacion.cantidad FROM cmf.stock_ubicacion WHERE cmf.stock_ubicacion.id_ubicacion=1 
         SELECT insumos_hospitalizacion.id_producto, insumos_hospitalizacion.cantidad FROM insumos_hospitalizacion WHERE insumos_hospitalizacion.id_producto=439 AND insumos_hospitalizacion.id_recepcion=4 AND insumos_hospitalizacion.deleted IS NULL
+        
+                SELECT sub_stock.id_producto, SUM(sub_stock.cantidad) FROM 
+        (SELECT stock.id_producto, stock.cantidad FROM '.EXTERNAL.'.stock_ubicacion AS stock WHERE stock.id_ubicacion=1 AND stock.id_producto='.$id_producto.'
+         UNION ALL 
+         SELECT ins.id_producto, ins.cantidad FROM insumos_hospitalizacion as ins WHERE ins.id_producto='.$id_producto.' AND ins.id_recepcion='.$id_recepcion.' AND ins.deleted IS NULL) AS sub_stock
+         ORDER BY sub_stock.id_producto
         ';*/
         $sql3='
         SELECT sub_stock.id_producto, SUM(sub_stock.cantidad) FROM 
-        (SELECT stock.id_producto, stock.cantidad FROM cmf.stock_ubicacion AS stock WHERE stock.id_ubicacion=1 AND stock.id_producto=439
+        (SELECT stock.id_producto, stock.cantidad FROM '.EXTERNAL.'.stock_ubicacion AS stock WHERE stock.id_ubicacion=1 AND stock.id_producto='.$id_producto.'
          UNION ALL 
-         SELECT ins.id_producto, ins.cantidad FROM insumos_hospitalizacion as ins WHERE ins.id_producto=439 AND ins.id_recepcion=4 AND ins.deleted IS NULL) AS sub_stock
+         SELECT ins.id_producto, ins.cantidad FROM cms.insumos_hospitalizacion as ins WHERE ins.id_producto='.$id_producto.' AND ins.id_recepcion='.$id_recepcion.' AND ins.deleted IS NULL) AS sub_stock
          ORDER BY sub_stock.id_producto
         ';
 

@@ -4,8 +4,6 @@
 ?>
 <?php
     function initial(){
-        echo"<h1>Aqui esta o debe</h1>";
-print_r($_POST);
         $title="Insumos Utilizados por Hospitalizacion";
         $_PAGE = array();
         $_PAGE ['title'] = $title;
@@ -46,15 +44,6 @@ print_r($_POST);
         $resultado = _fetch_array($consulta);
         $hora_hoy = _hora_media_decode(date("H:i:s"));
         $idRecepcion = $resultado['id_recepcion'];
-        //calculando el iva
-        $sql_iva="SELECT iva,monto_retencion1,monto_retencion10,monto_percepcion FROM ".EXTERNAL.".sucursal WHERE id_sucursal=1";
-        $result_IVA=_query($sql_iva);
-        $row_IVA=_fetch_array($result_IVA);
-        $iva=$row_IVA['iva']/100;
-        $monto_retencion1=$row_IVA['monto_retencion1'];
-        $monto_retencion10=$row_IVA['monto_retencion10'];
-        $monto_percepcion=$row_IVA['monto_percepcion'];
-
         ?>
 <style type="text/css">
 .datepicker table tr td,
@@ -103,7 +92,6 @@ print_r($_POST);
                                 <input type="text" id="examen_buscar" name="examen_buscar" class="form-control"
                                     placeholder="Ingrese  Descripcion de examen" data-provide="typeahead"
                                     style="border-radius:0px">
-                                <input type="hidden" name="id_sucursal" id="id_sucursal" value=<?php echo $id_sucursal ?>>
 
                             </div>
                             <div class="form-group col-md-4">
@@ -158,26 +146,29 @@ print_r($_POST);
                                                 <div class="wrap-table1001">
                                                     <div class="table100 ver1 m-b-10">
                                                         <div class="table100-head">
-                                                            <table id="inventable1" class="table table-striped table-bordered">
+                                                            <table id="inventable1">
                                                                 <thead>
-                                                                    <th style='display:none'>ID</th>
-                                                                    <th class="col-lg-3">Descripcion</th>
-                                                                    <th class="col-lg-1">Stock</th>
-                                                                    <th class="col-lg-1">Cantidad</th>
-                                                                    <th class="col-lg-2">Presentacion</th>
-                                                                    <th class="col-lg-1 descp">Presentacion</th>
-                                                                    <th class="col-lg-1">Precio</th>
-                                                                    <th class="col-lg-2">$</th>
-                                                                    <th class="col-lg-2">Subtotal</th>
-                                                                    <th class="col-lg-1">Accion</th>
+                                                                    <tr class="row100 head">
+                                                                        <th class="success cell100 column10">ID</th>
+                                                                        <th class='success  cell100 column30'>
+                                                                            DESCRIPCI&Oacute;N</th>
+                                                                        <th class='success  cell100 column10'>STOCK</th>
+                                                                        <th class='success  cell100 column15'>
+                                                                            PRESENTACI&Oacute;N</th>
+                                                                        <th class='success  cell100 column10'>PRECIO
+                                                                        </th>
+                                                                        <th class='success  cell100 column5'>CANT</th>
+                                                                        <th class='success  cell100 column10'>SUBTOT
+                                                                        </th>
+                                                                        <th class='success  cell100 column10'>
+                                                                            ACCI&Oacute;N</th>
+                                                                    </tr>
                                                                 </thead>
                                                             </table>
                                                         </div>
                                                         <div class="table100-body js-pscroll">
-                                                            <table class="table table-striped table-bordered">
-                                                                <tbody id="inventable">
-                                                                    
-                                                                </tbody>
+                                                            <table>
+                                                                <tbody id="inventable"></tbody>
                                                             </table>
                                                         </div>
                                                         <div class="table101-body">
@@ -218,16 +209,6 @@ print_r($_POST);
                                             </div>
                                         </div>
                                         <!--valores ocultos para referencia -->
-                                        <input type='hidden' name='porc_iva' id='porc_iva' value='<?php echo $iva; ?>'>
-                                        <input type='hidden' name='monto_retencion1' id='monto_retencion1'
-                                            value='<?php echo $monto_retencion1 ?>'>
-                                        <input type='hidden' name='monto_retencion10' id='monto_retencion10'
-                                            value='<?php echo $monto_retencion10 ?>'>
-                                        <input type='hidden' name='monto_percepcion' id='monto_percepcion' value='100'>
-                                        <input type='hidden' name='porc_retencion1' id='porc_retencion1' value=0>
-                                        <input type='hidden' name='porc_retencion10' id='porc_retencion10' value=0>
-                                        <input type='hidden' name='porc_percepcion' id='porc_percepcion' value=0>
-                                        <input type='hidden' name='porcentaje_descuento' id='porcentaje_descuento' value=0>
                                         <input type='hidden' name='id_empleado' id='id_empleado'>
                                         <input type='hidden' name='numero_doc' id='numero_doc'>
                                         <input type='hidden' name='id_factura' id='id_factura'>
@@ -519,7 +500,10 @@ print_r($_POST);
             $seguir = 1;
             _begin();
             if($tipop=="P"){
-                $sql_pres="SELECT tblPresentacion_Productos.unidad FROM tblPresentacion_Productos WHERE tblPresentacion_Productos.id_presentacion_producto='$id_presentacion' AND tblPresentacion_Productos.id_producto_PP='$id_producto' ";
+                $sql_pres="SELECT ".EXTERNAL.".presentacion_producto.unidad 
+                FROM ".EXTERNAL.".presentacion_producto 
+                WHERE ".EXTERNAL.".presentacion_producto.id_presentacion=$id_presentacion 
+                AND ".EXTERNAL.".presentacion_producto.id_producto=$id_producto";
                 $unidadx = 1;
                 $res_pres=_query($sql_pres);
                 if(_num_rows($res_pres) > 0){
@@ -527,11 +511,25 @@ print_r($_POST);
                     $unidadx=$row['unidad'];
                 }
                 $cantidad_real=$cantidad*$unidadx;
-                $repetido = "SELECT tblInsumos_Emergencia.id_insumo FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_recepcion = $id_recepcion AND tblInsumos_Emergencia.id_insumo = $id_insumo AND tblInsumos_Emergencia.producto = '1' AND tblInsumos_Emergencia.id_producto = '$id_producto' AND tblInsumos_Emergencia.id_presentacion = $id_presentacion AND tblInsumos_Emergencia.cantidad = $cantidad AND tblInsumos_Emergencia.total = $precio_venta AND tblInsumos_Emergencia.deleted is NULL";
+                $repetido="SELECT insumos_emergencia.id_insumo FROM insumos_emergencia 
+                WHERE insumos_emergencia.id_recepcion = $id_recepcion
+                AND insumos_emergencia.id_insumo = $id_insumo
+                AND insumos_emergencia.producto = '1'
+                AND insumos_emergencia.id_producto = $id_producto 
+                AND insumos_emergencia.id_presentacion =$id_presentacion
+                AND insumos_emergencia.cantidad = $cantidad 
+                AND insumos_emergencia.total = $precio_venta 
+                AND insumos_emergencia.deleted is NULL";
+
                 $repetidoQuery=_query($repetido);
                 $repe = _num_rows($repetidoQuery);
                 if($repe == 0){
-                    $existente = "SELECT tblInsumos_Emergencia.id_insumo, tblInsumos_Emergencia.cantidad FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_recepcion = '$id_recepcion' AND tblInsumos_Emergencia.producto = '1' AND tblInsumos_Emergencia.id_producto = '$id_producto' AND tblInsumos_Emergencia.id_insumo = $id_insumo";
+                    $existente="SELECT insumos_emergencia.id_insumo, insumos_emergencia.cantidad 
+                    FROM insumos_emergencia WHERE insumos_emergencia.id_recepcion = $id_recepcion 
+                    AND insumos_emergencia.producto = '1' 
+                    AND insumos_emergencia.id_producto = '$id_producto' 
+                    AND insumos_emergencia.id_insumo = $id_insumo";
+
                     $existenteQuery=_query($existente);
                     $exist = _num_rows($existenteQuery);
                     $cantidad_anterior = 0;
@@ -539,7 +537,7 @@ print_r($_POST);
                         $row = _fetch_array($existenteQuery);
                         $id_insumox = $row['id_insumo'];
                         $cantidad_anterior = $row['cantidad'];
-                        $tabla = "tblInsumos_Emergencia";
+                        $tabla = "insumos_emergencia";
                         $fd2= array(
                             'id_recepcion' => $id_recepcion,
                             'id_producto' => $id_producto,
@@ -553,7 +551,7 @@ print_r($_POST);
                         $ins2 = _update($tabla,$fd2,$where);
                     }
                     else{
-                        $tabla = "tblInsumos_Emergencia";
+                        $tabla = "insumos_emergencia";
                         $fd2= array(
                             'id_recepcion' => $id_recepcion,
                             'id_producto' => $id_producto,
@@ -566,13 +564,25 @@ print_r($_POST);
                         $ins2 = _insert($tabla,$fd2);
                     }
                     if($ins2){
-                        $cant_st_su = "SELECT tblStock_Ubicacion.id_stock_ubicacion, tblStock_Ubicacion.cantidad, tblPresentacion_Productos.costo from tblStock_Ubicacion INNER JOIN tblProductos on tblProductos.id_producto = tblStock_Ubicacion.id_producto INNER JOIN tblPresentacion_Productos on tblProductos.id_producto = tblPresentacion_Productos.id_producto_PP WHERE tblStock_Ubicacion.id_producto = $id_producto AND tblStock_Ubicacion.id_ubicacion = 2 AND tblPresentacion_Productos.id_presentacion_producto = $id_presentacion ";
+                        $$cant_st_su="SELECT ".EXTERNAL.".stock_ubicacion.id_su AS id_stock_ubicacion, 
+                        ".EXTERNAL.".stock_ubicacion.cantidad, ".EXTERNAL.".presentacion_producto.costo 
+                        from ".EXTERNAL.".stock_ubicacion INNER JOIN ".EXTERNAL.".producto 
+                        on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".stock_ubicacion.id_producto 
+                        INNER JOIN ".EXTERNAL.".presentacion_producto 
+                        on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto 
+                        WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto 
+                        AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = 1 
+                        AND ".EXTERNAL.".presentacion_producto.id_presentacion =$id_presentacion";
+
                         $cant_stQuery_su=_query($cant_st_su);
                         $row_cant_su = _fetch_array($cant_stQuery_su);
                         $id_su = $row_cant_su['id_stock_ubicacion'];
                         $cant_stock_su = $row_cant_su['cantidad'];
                         $costo = $row_cant_su['costo'];
-                        $cant_stock_original = "SELECT tblStock.id_stock, tblStock.cantidad_stock FROM tblStock WHERE tblStock.id_producto_stock = $id_producto AND tblStock.id_sucursal_stock = $id_sucursal";
+                        $cant_stock_original="SELECT ".EXTERNAL.".stock.id_stock, ".EXTERNAL.".stock.stock as 
+                        cantidad_stock FROM ".EXTERNAL.".stock
+                         WHERE ".EXTERNAL.".stock.id_producto = $id_producto AND ".EXTERNAL.".stock.id_sucursal=$id_sucursal";
+
                         $cant_stock_originalQuery=_query($cant_stock_original);
                         $row_cant_stock_original = _fetch_array($cant_stock_originalQuery);
                         $id_stock_ori = $row_cant_stock_original['id_stock'];
@@ -627,18 +637,18 @@ print_r($_POST);
                             }
                         }
                         if($cambio_stock > 0){
-                            $tabla3 = "tblStock";
+                            $tabla3 = "stock";
                             $fd3= array(
-                                'cantidad_stock' => $stock_original_nuevo
+                                'stock' => $stock_original_nuevo
                             );
                             $where3 = " WHERE id_stock = '$id_stock_ori'";
                             $ins3 = _update($tabla3,$fd3,$where3);
                             if($ins3){
-                                $tabla4 = "tblStock_Ubicacion";
+                                $tabla4 = "stock_ubicacion";
                                 $fd4= array(
                                     'cantidad' => $stock_ubicacion_nuevo
                                 );
-                                $where4 = " WHERE id_stock_ubicacion = '$id_su'";
+                                $where4 = " WHERE id_su= '$id_su'";
                                 $ins4 = _update($tabla4,$fd4,$where4);
                                 if($ins4){
 
@@ -674,7 +684,14 @@ print_r($_POST);
                 $fecha_hora = unirFecha($f_h[0],$f_h[1], $f_h[2]);
                 $unidad=1;
                 $cantidad_real=$cantidad*$unidad;
-                $existente = "SELECT tblInsumos_Emergencia.id_insumo FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_recepcion = $id_recepcion and tblInsumos_Emergencia.servicio = 1 AND tblInsumos_Emergencia.id_servicio = $id_producto AND tblInsumos_Emergencia.total = $precio_venta AND tblInsumos_Emergencia.hora_de_aplicacion = '$fecha_hora'  AND tblInsumos_Emergencia.deleted is NULL AND tblInsumos_Emergencia.id_insumo = $id_insumo_S";
+                $existente="SELECT insumos_emergencia.id_insumo FROM insumos_emergencia 
+                WHERE insumos_emergencia.id_recepcion = $id_recepcion 
+                and insumos_emergencia.servicio = 1 
+                AND insumos_emergencia.id_servicio = $id_producto 
+                AND insumos_emergencia.total = $precio_venta 
+                AND insumos_emergencia.hora_de_aplicacion = '$fecha_hora'  
+                AND insumos_emergencia.deleted is NULL AND insumos_emergencia.id_insumo = $id_insumo_S";
+
                 $servicioExistente=_query($existente);
                 $repe = _num_rows($servicioExistente);
                 if($repe == 0){
@@ -724,7 +741,7 @@ print_r($_POST);
             $hora1=date("H:i:s");
             $dia1 =date('Y-m-d');
             if(!empty($array_cargas)){
-                $sql_num = _query("SELECT di FROM tblCorrelativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num=_query("SELECT di FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["di"]+1;
                 $numero_doc=$ult.'_DI';
@@ -732,43 +749,43 @@ print_r($_POST);
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="tblCorrelativo";
+                $table="correlativo";
                 $form_data = array(
                     'di' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table='tblMovimiento_Producto';
+                    $table="".EXTERNAL.'movimiento_producto';
                     $form_data = array(
-                      'id_sucursal_MP' => $id_sucursal,
+                      'id_sucursal' => $id_sucursal,
                       'correlativo' => $numero_doc,
                       'concepto' => "ASIGNACION DE PRODUCTOS A LA RECEPCION CON EL ID $id_recepcion",
                       'total' => $precio_cargas,
                       'tipo' => 'SALIDA',
                       'proceso' => 'di',
                       'referencia' => $numero_doc,
-                      'id_empleado_MP' => $id_empleado,
+                      'id_empleado' => $id_empleado,
                       'fecha' => $dia1,
                       'hora' => $hora1,
                       'id_suc_origen' => $id_sucursal,
                       'id_suc_destino' => $id_sucursal,
-                      'id_proveedor_MP' => 0,
+                      'id_proveedor' => 0,
                     );
                     $insert_mov =_insert($table,$form_data);
                     $id_movimiento=_insert_id();
                     if($insert_mov){
                         foreach ($array_cargas as $array_cargas1) {
-                            $table1= 'tblMovimiento_Producto_Detalle';
+                            $table1= "".EXTERNAL.'movimiento_producto_detalle';
                             $form_data1 = array(
-                                'id_movimiento_MP'=>$id_movimiento,
-                                'id_producto_MP' => $array_cargas1['id_producto'],
+                                'id_movimiento'=>$id_movimiento,
+                                'id_producto' => $array_cargas1['id_producto'],
                                 'cantidad' => $array_cargas1['cantidad'],
                                 'costo' => $array_cargas1['costo'],
                                 'precio' => $array_cargas1['precio'],
                                 'stock_anterior'=>$array_cargas1['stock_anterior'],
                                 'stock_actual'=>$array_cargas1['stock_actual'],
-                                'id_presentacion_MP' => $array_cargas1['id_presentacion']
+                                'id_presentacion' => $array_cargas1['id_presentacion']
                             );
                             $insert_mov_det = _insert($table1,$form_data1);
                             if($insert_mov_det){
@@ -789,7 +806,7 @@ print_r($_POST);
             }
             if(!empty($array_descargas)){
                 $descarga_de_inventario = 1;
-                $sql_num = _query("SELECT ti FROM tblCorrelativo WHERE id_sucursal='$id_sucursal'");
+                $sql_num = _query("SELECT ti FROM ".EXTERNAL."correlativo WHERE id_sucursal='$id_sucursal'");
                 $datos_num = _fetch_array($sql_num);
                 $ult = $datos_num["ti"]+1;
                 $numero_doc=$ult.'_TI';
@@ -797,44 +814,44 @@ print_r($_POST);
                 /*actualizar los correlativos de AI*/
                 $corr=1;
                 $up=1;
-                $table="tblCorrelativo";
+                $table="".EXTERNAL."correlativo";
                 $form_data = array(
                   'ti' =>$ult
                 );
                 $where_clause_c="id_sucursal='".$id_sucursal."'";
                 $up_corr=_update($table,$form_data,$where_clause_c);
                 if($up_corr){
-                    $table='tblMovimiento_Producto';
+                    $table='movimiento_producto';
                     $form_data = array(
-                      'id_sucursal_MP' => $id_sucursal,
+                      'id_sucursal' => $id_sucursal,
                       'correlativo' => $numero_doc,
                       'concepto' => "DESCARGA DE PRODUCTOS A LA RECEPCION CON EL ID $id_recepcion",
                       'total' => $precio_descargas,
                       'tipo' => 'ENTRADA',
                       'proceso' => 'ti',
                       'referencia' => $numero_doc,
-                      'id_empleado_MP' => $id_empleado,
+                      'id_empleado' => $id_empleado,
                       'fecha' => $dia1,
                       'hora' => $hora1,
                       'id_suc_origen' => $id_sucursal,
                       'id_suc_destino' => $id_sucursal,
-                      'id_proveedor_MP' => 0,
+                      'id_proveedor' => 0,
                     );
                     $insert_mov =_insert($table,$form_data);
                     $id_movimiento=_insert_id();
                     if($insert_mov){
                         $id_descarga_movimiento = $id_movimiento;
                         foreach ($array_descargas as $array_cargas1) {
-                            $table1= 'tblMovimiento_Producto_Detalle';
+                            $table1= 'movimiento_producto_detalle';
                             $form_data1 = array(
-                                'id_movimiento_MP'=>$id_movimiento,
-                                'id_producto_MP' => $array_cargas1['id_producto'],
+                                'id_movimiento'=>$id_movimiento,
+                                'id_producto' => $array_cargas1['id_producto'],
                                 'cantidad' => $array_cargas1['cantidad'],
                                 'costo' => $array_cargas1['costo'],
                                 'precio' => $array_cargas1['precio'],
                                 'stock_anterior'=>$array_cargas1['stock_anterior'],
                                 'stock_actual'=>$array_cargas1['stock_actual'],
-                                'id_presentacion_MP' => $array_cargas1['id_presentacion']
+                                'id_presentacion' => $array_cargas1['id_presentacion']
                             );
                             $insert_mov_det = _insert($table1,$form_data1);
                             if($insert_mov_det){
@@ -861,7 +878,17 @@ print_r($_POST);
             $algun_producto=0;
             $error3=0;
             $array_base = array();
-            $sqlx = "SELECT tblInsumos_Emergencia.id_insumo, tblInsumos_Emergencia.total, tblInsumos_Emergencia.id_producto, tblInsumos_Emergencia.id_servicio, tblInsumos_Emergencia.producto, tblInsumos_Emergencia.servicio, tblInsumos_Emergencia.id_presentacion, tblPresentacion_Productos.costo FROM tblInsumos_Emergencia LEFT JOIN tblProductos on tblProductos.id_producto = tblInsumos_Emergencia.id_producto LEFT JOIN tblPresentacion_Productos on tblPresentacion_Productos.id_presentacion_producto = tblInsumos_Emergencia.id_presentacion WHERE tblInsumos_Emergencia.id_recepcion = $id_recepcion AND tblInsumos_Emergencia.deleted is NULL AND tblInsumos_Emergencia.created_at != '$fecha_hora_ingresar'";
+            $sqlx="SELECT insumos_emergencia.id_insumo, insumos_emergencia.total, 
+            insumos_emergencia.id_producto, insumos_emergencia.id_servicio, 
+            insumos_emergencia.producto, insumos_emergencia.servicio, 
+            insumos_emergencia.id_presentacion, ".EXTERNAL.".presentacion_producto.costo 
+            FROM insumos_emergencia LEFT JOIN 
+            ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = insumos_emergencia.id_producto 
+            LEFT JOIN ".EXTERNAL.".presentacion_producto 
+            on presentacion_producto.id_presentacion = insumos_emergencia.id_presentacion 
+            WHERE insumos_emergencia.id_recepcion = $id_recepcion AND insumos_emergencia.deleted is NULL 
+            AND insumos_emergencia.created_at != '$fecha_hora_ingresar' ";
+
             $consultax = _query($sqlx);
             while($rowx = _fetch_array($consultax)){
                 $tipop = "";
@@ -921,7 +948,7 @@ print_r($_POST);
             if(!empty($array_base)){
                 if($algun_producto == 0){
                     foreach ($array_base as $key1 => $value1){
-                        $tabla_deleted="tblInsumos_Emergencia";
+                        $tabla_deleted="insumos_emergencia";
                         $where = " WHERE id_insumo = ".$value1['id_insumo'];
                         $eliminar_insumo = _delete($tabla_deleted,$where);
                         if($eliminar_insumo){
@@ -940,33 +967,33 @@ print_r($_POST);
                           $precio_total_eliminado+= $value1['precio'];
                         }
                     }
-                    $sql_num = _query("SELECT ti FROM tblCorrelativo WHERE id_sucursal='$id_sucursal'");
+                    $sql_num = _query("SELECT ti FROM ".EXTERNAL.".correlativo WHERE id_sucursal='$id_sucursal'");
                     $datos_num = _fetch_array($sql_num);
                     $ult = $datos_num["ti"]+1;
                     $numero_doc=$ult.'_TI';
                     /*actualizar los correlativos de AI*/
-                    $tableC="tblCorrelativo";
+                    $tableC="".EXTERNAL."correlativo";
                     $form_dataC = array(
                         'ti' =>$ult
                     );
                     $where_clause_cC="id_sucursal='".$id_sucursal."'";
                     $up_corrC=_update($tableC,$form_dataC,$where_clause_cC);
                     if($up_corrC){
-                        $table='tblMovimiento_Producto';
+                        $table='movimiento_producto';
                         $form_data = array(
-                            'id_sucursal_MP' => $id_sucursal,
+                            'id_sucursal' => $id_sucursal,
                             'correlativo' => $numero_doc,
                             'concepto' => "ELIMINACION DE PRODUCTOS A LA RECEPCION CON EL ID $id_recepcion",
                             'total' => $precio_total_eliminado,
                             'tipo' => 'ENTRADA',
                             'proceso' => 'ti',
                             'referencia' => $numero_doc,
-                                'id_empleado_MP' => $id_empleado,
+                                'id_empleado' => $id_empleado,
                                 'fecha' => $dia1,
                                 'hora' => $hora1,
                                 'id_suc_origen' => $id_sucursal,
                                 'id_suc_destino' => $id_sucursal,
-                                'id_proveedor_MP' => 0,
+                                'id_proveedor' => 0,
                         );
                         $insert_mov =_insert($table,$form_data);
                         $id_movimientox=_insert_id();
@@ -976,50 +1003,52 @@ print_r($_POST);
                               $dia1 =date('Y-m-d');
                               if($value['tipo'] == "P"){
                                   $id_producto_eliminado = $value['id_producto'];
-                                  $sqlD = "SELECT tblInsumos_Emergencia.cantidad FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_insumo =".$value['id_insumo'];
+                                  $sqlD = "SELECT insumos_emergencia.cantidad FROM insumos_emergencia WHERE insumos_emergencia.id_insumo =".$value['id_insumo'];
                                   $consultaD = _query($sqlD);
                                   $registroD = _fetch_array($consultaD);
                                   $cantidad = $registroD['cantidad'];
-                                  $sql_consulta_sg = "SELECT tblStock.id_stock, tblStock.cantidad_stock FROM tblStock WHERE tblStock.id_producto_stock = $id_producto_eliminado AND tblStock.id_sucursal_stock = 1";
+                                  $sql_consulta_sg="SELECT ".EXTERNAL.".stock.id_stock, ".EXTERNAL.".stock.stock AS cantidad_stock FROM ".EXTERNAL.".stock WHERE ".EXTERNAL.".stock.id_producto= $id_producto_eliminado AND ".EXTERNAL.".stock.id_sucursal = 1 ";
                                   $consulta_sql_sg = _query($sql_consulta_sg);
                                   $registros_sql_sql = _fetch_array($consulta_sql_sg);
                                   $id_stock_original = $registros_sql_sql['id_stock'];
                                   $cantidad_stock_original = $registros_sql_sql['cantidad_stock'];
-                                  $sql_consulta_su = "SELECT tblStock_Ubicacion.id_stock_ubicacion, tblStock_Ubicacion.cantidad FROM tblStock_Ubicacion WHERE tblStock_Ubicacion.id_producto = $id_producto_eliminado AND tblStock_Ubicacion.id_ubicacion = 2 AND tblStock_Ubicacion.id_sucursal = 1";
+                                  $sql_consulta_su="SELECT ".EXTERNAL.".stock_ubicacion.id_su AS id_stock_ubicacion, 
+                                  ".EXTERNAL.".stock_ubicacion.cantidad FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto_eliminado 
+                                  AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = 1 AND ".EXTERNAL.".stock_ubicacion.id_sucursal = 1 ";
                                   $consulta_sql_su = _query($sql_consulta_su);
                                   $registros_sql_su = _fetch_array($consulta_sql_su);
                                   $id_stock_ubicacion = $registros_sql_su['id_stock_ubicacion'];
                                   $cantidad_stock_ubicacion = $registros_sql_su['cantidad'];
                                   $cantidad_nueva_so = $cantidad_stock_original+$cantidad;
                                   $cantidad_nueva_su = $cantidad_stock_ubicacion+$cantidad;
-                                  $tabla3x = "tblStock";
+                                  $tabla3x = "".EXTERNAL.".stock";
                                   $fd3x= array(
-                                      'cantidad_stock' => $cantidad_nueva_so
+                                      'stock' => $cantidad_nueva_so
                                   );
                                   $where3x = " WHERE id_stock = '$id_stock_original'";
                                   $ins3x = _update($tabla3x,$fd3x,$where3x);
                                   if($ins3x){
-                                      $tabla4x = "tblStock_Ubicacion";
+                                      $tabla4x = "".EXTERNAL.".stock_ubicacion";
                                       $fd4x= array(
                                           'cantidad' => $cantidad_nueva_su
                                       );
-                                      $where4x = " WHERE id_stock_ubicacion = '$id_stock_ubicacion'";
+                                      $where4x = " WHERE id_su = '$id_stock_ubicacion'";
                                       $ins4x = _update($tabla4x,$fd4x,$where4x);
                                       if($ins4x){
-                                          $table1x= 'tblMovimiento_Producto_Detalle';
+                                          $table1x= "".EXTERNAL.".movimiento_producto_detalle";
                                           $form_data1x = array(
-                                              'id_movimiento_MP'=>$id_movimientox,
-                                              'id_producto_MP' => $value['id_producto'],
+                                              'id_movimiento'=>$id_movimientox,
+                                              'id_producto' => $value['id_producto'],
                                               'cantidad' => $cantidad,
                                               'costo' => $value['costo'],
                                               'precio' => $value['precio'],
                                               'stock_anterior'=>$cantidad_stock_original,
                                               'stock_actual'=>$cantidad_nueva_so,
-                                              'id_presentacion_MP' => $value['id_presentacion']
+                                              'id_presentacion' => $value['id_presentacion']
                                           );
                                           $insert_mov_detx = _insert($table1x,$form_data1x);
                                           if($insert_mov_detx){
-                                              $tabla_deleted="tblInsumos_Emergencia";
+                                              $tabla_deleted="insumos_emergencia";
                                               $eliminar_insumo = _delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']);
                                               if($eliminar_insumo){
 
@@ -1041,7 +1070,7 @@ print_r($_POST);
                                   }
                               }
                               if($value['tipo'] == "S"){
-                                    $tabla_deleted="tblInsumos_Emergencia";
+                                    $tabla_deleted="insumos_emergencia";
                                     $eliminar_insumo = _delete($tabla_deleted," WHERE id_insumo = ".$value['id_insumo']);
                                     if($eliminar_insumo){
 
@@ -1109,9 +1138,24 @@ print_r($_POST);
     function get_presentacion(){
         $id_presentacion =$_REQUEST['id_presentacion'];
         $id_recepcion =$_REQUEST['id_recepcion'];
-        $id_P = _fetch_array(_query("SELECT tblProductos.id_producto, tblPresentacion_Productos.precio, tblPresentacion_Productos.unidad, tblPresentacion_Productos.descripcion FROM tblProductos INNER JOIN tblPresentacion_Productos on tblPresentacion_Productos.id_producto_PP = tblProductos.id_producto WHERE tblPresentacion_Productos.id_presentacion_producto = $id_presentacion"));
+        $id_P = _fetch_array(_query("SELECT ".EXTERNAL.".producto.id_producto, ".EXTERNAL.".presentacion_producto.precio, 
+        ".EXTERNAL.".presentacion_producto.unidad, ".EXTERNAL.".presentacion_producto.descripcion 
+        FROM ".EXTERNAL.".producto
+        INNER JOIN ".EXTERNAL.".presentacion_producto on 
+        ".EXTERNAL.".presentacion_producto.id_producto = ".EXTERNAL.".producto.id_producto 
+        WHERE ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion"));
         $id_producto = $id_P['id_producto'];
-        $sql=_fetch_array(_query("SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total FROM ( SELECT tblStock_Ubicacion.id_producto, tblStock_Ubicacion.cantidad FROM tblStock_Ubicacion WHERE tblStock_Ubicacion.id_producto = $id_producto AND tblStock_Ubicacion.id_ubicacion = 2 UNION ALL SELECT tblInsumos_Emergencia.id_producto, tblInsumos_Emergencia.cantidad FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.id_producto = $id_producto AND tblInsumos_Emergencia.id_recepcion = $id_recepcion) tblStock_Ubicacion GROUP BY tblStock_Ubicacion.id_producto "));
+        $lquery="SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total FROM 
+        ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad 
+        FROM ".EXTERNAL.".stock_ubicacion WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto 
+        AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = 1 
+        UNION ALL 
+        SELECT cms.insumos_emergencia.id_producto, cms.insumos_emergencia.cantidad 
+        FROM cms.insumos_emergencia 
+        WHERE cms.insumos_emergencia.id_producto = $id_producto 
+        AND cms.insumos_emergencia.id_recepcion =$id_recepcion) tblStock_Ubicacion 
+        GROUP BY tblStock_Ubicacion.id_producto ";
+        $sql=_fetch_array(_query($lquery));
         $precio=$id_P['precio'];
         $unidad=$id_P['unidad'];
         $descripcion=$id_P['descripcion'];
@@ -1129,120 +1173,55 @@ print_r($_POST);
             <?php
 
     function consultar_existencias(){
+        $id_recepcion=$_POST['idRecepcion'];
+        $id_producto = $_POST['id_producto'];
+        $id_presentacion="";
+        if (isset($_REQUEST['id_presentacion'])){
+            $id_presentacion=$_REQUEST['id_presentacion'];
+        }
+        $sql="SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad)
+        total FROM ( SELECT ".EXTERNAL.".stock_ubicacion.id_producto, ".EXTERNAL.".stock_ubicacion.cantidad 
+        FROM ".EXTERNAL.".stock_ubicacion 
+        WHERE ".EXTERNAL.".stock_ubicacion.id_producto = $id_producto  
+        AND ".EXTERNAL.".stock_ubicacion.id_ubicacion = 1 
+        UNION ALL SELECT cms.insumos_emergencia.id_producto, cms.insumos_emergencia.cantidad 
+        FROM cms.insumos_emergencia 
+        WHERE cms.insumos_emergencia.id_producto = $id_producto 
+        AND cms.insumos_emergencia.id_recepcion = $id_recepcion 
+        AND cms.insumos_emergencia.deleted is NULL ) tblStock_Ubicacion 
+        GROUP BY tblStock_Ubicacion.id_producto";
 
-        $id_producto = $_REQUEST['id_producto'];
-        $id_usuario=$_SESSION["id_usuario"];
-      
-        $precios= 7;
-        $limit="";
-        if ($precios==0) {
-          $limit="LIMIT 1";
+        $sql = "SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total 
+        FROM ( SELECT tblStock_Ubicacion.id_producto, tblStock_Ubicacion.cantidad 
+        FROM tblStock_Ubicacion 
+        WHERE tblStock_Ubicacion.id_producto = $id_producto 
+        AND tblStock_Ubicacion.id_ubicacion = 2 
+        UNION ALL SELECT 
+        tblInsumos_Emergencia.id_producto, tblInsumos_Emergencia.cantidad 
+        FROM tblInsumos_Emergencia 
+        WHERE tblInsumos_Emergencia.id_producto = $id_producto 
+        AND tblInsumos_Emergencia.id_recepcion = $id_recepcion 
+        AND tblInsumos_Emergencia.deleted is NULL ) tblStock_Ubicacion 
+        GROUP BY tblStock_Ubicacion.id_producto ";
+        $consulta = _query($sql);
+        $row = _fetch_array($consulta);
+        $xdatos['total'] = $row['total'];
+        if($id_presentacion == ""){
+            $sql2="SELECT ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_producto = $id_producto";
         }
         else{
-          $limit="LIMIT 7";
+            $sql2="SELECT ".EXTERNAL.".presentacion_producto.unidad FROM ".EXTERNAL.".presentacion_producto WHERE ".EXTERNAL.".presentacion_producto.id_producto = $id_producto AND ".EXTERNAL.".presentacion_producto.id_presentacion = $id_presentacion";
         }
-        $id_sucursal=$_REQUEST['id_sucursal'];
-        $id_factura=$_REQUEST['id_factura'];
-        $precio=0;
-        $categoria="";
-      
-        $sql1 = "SELECT p.id_producto,p.id_categoria, p.barcode, p.descripcion, p.estado, p.perecedero, p.exento, p.id_categoria, p.id_sucursal,SUM(su.cantidad) as stock FROM ".EXTERNAL.".producto AS p JOIN ".EXTERNAL.".stock_ubicacion as su ON su.id_producto=p.id_producto JOIN ".EXTERNAL.".ubicacion as u ON u.id_ubicacion=su.id_ubicacion  WHERE p.id_producto =$id_producto AND u.bodega=0 AND su.id_sucursal=$id_sucursal";
-        $stock1=_query($sql1);
-        $row1=_fetch_array($stock1);
-        $nrow1=_num_rows($stock1);
-        if ($nrow1>0)
-        {
-          $hoy=date("Y-m-d");
-          $perecedero=$row1['perecedero'];
-          $barcode = $row1["barcode"];
-          $descripcion = $row1["descripcion"];
-          $estado = $row1["estado"];
-          $perecedero = $row1["perecedero"];
-          $exento = $row1["exento"];
-          $categoria=$row1['id_categoria'];
-          $sql_res_pre=_fetch_array(_query("SELECT SUM(factura_detalle.cantidad) as reserva FROM ".EXTERNAL.".factura JOIN ".EXTERNAL.".factura_detalle ON factura_detalle.id_factura=factura.id_factura WHERE factura_detalle.id_prod_serv=$id_producto AND factura.id_sucursal=$id_sucursal AND factura.fecha = '$hoy' AND factura.finalizada=0 "));
-          $reserva=$sql_res_pre['reserva'];
-      
-          $sql_res_esto=_fetch_array(_query("SELECT SUM(factura_detalle.cantidad) as reservado FROM ".EXTERNAL.".factura JOIN ".EXTERNAL.".factura_detalle ON factura_detalle.id_factura=factura.id_factura WHERE factura_detalle.id_prod_serv=$id_producto AND factura.id_factura=$id_factura"));
-          $reservado=$sql_res_esto['reservado'];
-      
-      
-          $stock= $row1["stock"]-$reserva+$reservado;
-          if($stock<0)
-          {
-            $stock=0;
-          }
-      
-          $i=0;
-          $unidadp=0;
-          $preciop=0;
-          $descripcionp=0;
-          $select_rank="<select class='sel_r form-control'>";
-          $sql_p=_query("SELECT presentacion.nombre, presentacion_producto.descripcion,presentacion_producto.id_presentacion,presentacion_producto.unidad,presentacion_producto.precio FROM ".EXTERNAL.".presentacion_producto JOIN ".EXTERNAL.".presentacion ON presentacion.id_presentacion=presentacion_producto.presentacion WHERE presentacion_producto.id_producto=$id_producto AND presentacion_producto.activo=1 AND presentacion_producto.id_sucursal=$id_sucursal ORDER BY presentacion_producto.unidad ASC");
-          $select="<select class='sel form-control'>";
-          while ($row=_fetch_array($sql_p))
-          {
-            if ($i==0)
-            {
-              $unidadp=$row['unidad'];
-              $preciop=$row['precio'];
-              $descripcionp=$row['descripcion'];
-      
-              $xc=0;
-      
-              $sql_rank=_query("SELECT presentacion_producto_precio.id_prepd,presentacion_producto_precio.desde,presentacion_producto_precio.hasta,presentacion_producto_precio.precio FROM ".EXTERNAL.".presentacion_producto_precio WHERE presentacion_producto_precio.id_presentacion=".$row['id_presentacion']." AND presentacion_producto_precio.id_sucursal=$id_sucursal AND presentacion_producto_precio.precio!=0 ORDER BY presentacion_producto_precio.precio DESC $limit");
-      
-                if(_num_rows($sql_rank)==0)
-                {
-                  $select_rank.="<option value='$preciop'>$preciop</option>";
-                }
-      
-                while ($rowr=_fetch_array($sql_rank)) {
-                  # code...
-                  $select_rank.="<option value='$rowr[precio]'";
-                  if($xc==0)
-                  {
-                    $select_rank.="selected";
-                    $preciop=$rowr['precio'];
-                    $xc=1;
-                  }
-                  $select_rank.=">$rowr[precio]</option>";
-                }
-                $select_rank.="</select>";
-              }
-              $select.="<option value='$row[id_presentacion]'>$row[nombre]</option>";
-              $i=$i+1;
+        $consulta2 = _query($sql2);
+        $i = 0;
+        while ($row1=_fetch_array($consulta2)) {
+            if ($i==0) {
+                $unidadp=$row1['unidad'];
             }
-      
-      
-            $select.="</select>";
-            $xdatos['perecedero']=$perecedero;
-            $xdatos['descripcion']= $descripcion;
-            $xdatos['select']= $select;
-            $xdatos['select_rank']= $select_rank;
-            $xdatos['stock']= $stock;
-            $xdatos['preciop']= $preciop;
-      
-            $sql_e=_fetch_array(_query("SELECT exento FROM ".EXTERNAL.".producto WHERE id_producto=$id_producto"));
-            $exento=$sql_e['exento'];
-            if ($exento==1) {
-              # code...
-              $xdatos['preciop_s_iva']=$preciop;
-            }
-            else {
-              # code...
-              $sqkl=_fetch_array(_query("SELECT iva FROM ".EXTERNAL.".sucursal WHERE id_sucursal=$id_sucursal"));
-              $iva=$sqkl['iva']/100;
-              $iva=1+$iva;
-              $xdatos['preciop_s_iva']= round(($preciop/$iva),8,PHP_ROUND_HALF_DOWN);
-            }
-            $xdatos['unidadp']= $unidadp;
-            $xdatos['descripcionp']= $descripcionp;
-            $xdatos['exento']=$exento;
-            $xdatos['categoria']=$categoria;
-      
-            echo json_encode($xdatos); //Return the JSON Array
-          }
+            $i=$i+1;
+        }
+        $xdatos['unidad'] = $unidadp;
+        echo json_encode($xdatos);
     }
 ?>
 
@@ -1254,15 +1233,33 @@ print_r($_POST);
         $cantidad_general = $_POST['cantidad_general'];
         $cantidad_especifica = $_POST['cantidad_especifica'];
         $id_presentacion = $_POST['id_presentacion'];
-        $sql = "SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total FROM ( SELECT tblStock_Ubicacion.id_producto, tblStock_Ubicacion.cantidad FROM tblStock_Ubicacion WHERE tblStock_Ubicacion.id_producto = $id_producto AND tblStock_Ubicacion.id_ubicacion = 2 UNION ALL SELECT tblInsumos_Emergencia.id_producto, tblInsumos_Emergencia.cantidad FROM tblInsumos_Emergencia WHERE tblInsumos_Emergencia.producto = $id_producto AND tblInsumos_Emergencia.id_recepcion = $id_recepcion AND tblInsumos_Emergencia.deleted is NULL ) tblStock_Ubicacion GROUP BY tblStock_Ubicacion.id_producto ";
+        $sql="SELECT tblStock_Ubicacion.id_producto, SUM(tblStock_Ubicacion.cantidad) total 
+              FROM ( SELECT ".EXTERNAL.".cmf.stock_ubicacion.id_producto, ".EXTERNAL.".cmf.stock_ubicacion.cantidad 
+                FROM ".EXTERNAL.".cmf.stock_ubicacion WHERE ".EXTERNAL.".cmf.stock_ubicacion.id_producto = $id_producto 
+                AND ".EXTERNAL.".cmf.stock_ubicacion.id_ubicacion = 1 
+                UNION ALL 
+                SELECT cms.insumos_emergencia.id_producto, cms.insumos_emergencia.cantidad 
+                FROM cms.insumos_emergencia WHERE cms.insumos_emergencia.producto = $id_producto 
+                AND cms.insumos_emergencia.id_recepcion = $id_recepcion
+                AND cms.insumos_emergencia.deleted is NULL ) 
+                tblStock_Ubicacion 
+                GROUP BY tblStock_Ubicacion.id_producto";
+
         $consulta = _query($sql);
         $row = _fetch_array($consulta);
         $total = $row['total'];
         $numero_unidades =  $cantidad_especifica;
-        $consulta_select="SELECT tblPresentacion.nombre, tblPresentacion_Productos.descripcion,tblPresentacion_Productos.id_presentacion_producto,
-        tblPresentacion_Productos.unidad,tblPresentacion_Productos.precio FROM tblPresentacion_Productos JOIN tblPresentacion ON tblPresentacion.id_presentacion=tblPresentacion_Productos.id_presentacion_PP
-        INNER JOIN tblProductos on tblProductos.id_producto = tblPresentacion_Productos.id_producto_PP INNER  JOIN tblStock_Ubicacion on tblStock_Ubicacion.id_producto = tblProductos.id_producto
-        WHERE tblPresentacion_Productos.id_producto_PP=$id_producto AND tblPresentacion_Productos.activo =1 AND tblProductos.deleted is NULL and tblPresentacion_Productos.unidad <= $numero_unidades GROUP BY tblPresentacion_Productos.id_presentacion_producto";
+        $consulta_select="SELECT ".EXTERNAL.".presentacion.nombre, ".EXTERNAL.".presentacion_producto.descripcion,
+        ".EXTERNAL.".presentacion_producto.id_presentacion, 
+        ".EXTERNAL.".presentacion_producto.unidad,".EXTERNAL.".presentacion_producto.precio 
+        FROM ".EXTERNAL.".presentacion_producto LEFT JOIN ".EXTERNAL.".presentacion 
+        ON ".EXTERNAL.".presentacion.id_presentacion=".EXTERNAL.".presentacion_producto.id_presentacion 
+        INNER JOIN ".EXTERNAL.".producto on ".EXTERNAL.".producto.id_producto = ".EXTERNAL.".presentacion_producto.id_producto 
+        INNER JOIN ".EXTERNAL.".stock_ubicacion on ".EXTERNAL.".stock_ubicacion.id_producto = ".EXTERNAL.".producto.id_producto 
+        WHERE ".EXTERNAL.".presentacion_producto.id_producto=$id_producto AND ".EXTERNAL.".presentacion_producto.activo =1 
+        and ".EXTERNAL.".presentacion_producto.unidad <= $numero_unidades GROUP BY ".EXTERNAL.".presentacion_producto.id_presentacion ";
+        
+
         $sql_p = _query($consulta_select);
         $select="<select class='sel id_pres form-control' id='id_presentacion'>";
         while ($row=_fetch_array($sql_p)) {
@@ -1281,12 +1278,10 @@ print_r($_POST);
 ?>
 
             <?php
-if (!isset($_REQUEST['process']) && !isset($_REQUEST['form-data']))
+if (!isset($_REQUEST['process']))
 {
   initial();
-
 }
-
 if (isset($_REQUEST['process']))
 {
   switch ($_REQUEST['process'])
@@ -1312,9 +1307,6 @@ if (isset($_REQUEST['process']))
     case 'consultar_selects':
       consultar_selects();
       break;
-    case 'total_texto':
-        break;
   }
 }
-
 ?>

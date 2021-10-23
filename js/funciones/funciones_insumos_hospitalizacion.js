@@ -1,6 +1,5 @@
-var urlprocess_enviar = 'agregar_insumos_modulo.php';
-var id_ubicacion = '1';
-var id_usb_enviar='1';
+var urlprocess_enviar = 'asignar_insumos_hospitalizacion.php';
+var id_usb_enviar = '1';
 var tabla_buscar_enviar = 'insumos_hospitalizacion';
 var id_servicio_buscar = '5';
 
@@ -10,7 +9,7 @@ $(document).ready(function() {
     $("#buscarRecepcion").click(function() {
         generar2("");
     });
-    var idRecepcion = $("#id_recepcion").val();//aqui se obtiene el id de la recepcion
+    var idRecepcion = $("#id_recepcion").val();
     $("#paciente_replace").hide();
     $("#microciru_replace").hide();
     $("#hora_inicio_replace").hide();
@@ -36,7 +35,7 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 url: 'facturacion_autocomplete1.php',
-                data: 'query=' + query + '&id_usb=' + id_ubicacion,
+                data: 'query=' + query + '&id_usb=' + id_usb_enviar,
                 dataType: 'JSON',
                 async: false,
                 success: function(data) {
@@ -45,480 +44,77 @@ $(document).ready(function() {
             });
         },
         updater: function(selection) {
-            var producto= selection.split("|");
-            var id_prod=producto[0];
-            addProductList(id_prod);
+            var prod0 = selection;
+            var prod = prod0.split("|");
+            var id_prod = prod[0];
+            var descrip = prod[2];
+            var tipo = prod[3];
+            var cantidad_general = 0;
+            $("#inventable tr").each(function() {
+                if ($(this).find("#tipopr").val() == "P") {
+                    var id = $(this).find("td:eq(0)").text();
+                    if (id == id_prod) {
+                        var cantidad = $(this).find("#cant").val();
+                        var unidad = $(this).find("#unidadp").val();
+                        var total = parseInt(cantidad) * parseInt(unidad);
+                        cantidad_general = cantidad_general + total;
+                    }
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: urlprocess_enviar,
+                data: {
+                    process: 'consultar_existencias',
+                    idRecepcion: idRecepcion,
+                    id_producto: id_prod,
+                    'id_usb': id_usb_enviar,
+                    'tabla_buscar': tabla_buscar_enviar
+                },
+                dataType: 'JSON',
+                async: false,
+                success: function(tot) {
+                    var cant_to = parseInt(tot.total);
+                    var uni_to = parseInt(tot.unidad);
+                    if ((parseInt(cantidad_general) + parseInt(uni_to)) > cant_to) {
+                        swal({
+                                title: "Producto sin existencias",
+                                text: "El producto ha agotado sus existencias, revisar asignaciones de este.",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: '',
+                                confirmButtonText: 'Ok.',
+                                closeOnConfirm: true,
+                                closeOnCancel: true
+                            },
+                            function(isConfirm) {
+                                if (isConfirm) {
 
+                                } else {}
+                            });
+                    } else {
+                        if (id_prod != 0) {
+                            addProductList(id_prod, tipo, descrip, "1", "1", "", "1", "");
+                            $('input#producto_buscar').val("");
+                            actualizar_cant_stock_tabla(id_prod);
+                            actualizar_cant_stock_tabla(id_prod);
+                            actualizar_ultima_fila();
+                            validar_cambio_presentacion(id_prod);
+                            contador_filas = 0;
+                            // $('.sel').focus().select2("open");
+                        } else {
+                            $('input#producto_buscar').focus();
+                            $('input#producto_buscar').val("");
+                        }
+                    }
+                }
+            });
+
+
+
+            // agregar_producto_lista(id_prod, descrip, isbarcode);
         }
     });
-
-
-    function addProductList(id_prod){
-    	$(".sel_r").select2("close");
-	    $(".sel").select2("close");
-	    $(".select2-dropdown").hide();
-	    $('#inventable').find('tr#filainicial').remove();
-        var id_producto=$.trim(id_prod);
-        var id_sucursal=$("#id_sucursal").val();//obteniendo id de la sucursal
-        var id_factura=$("#id_factura").val();
-        if(isNaN(id_factura)){
-            id_factura=0;
-        }
-        //alert(id_producto+' '+descripcion+' '+tipo_producto);
-        var url_asignar_recursos='asignar_insumos_hospitalizacion.php'
-        var form_producto=new FormData();
-        form_producto.append('process','consultar_existencias');
-        form_producto.append('id_producto',id_producto);
-        form_producto.append('id_sucursal', id_sucursal);
-        form_producto.append('id_factura', id_factura);
-
-        var info_enviar={
-            headers: {
-                //'Content-Type':'application/x-www-form-urlencoded',
-                'X-Requested-With':'application/json;charset=utf-8'
-            },
-            method:'POST',
-            body:form_producto
-        }
-        var id_prod=$.trim(id_producto)
-
-        var obtener_stock=  fetch(url_asignar_recursos, info_enviar);
-        obtener_stock.then((response)=>response.text()).then(function(datos){
-            //alert(datos.indexOf('{'));
-            var data = JSON.parse(datos.substring(datos.indexOf('{'), datos.length))
-            console.log(data);
-            var precio_venta = data.precio_venta;
-			var unidades = data.unidades;
-			var existencias = data.stock;
-			var perecedero = data.perecedero;
-			var descrip_only = data.descripcion;
-			var fecha_fin_oferta = data.fecha_fin_oferta;
-			var exento = data.exento;
-			var categoria=data.categoria;
-			var select_rank=data.select_rank;
-            ///alert(select_rank);
-
-			var preciop_s_iva = parseFloat(data.preciop_s_iva);
-
-            var tipo_impresion='tik';
-
-			timestamp = (new Date().getTime()).toString(36)
-
-			var filas = parseInt($("#filas").val());
-            var fila_inicio = "<tr class='row100 head "+timestamp+" ' id='" + filas + "'>";
-            
-            var fila_final="</tr>";
-            var subtotal = parseFloat(data.preciop);
-			subt_mostrar = subtotal.toFixed(2);
-
-			var exento ="<input type='hidden' id='exento' name='exento' value='"+exento+"'>";
-			var subtotal = parseFloat(data.preciop);
-			subt_mostrar = subtotal.toFixed(2);
-			var cantidades = "<td class='cell100 column10 text-success'><div class='col-xs-2'><input type='text'  class='txt_box decimal2 "+categoria+" cant' id='cant' name='cant' value='' style='width:60px;'></div></td>";
-			tr_add = '';
-			tr_add += "<tr  class='row100 head "+timestamp+" ' id='" + filas + "'>";
-			tr_add += "<td hidden class='cell100 column10 text-success id_pps'><input type='hidden' id='unidades' name='unidades' value='" + data.unidadp + "'>" + id_prod + "</td>";
-			tr_add += "<td class='cell100 column20 text-success' style=\"  \">" + descrip_only + exento+ '</td>';
-			tr_add += "<td hidden class='cell100 column10 text-success' id='cant_stock'>" + existencias + "</td>";
-			tr_add += "<td class='cell100 column10 text-success' id='cant_perpre'>" + round(existencias/data.unidadp,2) + "</td>";
-			tr_add += cantidades;
-			tr_add += "<td class='cell100 column10 text-success preccs'>" + data.select + "</td>";
-			tr_add += "<td class='cell100 column10 text-success descp'><input type'text' id='dsd' class='form-control' value='" + data.descripcionp + "' class='txt_box' readonly></td>";
-			tr_add += "<td class='cell100 column10 text-success rank_s'>" + data.select_rank + "</td>";
-			tr_add += "<td class='cell100 column10 text-success'><input type='hidden'  id='precio_venta_inicial' name='precio_venta_inicial' value='" + data.preciop + "'><input type='hidden'  id='precio_sin_iva' name='precio_sin_iva' value='" + preciop_s_iva + "'><input type='text'  class='form-control decimal' readonly id='precio_venta' name='precio_venta' value='" + data.preciop + "'></td>";
-			if(tipo_impresion=="CCF")
-			{
-				tr_add += "<td class='ccell100 column10'>" + "<input type='hidden'  id='subtotal_fin' name='subtotal_fin' value='"+"0.00"+"'>" + "<input type='text'  class='decimal txt_box form-control' id='subtotal_mostrar' name='subtotal_mostrar'  value='" +"0.00"+ "'readOnly></td>";
-
-			}
-			else
-			{
-				tr_add += "<td class='ccell100 column10'>" + "<input type='hidden'  id='subtotal_fin' name='subtotal_fin' value='"+"0.00"+"'>" + "<input type='text'  class='decimal txt_box form-control' id='subtotal_mostrar' name='subtotal_mostrar'  value='" + "0.00" + "'readOnly></td>";
-
-			}
-
-			tr_add += '<td class="cell100 column10  text-center"><input id="delprod" type="button" class="btn btn-danger fa Delete"  value="&#xf1f8;"> ';
-			tr_add += "" ;
-			tr_add += ' </td>';
-			tr_add += '</tr>';
-			//numero de filas
-
-            //var fila=fila_inicio+cuerpo_fila+fila_final;
-
-			filas++;
-            //alert(tr_add);
-            //alert(tr_add);
-			$("#inventable").prepend(tr_add );
-			$(".decimal2").numeric({negative:false,decimal:false});
-			$(".decimal").numeric({negative:false,decimalPlaces:2});
-			$(".86").numeric({negative:false,decimalPlaces:4});
-			$('#items').val(filas);
-			$(".sel").select2();
-			$(".sel_r").select2();
-			$('#inventable tr:first').find("#cant").focus();
-            totales();
-            scrolltable();
-            console.log("Aqui lo demas")
-        });
-        totales();
-    }
-    //Calcular Totales del grid
-
-$(document).on('.decimal2', 'keyup', function(e){
-    var id_fila=$(this).attr('id');
-    alert(id_fila);
-});
-
-$(document).on('keyup', '.cant', function(evt){
-	var tr = $(this).parents("tr");
-
-	if(evt.keyCode == 13)
-	{
-		num=parseFloat($(this).val());
-		if(isNaN(num))
-		{
-			num=0;
-		}
-		if($(this).val()!=""&&num>0)
-		{
-			tr.find('.sel').select2("open");
-		}
-	}
-
-	fila = $(this).closest('tr');
-	id_producto = fila.find('.id_pps').text();
-	existencia = parseFloat(fila.find('#cant_stock').text());
-	existencia=round(existencia,4);
-	a_cant=parseFloat(fila.find('#cant').val());
-	unidad= parseInt(fila.find('#unidades').val());
-	a_cant=parseFloat(a_cant*unidad);
-	a_cant=round(a_cant, 4);
-	//console.log(a_cant);
-	//console.log(id_producto);
-	a_asignar=0;
-
-	$('#inventable tr').each(function(index) {
-
-		if($(this).find('.id_pps').text()==id_producto)
-		{
-			if (!$(this).hasClass('service')) {
-
-							t_cant=parseFloat($(this).find('#cant').val());
-							t_cant=round(t_cant, 4);
-							if(isNaN(t_cant))
-							{
-								t_cant=0;
-							}
-							t_unidad=parseInt($(this).find('#unidades').val());
-							if(isNaN(t_unidad))
-							{
-								t_unidad=0;
-							}
-							t_cant=parseFloat((t_cant*t_unidad));
-							a_asignar=a_asignar+t_cant;
-							a_asignar=round(a_asignar,4);
-			}
-		}
-	});
-	//console.log(existencia);
-	//console.log(a_asignar);
-
-	if(a_asignar>existencia)
-	{
-		val = existencia-(a_asignar-a_cant);
-		val = val/unidad;
-		val=Math.trunc(val);
-		val =parseInt(val);
-		fila.find('#cant').val(val);
-	}
-
-	actualiza_subtotal(tr);
-});
-
-function actualiza_subtotal(tr) {
-	var iva = parseFloat($('#porc_iva').val());
-	var precio_sin_iva = parseFloat(tr.find('#precio_sin_iva').val());
-	var existencias = tr.find('#cant_stock').text();
-
-	var tipo_impresion = $('#tipo_impresion').val();
-
-	if (tipo_impresion!='CCF') {
-
-		var cantidad = tr.find('#cant').val();
-		if (isNaN(cantidad) || cantidad == "") {
-			cantidad = 0;
-		}
-		var precio = tr.find('#precio_venta').val();
-		var precio_oculto = tr.find('#precio_venta').val();
-
-		if (isNaN(precio) || precio == "") {
-			precio = 0;
-		}
-		var subtotal = subt(cantidad, precio);
-		var subt_mostrar = round(subtotal,2);
-		tr.find("#subtotal_fin").val(subt_mostrar);
-		tr.find("#subtotal_mostrar").val(subt_mostrar);
-		totales();
-	}
-	else {
-		var cantidad = tr.find('#cant').val();
-		if (isNaN(cantidad) || cantidad == "") {
-			cantidad = 0;
-		}
-		var precio = tr.find('#precio_sin_iva').val();
-
-		if (isNaN(precio) || precio == "") {
-			precio = 0;
-		}
-		var subtotal = subt(cantidad, precio);
-		var subt_mostrar = subtotal.toFixed(4);
-
-		tr.find("#subtotal_fin").val(subt_mostrar);
-		var subt_mostrar = round(subtotal,2);
-		tr.find("#subtotal_mostrar").val(subt_mostrar);
-		totales();
-	}
-
-}
-
-function totales() {
-	//impuestos
-	var iva = $('#porc_iva').val();
-	var porc_percepcion = $("#porc_percepcion").val();
-	var porc_retencion1 = $("#porc_retencion1").val();
-	var porc_retencion10 = $("#porc_retencion10").val();
-
-	var id_tipodoc = $("#tipo_impresion option:selected").val();
-	var monto_retencion1 = parseFloat($('#monto_retencion1').val());
-	var monto_retencion10 = parseFloat($('#monto_retencion10').val());
-	var monto_percepcion = $('#monto_percepcion').val();
-	var porcentaje_descuento = parseFloat($("#porcentaje_descuento").val());
-
-	var total_sin_iva = 0;
-	//fin impuestos
-
-	var tipo_impresion = 'tik';
-
-	var urlprocess = "asignar_insumos_hospitalizacion.php";
-	var i = 0, total = 0;
-	totalcantidad = 0;
-
-	var total_gravado = 0;
-
-	var total_exento = 0;
-
-	var subt_gravado = 0;
-
-	var subt_exento = 0;
-
-	var subtotal = 0;
-
-	var total_descto = 0;
-	var total_sin_descto = 0;
-	var subt_descto = 0;
-	var total_final = 0;
-	var subtotal_sin_iva = 0;
-	var StringDatos = '';
-	var filas = 0;
-	var total_iva = 0;
-	if (tipo_impresion=="CCF") {
-
-		$("#inventable tr").each(function() {
-			subt_cant = $(this).find("#cant").val();
-			ex = parseInt($(this).find('#exento').val());
-
-			if (isNaN(subt_cant) || subt_cant == "") {
-				subt_cant = 0;
-			}
-			subt_gravado=0;
-			subt_exento=0;
-
-			if (ex==0) {
-				subt_gravado= $(this).find("#subtotal_fin").val();
-			}
-			else {
-				subt_exento=$(this).find("#subtotal_fin").val();
-			}
-
-			totalcantidad += parseFloat(subt_cant);
-
-			total_gravado += parseFloat(subt_gravado);
-
-			total_exento += parseFloat(subt_exento);
-
-			subtotal+= parseFloat(subt_exento) + parseFloat(subt_gravado);;
-
-			filas += 1;
-		});
-
-		total_gravado = round(total_gravado, 4);
-		//descuento
-		var total_descuento = 0;
-		if (porcentaje_descuento > 0.0) {
-			total_descuento = (porcentaje_descuento / 100) * total_final
-		} else {
-			total_descuento = 0;
-		}
-		var total_descuento_mostrar = total_descuento.toFixed(2)
-		var total_mostrar = subtotal.toFixed(2)
-		totcant_mostrar = totalcantidad.toFixed(2)
-
-		//console.log(subt_gravado);
-		$('#totcant').text(totcant_mostrar);
-
-
-		var total_sin_iva_mostrar = total_gravado.toFixed(2);
-		$('#total_gravado_sin_iva').html(total_sin_iva_mostrar);
-		txt_war = "class='text-danger'"
-
-
-		$('#total_gravado').html(total_mostrar);
-		$('#total_exenta').html(total_exento.toFixed(2));
-
-		var total_iva_mostrar = 0.00;
-
-		total_iva=total_gravado*(parseFloat(iva));
-		total_iva=round(total_iva, 2)
-		total_gravado_iva=  total_gravado+total_iva;
-
-
-		total_gravado_iva_mostrar = total_gravado_iva.toFixed(2);
-		$('#total_gravado_iva').html(total_gravado_iva_mostrar); //total gravado con iva
-		$('#total_iva').html(total_iva.toFixed(2));
-
-		var total_retencion1 = 0
-		var total_retencion10 = 0
-		var total_percepcion = 0
-		if (total_gravado >= monto_retencion1)
-		total_retencion1 = total_gravado * porc_retencion1;
-		if (total_gravado >= monto_retencion10)
-		total_retencion10 = total_gravado * porc_retencion10;
-		var total_final = (total_gravado - total_descuento + total_percepcion) - (total_retencion1 + total_retencion10) + total_iva + total_exento;
-
-		total_final_mostrar = total_final.toFixed(2);
-		$('#total_percepcion').html(0);
-		total_retencion1_mostrar = total_retencion1.toFixed(2);
-		total_retencion10_mostrar = total_retencion10.toFixed(2);
-		$('#total_retencion').html('0.00');
-		if (parseFloat(total_retencion1) > 0.0)
-		$('#total_retencion').html(total_retencion1_mostrar);
-		if (parseFloat(total_retencion10) > 0.0)
-		$('#total_retencion').html(total_retencion10_mostrar);
-		//total final
-		$('#total_final').html(total_descuento_mostrar);
-		$('#totalfactura').val(total_final_mostrar);
-
-		$('#totcant').html(totcant_mostrar);
-		$('#items').val(filas);
-		$('#totaltexto').load("venta.php", {
-			'process': 'total_texto',
-			'total': total_final_mostrar
-		});
-		$('#monto_pago').html(total_final_mostrar);
-
-		$('#totalfactura').val(total_final_mostrar);
-
-	}
-	else
-	{
-		$("#inventable tr").each(function() {
-			subt_cant = $(this).find("#cant").val();
-			ex = parseInt($(this).find('#exento').val());
-
-			if (isNaN(subt_cant) || subt_cant == "") {
-				subt_cant = 0;
-			}
-			subt_gravado=0;
-			subt_exento=0;
-
-			if (ex==0) {
-				subt_gravado= $(this).find("#subtotal_fin").val();
-			}
-			else {
-				subt_exento=$(this).find("#subtotal_fin").val();
-			}
-
-			totalcantidad += parseFloat(subt_cant);
-
-			total_gravado += parseFloat(subt_gravado);
-
-			total_exento += parseFloat(subt_exento);
-
-			subtotal+= parseFloat(subt_exento) + parseFloat(subt_gravado);;
-
-			filas += 1;
-		});
-
-		total_gravado = round(total_gravado, 4);
-		//descuento
-		var total_descuento = 0;
-		if (porcentaje_descuento > 0.0) {
-			total_descuento = (porcentaje_descuento / 100) * total_final
-		} else {
-			total_descuento = 0;
-		}
-		var total_descuento_mostrar = total_descuento.toFixed(2)
-		var total_mostrar = subtotal.toFixed(2)
-		totcant_mostrar = totalcantidad.toFixed(2)
-
-		//console.log(subt_gravado);
-		$('#totcant').text(totcant_mostrar);
-
-
-		var total_sin_iva_mostrar = total_gravado.toFixed(2);
-		$('#total_gravado_sin_iva').html(total_sin_iva_mostrar);
-		txt_war = "class='text-danger'"
-
-
-		$('#total_gravado').html(total_mostrar);
-		$('#total_exenta').html(total_exento.toFixed(2));
-
-		var total_iva_mostrar = 0.00;
-
-		total_iva=0;
-		total_iva=round(total_iva, 2)
-		total_gravado_iva=  total_gravado+total_iva;
-
-
-		total_gravado_iva_mostrar = total_gravado_iva.toFixed(2);
-		$('#total_gravado_iva').html(total_gravado_iva_mostrar); //total gravado con iva
-		$('#total_iva').html(total_iva.toFixed(2));
-
-		var total_retencion1 = 0
-		var total_retencion10 = 0
-		var total_percepcion = 0
-		if (total_gravado >= monto_retencion1)
-		total_retencion1 = total_gravado * porc_retencion1;
-		if (total_gravado >= monto_retencion10)
-		total_retencion10 = total_gravado * porc_retencion10;
-		var total_final = (total_gravado - total_descuento + total_percepcion) - (total_retencion1 + total_retencion10) + total_iva + total_exento;
-
-		total_final_mostrar = total_final.toFixed(2);
-		$('#total_percepcion').html(0);
-		total_retencion1_mostrar = total_retencion1.toFixed(2);
-		total_retencion10_mostrar = total_retencion10.toFixed(2);
-		$('#total_retencion').html('0.00');
-		if (parseFloat(total_retencion1) > 0.0)
-		$('#total_retencion').html(total_retencion1_mostrar);
-		if (parseFloat(total_retencion10) > 0.0)
-		$('#total_retencion').html(total_retencion10_mostrar);
-		//total final
-		$('#total_final').html(total_descuento_mostrar);
-		$('#totalfactura').val(total_final_mostrar);
-
-		$('#totcant').html(totcant_mostrar);
-		$('#items').val(filas);
-		$('#totaltexto').load("venta.php", {
-			'process': 'total_texto',
-			'total': total_final_mostrar
-		});
-		$('#monto_pago').html(total_final_mostrar);
-
-		$('#totalfactura').val(total_final_mostrar);
-	}
-
-}
-
     $("#servicio_buscar").typeahead({
         source: function(query, process) {
             $.ajax({
@@ -603,7 +199,7 @@ function totales() {
         }
     });
     //cargar insumos previos en microcirugia
-   traer_insumos();
+    traer_insumos();
     $(".decimal").numeric({ negative: false, decimalPlaces: 2 });
 
     $(document).keydown(function(e) {
