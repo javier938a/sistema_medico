@@ -825,7 +825,7 @@ document.addEventListener('keydown', event => {
 		}
 	
 		$.ajax({
-			url: 'preventa.php',
+			url: 'preventa_h.php',
 			type: 'POST',
 			dataType: 'json',
 			data: {

@@ -661,6 +661,38 @@ function insertar_preventa()
             }
           }
           else {
+
+            //actualizando los campos nuevos de la factura
+            $sql_factura="SELECT f.subtotal, f.sumas, f.suma_gravado, f.iva, f.venta_exenta, f.retencion, 
+                          f.total_menos_retencion, f.saldo, f.abono, f.total 
+                          FROM ".EXTERNAL.".factura AS f WHERE id_factura=$id_factura";
+            
+            $sub_total_q=0.0;
+            $sumas_q=0.0;
+            $suma_gravado_q=0.0;
+            $iva_q=0.0;
+            $venta_exenta_q=0.0;
+            $total_menos_retencion_q=0.0;
+            $retencion_q=0.0;
+            $saldo_q=0.0;
+            $abono_q=0.0;
+            $total_q=0.0;
+
+            $query_factura_q=_query($sql_factura);
+            if(_num_rows($query_factura_q)>0){
+              $row_factura_q=_fetch_array($query_factura_q);
+              //actualizando los datos
+              $sub_total_q=$row_factura_q['subtotal'] + $subtotal;
+              $sumas_q=$row_factura_q['sumas'] + $sumas;
+              $suma_gravado_q=$row_factura_q['suma_gravado'] + $suma_gravada;
+              $iva_q=$row_factura_q['iva'] + $iva;
+              $venta_exenta=$row_factura_q['venta_exenta'] + $venta_exenta;
+              $retencion_q=$row_factura_q['retencion']+$retencion;
+              $total_menos_retencion_q=$row_factura_q['total_menos_retencion'] + $total_menos_retencion;
+              $saldo_q=$row_factura_q['saldo'] + $saldo;
+              $abono_q=$row_factura_q['abono'] + $abono;
+              $total_q=$row_factura_q['total'] + $total;
+            }
             # code...
             $table_fact= EXTERNAL.".factura";
             $form_data_fact = array(
@@ -669,22 +701,22 @@ function insertar_preventa()
               'numero_doc' => $numero_doc,
               'referencia' => $numero_doc,
               'numero_ref' => $ult,
-              'subtotal' => $subtotal,
-              'sumas'=>$sumas,
-              'suma_gravado'=>$suma_gravada,
-              'iva' =>$iva,
-              'retencion'=>$retencion,
-              'venta_exenta'=>$venta_exenta,
-              'total_menos_retencion'=>$total_menos_retencion,
-              'total' => $total,
+              'subtotal' => $sub_total_q,
+              'sumas'=>$sumas_q,
+              'suma_gravado'=>$suma_gravado_q,
+              'iva' =>$iva_q,
+              'retencion'=>$retencion_q,
+              'venta_exenta'=>$venta_exenta_q,
+              'total_menos_retencion'=>$total_menos_retencion_q,
+              'total' => $total_q,
               'id_usuario'=>$id_empleado,
               'id_empleado' => $id_vendedor,
               'id_sucursal' => $id_sucursal,
               'tipo' => $tipo_entrada_salida,
               'hora' => $hora,
               'finalizada' => '0',
-              'abono'=>$abono,
-              'saldo' => $saldo,
+              'abono'=>$abono_q,
+              'saldo' => $saldo_q,
               'tipo_documento' => $tipo_documento,
               'id_recepcion'=>$id_recepcion
             );

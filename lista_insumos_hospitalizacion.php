@@ -24,10 +24,30 @@
 	
 
 	$id_hospitalizacion=$_GET['id_hospitalizacion'];
- 	$sql_hospitalizacion="SELECT id_recepcion FROM hospitalizacion AS h WHERE h.id_hospitalizacion=$id_hospitalizacion";
+ 	$sql_hospitalizacion="SELECT h.id_recepcion, 
+	 CONCAT(p.nombres, ' ', p.apellidos) AS nombre_paciente 
+	 FROM hospitalizacion AS h 
+	 LEFT JOIN recepcion AS r on h.id_recepcion=r.id_recepcion
+	  LEFT JOIN paciente AS p on r.id_paciente_recepcion=p.id_paciente  
+	  WHERE h.id_hospitalizacion=$id_hospitalizacion";
 	$query_hospitalizacion=_query($sql_hospitalizacion);
 	$row_hospitalizacion=_fetch_array($query_hospitalizacion);
 	$id_recepcion=$row_hospitalizacion['id_recepcion'];
+	$nombre_paciente=$row_hospitalizacion['nombre_paciente'];
+
+	//obteniendo el id factura y la referencia de la factura para listar los productos que se le han aplicado
+	$sql_factura="SELECT id_factura, numero_ref  FROM ".EXTERNAL.".factura AS f WHERE f.id_recepcion=$id_recepcion  AND f.finalizada != 1";
+	$query_factura=_query($sql_factura);
+	
+	$no_referencia="";
+	$id_factura="";
+	if(_num_rows($query_factura)>0){
+		$row_factura=_fetch_array($query_factura);
+		$id_factura=$row_factura['id_factura'];
+		$no_referencia=$row_factura['numero_ref'];
+
+
+	}
 	//echo $id_recepcion;
 	//permiso del script
 	$id_user=$_SESSION["id_usuario"];
@@ -61,9 +81,16 @@
 						<h3 style="color:#194160;"><i class="fa fa-user"></i> <b><?php echo $title;?></b></h3>
 					</header>
 					<section>
-						<div class="btn-group" role="group" aria-label="...">
-							<button type="button" class="btn btn-default">Generar</button>
+					<div class="alert alert-success" role="alert">
+						<div class="row">
+							<div class="col-md-6">
+								<h4 class="alert-heading">PACIENTE: <?php echo $nombre_paciente ?></h4>
+							</div>
+							<div class="col-md-6">
+								<h4 class="alert-heading">REFERENCIA N#: <?php echo $no_referencia ?></h4>
+							</div>
 						</div>
+					</div>
 						<div class="table-responsive">
 							<table class="table table-striped table-bordered table-hover" id="editable2">
 								<thead>
@@ -72,44 +99,59 @@
 										<th class="col-lg-3">producto</th>
 										<th class="col-lg-1">cantidad</th>
 										<th class="col-lg-1">total</th>
-										<th class="col-lg-1">Acción</th>
 									</tr>
 								</thead>
 								<tbody> 
 									<?php
-										$sql_insumos="SELECT ie.id_insumo, p.descripcion AS producto, sh.descripcion AS servicio, 
-										ie.cantidad, ie.total FROM insumos_emergencia AS ie LEFT JOIN ".EXTERNAL.".producto AS
-										p ON p.id_producto=ie.id_producto LEFT JOIN  ".EXTERNAL.".servicios_hospitalarios AS 
-										sh on ie.id_servicio=sh.id_servicio WHERE ie.id_recepcion=$id_recepcion";
-										$query_insumos=_query($sql_insumos);
-										while($row_insumos=_fetch_array($query_insumos)){
-											$id=$row_insumos['id_insumo'];
-											$producto=$row_insumos['producto'];
-											$servicio=$row_insumos['servicio'];
-											$cantidad=$row_insumos['cantidad'];
-											$total=$row_insumos['total'];
-											$producto_servicio="";
+										//obteniendo el listado de detalles de facturas de el cliente hospitalizado
+										$sql_detalle_factura="SELECT fd.id_factura_detalle, p.descripcion AS producto,
+										fd.precio_venta, fd.cantidad, fd.subtotal FROM ".EXTERNAL.".factura_detalle AS fd LEFT JOIN 
+										".EXTERNAL.".producto AS p on fd.id_prod_serv=p.id_producto LEFT JOIN ".EXTERNAL.".factura 
+										AS f ON fd.id_factura = f.id_factura WHERE fd.servicio=0 AND 
+										fd.id_factura=$id_factura 
+										UNION ALL 
+										SELECT fd.id_factura_detalle, s.servicio AS producto,  fd.cantidad, 
+										fd.precio_venta, fd.subtotal FROM ".EXTERNAL.".factura_detalle AS fd 
+										LEFT JOIN ".EXTERNAL.".servicios AS s ON fd.id_prod_serv=s.id_servicio 
+										LEFT JOIN ".EXTERNAL.".factura AS f ON fd.id_factura = f.id_factura 
+										WHERE fd.servicio =1 AND fd.id_factura=$id_factura";
 
-											if($producto!=""){
-												$producto_servicio=$producto;
-											}else{
-												$producto_servicio=$servicio;
-											}
+										$query_detalle_factura=_query($sql_detalle_factura);
+										while($row_detalle_factura=_fetch_array($query_detalle_factura)){
+											$id=$row_detalle_factura['id_factura_detalle'];
+											$producto=$row_detalle_factura['producto'];
+											$precio_venta=$row_detalle_factura['precio_venta'];
+											$cantidad=$row_detalle_factura['cantidad'];
+											$total=$row_detalle_factura['subtotal'];
+		
+
 
 											$body="<tr>
 												<td>$id</td>
-												<td>$producto_servicio</td>
-												<td>$cantidad</td>
+												<td>$producto</td>
+												<td>$precio_venta</td>
 												<td>$total</td>
-												<td><a class=\"btn btn-danger\" href=\"eliminar_insumo.php?&id_insumo=$id&id_hospitalizacion=$id_hospitalizacion\">Eliminar</a></td>
 												</tr>";
 
 											echo $body;
 										}
 
-										$sql_total="SELECT  ROUND(SUM(ie.total), 2) AS total FROM insumos_emergencia AS ie LEFT JOIN ".EXTERNAL.".producto AS
-										p ON p.id_producto=ie.id_producto LEFT JOIN  ".EXTERNAL.".servicios_hospitalarios AS 
-										sh on ie.id_servicio=sh.id_servicio WHERE ie.id_recepcion=$id_recepcion";
+										$sql_total="SELECT ROUND(SUM(prod.subtotal), 2) AS total FROM 
+										(SELECT fd.id_factura_detalle, p.descripcion AS producto, 
+										 precio_venta, fd.cantidad, fd.subtotal 
+										FROM ".EXTERNAL.".factura_detalle AS fd LEFT JOIN
+										".EXTERNAL.".producto AS p on fd.id_prod_serv=p.id_producto 
+										 LEFT JOIN ".EXTERNAL.".factura AS f ON fd.id_factura = f.id_factura 
+										 WHERE fd.servicio=0 AND fd.id_factura=$id_factura 
+										 UNION ALL 
+										 SELECT fd.id_factura_detalle, 
+										 s.servicio AS producto, fd.cantidad, 
+										 fd.precio_venta, fd.subtotal 
+										 FROM ".EXTERNAL.".factura_detalle AS fd 
+										 LEFT JOIN ".EXTERNAL.".servicios AS s 
+										 ON fd.id_prod_serv=s.id_servicio 
+										 LEFT JOIN ".EXTERNAL.".factura AS f ON fd.id_factura = f.id_factura 
+										 WHERE fd.servicio =1 AND fd.id_factura=$id_factura) AS prod";
 										$query_total=_query($sql_total);
 										$row_total=_fetch_array($query_total);
 										$suma_total=$row_total['total'];
