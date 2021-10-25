@@ -4,13 +4,6 @@ var tabla_buscar_enviar = 'insumos_hospitalizacion';
 var id_servicio_buscar = '5';
 
 $(document).ready(function() {
-    $('#guardar_insumos').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var recipient = button.data('whatever') // Extract info from data-* attributes
-        // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-        // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-        var modal = $(this)
-      });
     $(".select").select2();
     generar2("");
     $("#buscarRecepcion").click(function() {
@@ -763,11 +756,7 @@ function totalFact() {
     //console.log('total:' + total_dinero);
 }
 // actualize table data to server
-
-
-
-
-$(document).on("click", "#aplicar_insumos", function() {
+$(document).on("click", "#submit1", function() {
     senddata();
 });
 $(document).on("click", "#submit2", function() {
@@ -808,7 +797,6 @@ $(document).on("change", "#paquete", function() {
 
 function senddata() {
     //Obtener los valores a guardar de cada item facturado
-
     var i = 0;
     var StringDatos = "";
     var id_empleado = 0;
@@ -861,8 +849,6 @@ function senddata() {
         error = true
     }
 
-    $no_referencia=$("#no_referencia").val();
-
     var dataString = 'process=insert';
     dataString += '&id_paciente=' + id_paciente;
     dataString += '&total=' + total;
@@ -872,8 +858,6 @@ function senddata() {
     dataString += '&id_usb=' + id_usb_enviar;
     dataString += '&tabla_buscar=' + tabla_buscar_enviar;
     dataString += '&json_arr=' + json_arr;
-    dataString += '&no_referencia='+$no_referencia;
-
 
     var sel = 1,
         sel1 = 1,
@@ -1017,7 +1001,7 @@ function addProductList(id_prod, tipo, descr, cantx, f, presentacion, unidadesx,
     var hora = "12:00 AM"
         //	var fila=1;
     urlprocess = $('#urlprocess').val();
-    //alert(urlprocess);
+    alert(urlprocess);
     var dataString = 'process=consultar_stock' + '&id_producto=' + id_prod + '&tipo=' + tipo + '&id_presentacion=' + presentacion + "&id_usb=" + id_usb_enviar + "&tabla_buscar=" + tabla_buscar_enviar;
     $.ajax({
         type: "POST",

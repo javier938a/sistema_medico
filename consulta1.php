@@ -272,20 +272,20 @@ function initial(){
                                     <a class="nav-link" id="pills-examen-tab" data-toggle="pill" href="#pills-examen"
                                         role="tab" aria-controls="pills-examen" aria-selected="false">Examenes</a>
                                 </li>
-                                <!--<li class="nav-item">
+                                <li class="nav-item">
                                     <a class="nav-link" id="pills-constacia-tab" data-toggle="pill"
                                         href="#pills-constancia" role="tab" aria-controls="pills-constacia"
                                         aria-selected="false">Constancias</a>
-                                </li>-->
+                                </li>
                                 <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-cobros-tab" data-toggle="pill" href="#pills-cobros"
                                         role="tab" aria-controls="pills-cobros" aria-selected="false">Cobros</a>
-                                </li>
+                                </li>-->
                                 <li class="nav-item">
                                     <a class="nav-link" id="pills-ingresos-tab" data-toggle="pill"
                                         href="#pills-ingresos" role="tab" aria-controls="pills-ingresos"
                                         aria-selected="false">Ingresos / Indicaciones</a>
-                                </li>-->
+                                </li>
                                 <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-consultas-tab" data-toggle="pill"
                                         href="#pills-consultas" role="tab" aria-controls="pills-consultas"
@@ -1934,21 +1934,25 @@ function finalizar()
                             recepcion_cita AS rc WHERE rc.id_reserva_cita=$id";//se busca la recepcion de 
                             //esta cita
         //obteniendo la recepcion de cita
-        $row_recepcion=_fetch_array(_query($sql_recepcion_cita));
-        
-        //obteniendo el id
-        $id_recepcion=$row_recepcion['id_recepcion'];
-        
-        $table_recepcion="recepcion";
-        $form_data3=[
-            'id_estado_recepcion'=>7,
-        ];
-        $extra_where='id_recepcion='.$id_recepcion;
-        
-        $update_rece=_update($table_recepcion, $form_data3, $extra_where);
-        if($update_rece){
-            $xdata['msgrec']="estado recepcion actualizada correctamente..";
+            //echo _num_rows(_query($sql_recepcion_cita));
+        if(_num_rows(_query($sql_recepcion_cita))>0){
+            ///echo "Entro aqui....";
+            $row_recepcion=_fetch_array(_query($sql_recepcion_cita));
+            //obteniendo el id
+            $id_recepcion=$row_recepcion['id_recepcion'];
+            
+            $table_recepcion="recepcion";
+            $form_data3=[
+                'id_estado_recepcion'=>7,
+            ];
+            $extra_where='id_recepcion='.$id_recepcion;
+            
+            $update_rece=_update($table_recepcion, $form_data3, $extra_where);
+            if($update_rece){
+                $xdata['msgrec']="estado recepcion actualizada correctamente..";
+            }
         }
+
         $estado_pago=8;
         
         //actualizando el estado de la consulta 

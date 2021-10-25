@@ -188,9 +188,19 @@ $columns = array(
                 $filename='asignar_insumos_hospitalizacion.php';
                 $link=permission_usr($id_user,$filename);
                 if ($link!='NOT' || $admin=='1' ){
-                    $menudrop .="<li><a  data-toggle='modal' href='asignar_insumos_hospitalizacion.php?id_hospitalizacion=".$id_hospitalizacion."' ><i class=\"fa fa-plus\"></i> Asignar Insumos</a></li>";
+                    $sql = "SELECT recepcion.recepcion_hospitalizacion, hospitalizacion.id_estado_hospitalizacion, recepcion.id_recepcion FROM hospitalizacion INNER JOIN recepcion on recepcion.id_recepcion = hospitalizacion.id_recepcion WHERE hospitalizacion.id_hospitalizacion = '$id_hospitalizacion'";
+                    $query = _query($sql);
+                    $row = _fetch_array($query);
+                    $idRecepcion = $row['id_recepcion'];
+                    $menudrop .="<li><a  href='venta_h.php?id=".$idRecepcion."' ><i class=\"fa fa-plus\"></i> Asignar Insumos</a></li>";
                 }
             }
+                $filename='asignar_insumos_hospitalizacion.php';
+                $link=permission_usr($id_user,$filename);
+                if ($link!='NOT' || $admin=='1' ){
+                    $menudrop .="<li><a  href='lista_insumos_hospitalizacion.php?id_hospitalizacion=".$id_hospitalizacion."' ><i class=\"fa fa-plus\"></i> Ver cuenta paciente</a></li>";
+                }
+            
             /*if($recepcion_hospitalizacion == "1"){
                 $filename='transferir_recepcion.php';
                 $menudrop.= "<li><a  data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."' data-target='#transferenciaModal' data-refresh='true'><i class='fa fa-upload'></i> Transferir </a></li>";

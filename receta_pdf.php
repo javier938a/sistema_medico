@@ -238,10 +238,10 @@
               //$abajo="0";
               
               
-              $this->Cell($data[$j]["size"][$i],5,$str,$abajo,$salto,$data[$j]["aling"][$i],0);
+              $this->Cell($data[$j]["size"][$i],0.5,$str,0,$salto,$data[$j]["aling"][$i],0);
             }
     
-            $this->setX(55);
+            $this->setX(5.5);
           }
         }
 
@@ -466,14 +466,53 @@
     ");*/
     $pdf->SetFont('Courier', 'B', 12);
     if(_num_rows($query_receta)>0){//Verifica que hayan medicamentos recetads
-        $pdf->setY(7);
+      $set_y+=1;
+      $pdf->SetY($set_y);
+      $pdf->setX(6);
+      $pdf->SetDrawColor(25, 65, 96);
+      $pdf->SetFillCOlor(255, 255, 255);
+      //encabezado de la receta
+      /*$array_datos=array(
+          array("MEDICAMENTO", 10, "C"),
+          array("DOSIS", 4.5, "C"),
+      );
+      $pdf->SetTextColor(0,0,0);
+      $pdf->LineWriteB($array_datos);*/
+
+      //definiendo nuevo tamanio de letra 
+      $pdf->SetFont('Courier', 'B', 9);
+      //obteniendo todos los medicamentos recesatos y escribiendolos
+      $medic=0;//cuenta los medicamentos recetados
+      while($row=_fetch_array($query_receta)){
+          
+          $pdf->setX(6);
+          $pdf->SetFillColor(255, 255, 255);
+          $pdf->SetTextColor(0,0,0);
+
+          $array_data=array(
+              array(Mayu($row['descripcion']), 10, 'L'),
+              array(Mayu($row['dosis']), 4.5, 'L'),
+          );
+          $pdf->LineWriteB($array_data);
+
+          $medic++;
+          $salto=is_float($medic/23.0);//si salto es verdadero  entonces saltara de pagina
+          if(!$salto){
+              $pdf->AddPage();
+          }
+
+      }
+  
+
+      
+      //$pdf->setY(7);
         //$pdf->SetDrawColor(25, 65, 96);
         //$pdf->SetFillCOlor(255, 255, 255);
         //encabezado de la receta
 
 
         //definiendo nuevo tamanio de letra 
-        $pdf->SetFont('Arial', 'B', 9);
+       /* $pdf->SetFont('Arial', 'B', 9);
         //obteniendo todos los medicamentos recesatos y escribiendolos
         $medic=0;//cuenta los medicamentos recetados
    
@@ -533,9 +572,45 @@
             $pdf->MultiCell(9,1, $otr[$i], 0, 'L', 0 );
             $set_y++;
         }
-        //echo $set_y;
+        //echo $set_y;*/
 
     }
+
+      //escribiendo lo otros medicamentos
+      $pdf->SetFont('Courier', 'B', 12);
+      $query_aux=_query("SELECT * FROM reserva_cita WHERE id='$id_cita'");
+      $aux=_fetch_array($query_aux);
+      $otros=$aux["medicamento"];
+      $otr=explode("|", $otros);
+     
+      if(count($otr)>0 && $otros!=""){
+  
+          //colocando el titulo
+          $pdf->setY($pdf->getY()+1);
+          $pdf->setX(6);
+          $pdf->Cell(13.5, 2, (utf8_decode(" Otros medicamentos.")), 0, 1, 'L');
+          $pdf->setY($pdf->getY());
+          $pdf->setX(6);
+          /*$array_data=array(
+              array("MEDICAMENTO", 14.5, "c"),
+          );
+          $pdf->LineWriteB($array_data);
+          */
+          $pdf->SetFont('Courier', 'B', 9);
+          //dibujando los otros medicamentos 
+          
+          for($i=0;$i<count($otr); $i++){
+              $pdf->setX(6);
+              $pdf->SetFillColor(255, 255, 255);
+              $pdf->SetTextColor(0, 0, 0);
+  
+              $array_data=array(
+                  array(Mayu($otr[$i]), 14.5, "L"),
+              );
+              $pdf->LineWriteB($array_data);
+          }
+  
+      }
     /*ob_clean();*/
     $pdf->Output("receta_pdf.pdf","I");
 

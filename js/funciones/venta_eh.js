@@ -22,7 +22,7 @@ function addProductList(id_prod) {
 	}
   id_sucursal = $("#id_sucursal").val();
 
-	urlprocess = "venta.php";
+	urlprocess = "venta_h.php";
 	var dataString = 'process=consultar_stock' + '&id_producto=' + id_prod+ '&id_factura=' + id_factura+ '&id_sucursal=' + id_sucursal;
 	$.ajax({
 		type: "POST",
@@ -112,7 +112,7 @@ function totales() {
 
 	var tipo_impresion = $('#tipo_impresion').val();
 
-	var urlprocess = "venta.php";
+	var urlprocess = "venta_h.php";
 	var i = 0, total = 0;
 	totalcantidad = 0;
 
@@ -223,7 +223,7 @@ function totales() {
 
 		$('#totcant').html(totcant_mostrar);
 		$('#items').val(filas);
-		$('#totaltexto').load("venta.php", {
+		$('#totaltexto').load("venta_h.php", {
 			'process': 'total_texto',
 			'total': total_final_mostrar
 		});
@@ -321,7 +321,7 @@ function totales() {
 
 		$('#totcant').html(totcant_mostrar);
 		$('#items').val(filas);
-		$('#totaltexto').load("venta.php", {
+		$('#totaltexto').load("venta_h.php", {
 			'process': 'total_texto',
 			'total': total_final_mostrar
 		});
@@ -567,7 +567,7 @@ document.addEventListener('keydown', event => {
     	//Ranking de precios
     	$.ajax({
     		type:'POST',
-    		url:'venta.php',
+    		url:'venta_h.php',
     		data:'process=cons_rank&id_producto='+id_producto+'&id_presentacion='+id_presentacion_p+'&cantidad='+a_cant,
     		dataType:'JSON',
     		success:function(datax)
@@ -722,7 +722,7 @@ document.addEventListener('keydown', event => {
       id_sucursal = $("#id_sucursal").val();
     	//console.log(id_presentacion);
     	$.ajax({
-    		url: 'venta.php',
+    		url: 'venta_h.php',
     		type: 'POST',
     		dataType: 'json',
     		data: 'process=getpresentacion'+"&id_presentacion="+id_presentacion+"&cant="+cantid+"&id_sucursal="+id_sucursal,
@@ -896,7 +896,7 @@ document.addEventListener('keydown', event => {
 					});
 					json_arr = '[' + array_json + ']';
 	
-					var urlprocess = "venta.php";
+					var urlprocess = "venta_h.php";
 					var id_cotizacion = "";
 	
 					if (i==0) {
@@ -995,5 +995,5 @@ document.addEventListener('keydown', event => {
 
 
 	function reload1(){
-		location.href = 'admin_recepcion.php';
+		location.href = 'admin_hospitalizaciones.php';
 	}

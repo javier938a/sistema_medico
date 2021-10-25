@@ -107,7 +107,7 @@
             $table.= "<li><a data-toggle='modal' href='$filename?idRecepcion=".$idRecepcion."&process=recuperar' data-target='#deleteModal' data-refresh='true'><i class='fa fa-undo'></i> Recuperar</a></li>";
           }
           }*/
-          if($estadoRecepcion!="FACTURADO" && $estadoRecepcion!="CANCELADO"  && $estadoRecepcion!='PENDIENTE DE PAGO' && $estadoRecepcion!='EN CONSULTA'){
+          if($estadoRecepcion!="FACTURADO" && $estadoRecepcion!="CANCELADO"  && $estadoRecepcion!='EN CONSULTA'){
             $filename='registrar_datos_fisicos.php';//aqui se utilizara para abrir un modal y poder ingresar los datos fisicos del paciente
             $link=permission_usr($id_user,$filename);
             if($link!="NOT" || $admin=='1'){
