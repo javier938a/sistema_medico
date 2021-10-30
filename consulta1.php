@@ -30,6 +30,8 @@ function initial(){
     $_PAGE['links'] .= '<link href="css/style.css" rel="stylesheet">';
     $_PAGE['links'] .= '<link href="css/plugins/timepicki/timepicki.css" rel="stylesheet">';
     $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
+    $_PAGE ['links'].=  '<link href="lightbox/css/lightbox.min.css", rel="stylesheet">';
+
 
     include_once "header.php";
     include_once "main_menu.php";
@@ -46,7 +48,7 @@ function initial(){
     $query = _query("SELECT fecha_cita, hora_cita, id_paciente, motivo_consulta, diagnostico, 
     examen, medicamento, t_o, ta, p, peso, fr, spo2, hemoglucotest, antecedente_personal,
      antecedente_familiar, ingreso_hospitalario, indicacion_medica, otros_cobros, hallazgo_fisico, 
-     historia_clinica, saturacion, fc, dx, plan, hx, altura FROM reserva_cita WHERE id ='$id'");
+     historia_clinica, saturacion, fc, dx, plan, hx, altura, examenes_ultra FROM reserva_cita WHERE id ='$id'");
     $datos = _fetch_array($query);
     $fecha_cita = nombre_dia($datos['fecha_cita']);
     $hora_cita = hora($datos['hora_cita']);
@@ -71,6 +73,7 @@ function initial(){
     $indicacion_medica = $datos['indicacion_medica'];
     $otros_cobros = $datos['otros_cobros'];
     $id_paciente_info = $datos['id_paciente'];
+    $examen_ultra=$datos['examenes_ultra'];
     $fc=$datos['fc'];
     $dx=$datos['dx'];
     $plan=$datos['plan'];
@@ -276,6 +279,11 @@ function initial(){
                                     <a class="nav-link" id="pills-constacia-tab" data-toggle="pill"
                                         href="#pills-constancia" role="tab" aria-controls="pills-constacia"
                                         aria-selected="false">Constancias</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="pills-ultra-tab" data-toggle="pill"
+                                        href="#pills-ultra" role="tab" aria-controls="pills-ultra"
+                                        aria-selected="false">Examen de Ultrasonografia</a>
                                 </li>
                                 <!--<li class="nav-item">
                                     <a class="nav-link" id="pills-cobros-tab" data-toggle="pill" href="#pills-cobros"
@@ -1739,7 +1747,42 @@ function initial(){
                                 <!--ACA FINALIZA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DEL ASUNTO
                                 Y DE LA HISTORIA CLINICA DEL PACIENTE-->
 
+                                <!--Inicia el espacio donde mostrara el examen de la ultra-->
+                                <div class="tab-pane fade" id="pills-ultra" role="tabpanel"
+                                    aria-labelledby="pills-ultra-tab">
+                                    <ul class="nav nav-tabs" id="myTab8" role="tablist">
+                                        <li class="nav-item active">
+                                            <a class="nav-link active" id="ingreso-paciente-tab" data-toggle="tab"
+                                                href="#ingreso-paciente" role="tab" aria-controls="ingreso-paciente"
+                                                aria-selected="true">Examen de ultrasonografia</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent8">
+                                        <div class="tab-pane fade active in" id="ingreso-paciente" role="tabpanel"
+                                            aria-labelledby="ingreso-paciente-tab">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class='text-success'><a data-toggle="collapse"
+                                                            href="#collapse15" class="change" act="down">Examen de Ultrasonografia<i
+                                                                class="fa fa-angle-double-down pull-right"></i></a></h4>
+                                                </div>
+                                                <div id="collapse15" class="collapse panel-collapse in">
+                                                    <div class="panel-body">
+                                                        <div class="widget-content">
+                                                            <a href="<?php echo $examen_ultra ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente.' '.$apellido_paciente ?>" class="pop">
+                                                                <img id="view_ultra" src="<?php echo $examen_ultra ?>" style='width: 200px; height: 200px;'>                          
+                                                                
+                                                            </a>
 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--finaliza el espacio donde mostrara el examen de la ultra-->
 
                                 <!--ACA EMPIEZA EL ESPACIO QUE SERVIRA PARA PODER VER LOS DATOS
                                 MAS RELEVANTES DEL PACIENTE -->

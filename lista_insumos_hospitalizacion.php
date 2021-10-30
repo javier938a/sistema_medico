@@ -103,6 +103,7 @@
 								</thead>
 								<tbody> 
 									<?php
+										if($id_factura!=''){
 										//obteniendo el listado de detalles de facturas de el cliente hospitalizado
 										$sql_detalle_factura="SELECT fd.id_factura_detalle, p.descripcion AS producto,
 										fd.precio_venta, fd.cantidad, fd.subtotal FROM ".EXTERNAL.".factura_detalle AS fd LEFT JOIN 
@@ -159,6 +160,14 @@
 												<td colspan=\"2\">Total<td>
 												<td>$suma_total</td>
 											</tr>";
+										}else{
+											echo '<div class="alert alert-success" role="alert">
+											<div class="row">
+													<h4 class="alert-heading">No se le ha aplicado ningun producto a este paciente</h4>
+											</div>
+										</div>';
+										}
+
 									?>
 									
 								</tbody>		

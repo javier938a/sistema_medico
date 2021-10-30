@@ -1,5 +1,11 @@
 var tiempo = 0; +
-$(document).ready(function() {
+$(document).ready(function() {  
+
+    lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true
+    });
+
     $('#doctor_receta').on('change', function() {
         $("#id_doctor_receta").val(this.value);
         let id_paciente = $("#id_paciente_consulta").val();

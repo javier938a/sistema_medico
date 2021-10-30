@@ -5,6 +5,7 @@
             </div>
         </div>
     <!-- Mainly scripts -->
+    <script src="lightbox/js/lightbox-plus-jquery.min.js"></script>
     <script src="js/jquery-2.1.1.js"></script>
 	<script src="js/plugins/datapicker/moment.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -113,6 +114,7 @@
     <script src="js/funciones/functions_messages_clean.js"></script>
     <script src="js/funciones/funciones_asistente.js"></script>
     <script src="js/html2canvas.js"></script>
+    
 
     <script type="text/javascript">
     window.setInterval(function() {

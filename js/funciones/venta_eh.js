@@ -500,7 +500,24 @@ document.addEventListener('keydown', event => {
     	totales();
     });
 	$(document).on("click","#preventax",function(){
-		guardar_preventa();
+		swal({
+			title:"Esta a punto de aplicar los insumos agregados al paciente!",
+			text: "Esta seguro de aplicarlos?",
+			showCancelButton:true,
+			confirmButtonClass:'btn-danger',
+			confirmButtonText:"Si aplicar",
+			cancelButtonText:"No! no aplicar",
+			closeOnConfirm:true,
+			closeOnCancel:false,
+		}, function(isConfirm){
+			if(isConfirm){
+				guardar_preventa();
+			}else{
+				swal('Cancelado', 'Operacion cancelada', 'error');
+			}
+			
+		});
+		
 	});
 
     $(document).on('change', '.sel_prec', function() {
