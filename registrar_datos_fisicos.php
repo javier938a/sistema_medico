@@ -23,6 +23,7 @@
         $_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
         $_PAGE ['links'].=  '<link href="css/estilos.css", rel="stylesheet">';
         $_PAGE ['links'] .= '<link href="css/plugins/timepicker/jquery.timepicker.css" rel="stylesheet">';
+        $_PAGE['links'] .= '<link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">';
         //$_PAGE ['links'] .= '<link href="css/plugins/timepicki/timepicki.css" rel="stylesheet">';
   
         include_once "header.php";
@@ -443,7 +444,8 @@
                 if($insertar){
                     $table_re="recepcion";
                     $form_data_re=array(
-                        'id_estado_recepcion'=>"6"
+                        'id_estado_recepcion'=>"1",
+                        'id_tipo_recepcion'=>'14'
                     );
                     $where_clau='id_recepcion='.$id_recepcion;
                     $update_recepcion=_update($table_re, $form_data_re, $where_clau);
@@ -480,10 +482,12 @@
                     $xdatos['msg2']='Recepcion actualizada';
                     $xdatos['msg']='cita para hoy registrada exitosamente!';
                     $xdatos['process']='insert';
+                    $xdatos['lugar']=$lugar;
                 }else{
                     $xdatos['typeinfo']='Error';
                     $xdatos['msg']='Error al registrar la cita, no se pudo registrar la cita';
                     $xdatos['date']=$form_data1;
+
                 }
 
             }else{//si existe se actualiza con los nuevos datos
@@ -492,7 +496,8 @@
                 if($update){
                     $table_re="recepcion";
                     $form_data_re=array(
-                        'id_estado_recepcion'=>"6"
+                        'id_estado_recepcion'=>"1",
+                        'id_tipo_recepcion'=>"14"
                     );
                     $where_clau='id_recepcion='.$id_recepcion;
                     $update_recepcion=_update($table_re, $form_data_re, $where_clau);

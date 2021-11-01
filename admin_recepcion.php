@@ -102,7 +102,7 @@
 						</div><!-- /.modal-dialog -->
 					</div><!-- /.modal -->
 					<!-- MODAL PARA DETALLE-->
-					<div class="modal fade" id='transferenciaModal'  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal fade"  tabindex='-1'  aria-hidden='true' data-toggle='modal' data-backdrop='static' data-keyboard='false' id='transferenciaModal'  role="dialog" aria-labelledby="myModalLabel">
 						<div class='modal-dialog modal-md'>
 							<div class='modal-content modal-md'>
 

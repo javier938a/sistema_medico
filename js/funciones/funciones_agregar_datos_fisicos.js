@@ -4,10 +4,17 @@ $(document).ready(function(){
     $(".timepicker").timepicker();
 
 
+
     $("#formulario_datos_fisicos").submit(function(evt){
         evt.preventDefault();
-
-        reservar_y_transferir();
+        var hora = $("#hora_cita").val();
+        if(hora.length>0){
+            reservar_y_transferir();
+        }else{
+          swal("No ingreso la hora","Debe de seleccionar una hora, antes de transferirlo a consulta", 'error');  
+        }
+        
+        
     });
 
     /*$("#formulario_datos_fisicos").validate({
@@ -156,10 +163,12 @@ $(document).ready(function(){
                 'hora_cita':txt_hora_cita,
                 'id_cita':id_cita
 
-            };  
+            }; 
+
         }
+
         var dire='registrar_datos_fisicos.php';
-        console.log(datos);
+        //alert(lugar);
         $.ajax({
             type:'POST',
             url:dire,
@@ -169,17 +178,16 @@ $(document).ready(function(){
                 var typeinfo=e.typeinfo;
                 var msg=e.msg;
                 var lugar=e.lugar;
+                //alert(lugar);
                 if(typeinfo=='Success'){
                     //alert(e.typeinforeci);
                     display_notify(typeinfo,msg);
-                    setTimeout(()=>{
-                        if(lugar=='recepcion'){
-                            location.href='admin_recepcion.php';
-                        }else if(lugar=='cita'){
-                            location.href='cola.php';
-                            //alert("entro aqui...");
-                        }
-                    }, 1500);
+                    if(lugar=="recepcion"){
+                        location.href='admin_recepcion.php'; 
+                    }else if(lugar=='cola.php'){
+                        location.href='cola.php';
+                        
+                    }
                 }
             }
         });

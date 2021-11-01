@@ -21,8 +21,8 @@ function initial(){
         <h4 class="modal-title text-navy">Transferir Recepcion:</h4>
     </div>
     <div class="modal-body">
-        <div class="wrapper wrapper-content  animated fadeInRight">
-            <div class="row" id="row1">
+        <div class="wrapper wrapper-content   animated fadeInRight">
+            <div class="row " id="row1">
                 <div class="col-lg-12">
                 <?php	if ($links!='NOT' || $admin=='1' ){ ?>
                     <div class="row">
@@ -32,21 +32,23 @@ function initial(){
                                 <label><?php echo "<br>Evento:".$evento; ?></label>
                             </div>
                         </div>
-                        <div class="col-lg-12">
+                        <div class="col-lg-12 ">
                             <div>
                                 <h5>Paciente se encuentra en: </h5>
                                 <label id="recepcion_actual"><?php echo $tipo_recepcion ?></label>
                             </div>
-                            <div class="form-group has-info single-line">
+                            <div class="form-group render has-info single-line">
                                 <label>Transferir a<span style="color:red;">*</span></label>
                                 <br>
-                                <select class="form-control select" name="tipo_recepcion_transferir" id="tipo_recepcion_transferir" style="width:100%;">
+                                <select class="form-control  select" name="tipo_recepcion_transferir" id="tipo_recepcion_transferir" style="width:100%;">
                                     <option value="">Seleccione donde enviarlo</option>
                                 <?php
                                     $sql_tipo = "SELECT * FROM tipo_recepcion where activo = '1' AND tipo_recepcion.id_tipo_recepcion != '$id_tipo_recepcion'";
                                     $query_tipo = _query($sql_tipo);
                                     while($row_tipo = _fetch_array($query_tipo)){
-                                        echo "<option value='".$row_tipo["id_tipo_recepcion"]."'>".$row_tipo["descripcion"]."</option>";
+                                        if($row_tipo['tipo']!='CONSULTA'){
+                                            echo "<option value='".$row_tipo["id_tipo_recepcion"]."'>".$row_tipo["descripcion"]."</option>";
+                                        }
                                     }
                                 ?>
                                 </select>
@@ -65,7 +67,9 @@ function initial(){
     </div>
     <script>
         $(document).ready(function(){
-            $(".select").select2();
+            $(".select").select2({
+                dropdownParent:$("#transferenciaModal"),
+            });
             $("#tipo_recepcion_transferir").on('select2:select', function(e){
                 var data = e.params.data;
                 var id_tipo = data.id;

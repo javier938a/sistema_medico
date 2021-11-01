@@ -109,20 +109,6 @@
                                     <input type="hidden" name="pacientee" id="pacientee" >
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group has-info single-line">
-                                    <label> Tipo de recepcion: </label>
-                                    <select class="form-control select" name="tipo_recepcion" id="tipo_recepcion">
-                                        <?php
-                                            $sql_tipo = "SELECT * FROM tipo_recepcion where activo = '1'";
-                                            $query_tipo = _query($sql_tipo);
-                                            while($row_tipo = _fetch_array($query_tipo)){
-                                                echo "<option value='".$row_tipo["id_tipo_recepcion"]."'>".$row_tipo["descripcion"]."</option>";
-                                            }
-                                        ?>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="col-lg-4">
                                 <div class="form-group has-info single-line">
                                     <label> Hora de entrada: </label>

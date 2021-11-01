@@ -198,7 +198,7 @@ $columns = array(
                 $filename='asignar_insumos_hospitalizacion.php';
                 $link=permission_usr($id_user,$filename);
                 if ($link!='NOT' || $admin=='1' ){
-                    $menudrop .="<li><a  href='lista_insumos_hospitalizacion.php?id_hospitalizacion=".$id_hospitalizacion."' ><i class=\"fa fa-plus\"></i> Ver cuenta paciente</a></li>";
+                    $menudrop .="<li><a  href='lista_insumos_hospitalizacion.php?id_hospitalizacion=".$id_hospitalizacion."' ><i class=\"fa fa-medkit\"></i> Ver cuenta paciente</a></li>";
                 }
             
             /*if($recepcion_hospitalizacion == "1"){

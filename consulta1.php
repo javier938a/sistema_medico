@@ -1978,7 +1978,8 @@ function finalizar()
                             //esta cita
         //obteniendo la recepcion de cita
             //echo _num_rows(_query($sql_recepcion_cita));
-        if(_num_rows(_query($sql_recepcion_cita))>0){
+        if(_num_rows(_query($sql_recepcion_cita))>0){//si la cita existe se busca dentro de la tabla 
+            //recepcion_cita para actualizar el estado de el estado de recepcion..
             ///echo "Entro aqui....";
             $row_recepcion=_fetch_array(_query($sql_recepcion_cita));
             //obteniendo el id
@@ -1994,6 +1995,45 @@ function finalizar()
             if($update_rece){
                 $xdata['msgrec']="estado recepcion actualizada correctamente..";
             }
+        }else if(_num_rows(_query($sql_recepcion_cita))==0){
+            //si no existe la recepcion tendra que crearla ya que el paciente viene por cita
+            $sql_cita='SELECT * FROM reserva_cita WHERE id='.$id;
+            $query_cita=_query($sql_cita);
+            $row_cita=_fetch_array($query_cita);
+            $id_paciente_recepcion=$row_cita['id_paciente'];
+            $id_doctor=$row_cita['id_doctor'];
+            $id_usuario=$_SESSION['id_usuario'];
+
+            $table='recepcion';
+            $fecha_hoy=date('Y-m-d');
+            $form_data3=[
+                "evento"=>'consulta',
+                'nombre_pariente'=>'',
+                'fecha_de_entrada'=>$fecha_hoy,
+                'telefono_contacto'=>'',
+                'id_paciente_recepcion'=>$id_paciente_recepcion,
+                'id_doctor_recepcion'=>$id_doctor,
+                'id_usuario_recepcion'=>$id_usuario,
+                'id_estado_recepcion'=>'7',
+                'id_sucursal_recepcion'=>'1',
+                'id_tipo_recepcion'=>'14',
+                'recepcion_consulta'=>'1',
+                'doctor_refiere'=>$id_doctor
+
+            ];
+
+            $insert_re=_insert($table, $form_data3);
+            if($insert_re){
+                $id_recep=_insert_id();
+                $table='recepcion_cita';
+                $form_data4=[
+                    'id_recepcion'=>$id_recep,
+                    'id_reserva_cita'=>$id
+                ];
+                $insert_re_ci=_insert($table, $form_data4);
+            }
+            
+
         }
 
         $estado_pago=8;
