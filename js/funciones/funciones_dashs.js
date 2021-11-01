@@ -18,6 +18,23 @@ $(document).ready(function(){
 			}
 		});
 	})
+	$("#agregar_ultra").click(function(evt){
+		evt.preventDefault();
+		var id_cola=$("#id_cola").val();
+		$.ajax({
+			type:'POST',
+			url:'cola.php',
+			dataType:'json',
+			data:{
+				'process':'datos_previos',
+				'id_cola':id_cola,
+			},
+			success:function(data){
+				var id_cita=data.id_cita;
+				window.location.href="agregar_ultra.php?&id_cita="+id_cita+"";
+			}
+		});
+	});
 	$(".select").select2();
 	show_list();
 	var date = $("#fechaoo").val();
@@ -348,6 +365,7 @@ $(function(){
 		var id_cola=$(this).attr("id");
 		$("#id_cola").val(id_cola);
 		$("#add_datos_fisicos").prop('disabled', false)
+		$("#agregar_ultra").prop('disabled', false);
 		//alert($(this).attr("id"));
     	uniexis($(this).attr("id"));
         $(this).toggleClass('active');
@@ -355,6 +373,7 @@ $(function(){
     $('body').on('dblclick', '.list-group .list-group-item', function ()
     {
 		$("#add_datos_fisicos").prop('disabled', true)
+		$("#agregar_ultra").prop('disabled', true);
     	var str  = $(this).text().split(" - ");
     	var paciente = str[1];
     	var hora = str[0];

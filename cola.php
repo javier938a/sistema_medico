@@ -82,15 +82,19 @@ function initial()
                         <div class="col-lg-6">
                             <!--Display in modal-->
                             <div class="form-group col-lg-3">
+                                <button class="text-success" id="agregar_ultra" style="font-size: 15px;" disabled><i class="fa fa-plus">
+                                        Agregar examen ultra</i></button>
+                            </div>
+                            <div class="form-group col-lg-3">
                                 <button class="text-success" id="add_datos_fisicos" style="font-size: 15px;" disabled><i class="fa fa-plus">
                                         Agregar datos fisicos</i></button>
                                         <input type="hidden" name="id_cola" id="id_cola" value="">
                             </div>
-                            <div class="form-group col-lg-3">
+                            <div class="form-group col-lg-2">
                                 <a class="text-success" id="add_fast" style="font-size: 15px;"><i class="fa fa-plus">
                                         Nueva</i></a>
                             </div>
-                            <div class="form-group col-lg-3">
+                            <div class="form-group col-lg-1">
                                 <a class="text-success" href="admin_cita.php" style="font-size: 15px;"><i
                                         class="fa fa-list"> Ver Citas</i></a>
                             </div>

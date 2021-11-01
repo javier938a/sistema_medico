@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
 	$('#form_ultra').validate(
 	{		
 	    rules:
@@ -24,6 +25,7 @@ $(document).ready(function(){
 		},
 		submitHandler: function (form)
 		{ 
+
     		sendUltra();
 		}
     });
@@ -36,9 +38,7 @@ $(document).ready(function(){
     	if(window.FormData){
     		formdata= new FormData(form[0]);
     	}
-    	//alert(form.serialize());
-
- 
+    	
     	$.ajax({
     		url:'agregar_ultra.php',
     		type:'POST',
@@ -48,10 +48,11 @@ $(document).ready(function(){
     		processData:false,
     		dataType:'json',
     		success:function(data){
+                //alert(data.typeinfo);
     			display_notify(data.typeinfo, data.msg, data.process);
     			if(data.typeinfo=="Success"){
     				setTimeout(function(){
-    					location.href='agregar_ultra.php';
+    					location.href='cola.php';
     				}, 1500);
     			}
     		}
