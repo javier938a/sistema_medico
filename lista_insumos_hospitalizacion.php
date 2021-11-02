@@ -176,8 +176,19 @@
 
 						 <input type="hidden" name="autosave" id="autosave" value="false-0">	
 					</section>   
-					<p><a href="admin_hospitalizaciones.php" class="btn btn-primary" role="button">Regresar</a> 
-					</p>
+					<div class="row">
+						<div class="col-lg-6">
+							<p>
+								<a href="admin_hospitalizaciones.php" class="btn btn-primary" role="button">Regresar</a> 
+							</p>
+						</div>
+						<div class="col-lg-6">
+							<a href="" class="btn btn-primary" role="button">
+								imprimir
+							</a>
+						</div>
+					</div>
+
 
 					<!-- MODAL PARA DETALLE-->
 					<!--Show Modal Popups View & Delete -->
