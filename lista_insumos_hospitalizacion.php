@@ -184,7 +184,7 @@
 						</div>
 						<div class="col-lg-6">
 							<a href="" class="btn btn-primary" role="button">
-								imprimir
+								imprimir cuenta
 							</a>
 						</div>
 					</div>
