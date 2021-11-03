@@ -28,6 +28,7 @@ function initial(){
     $_PAGE['links'] .= '<link href="css/animate.css" rel="stylesheet">';
     $_PAGE['links'] .= '<link href="css/style.css" rel="stylesheet">';
     $_PAGE['links'] .= '<link rel="stylesheet" type="text/css" href="css/odontograma.css">';
+    $_PAGE ['links'].=  '<link href="lightbox/css/lightbox.min.css", rel="stylesheet">';
 
     include_once "header.php";
     include_once "main_menu.php";
@@ -41,6 +42,8 @@ function initial(){
 
     $id = $_REQUEST["id_cita"];
     $query = _query("SELECT r.*,d.id_doctor, CONCAT(d.nombres,' ',d.apellidos) as doctor FROM reserva_cita as r, doctor as d WHERE d.id_doctor=r.id_doctor AND r.id ='$id'");
+    //$sql_paiente="SELECT *"
+
     $datos = _fetch_array($query);
     $id_paciente = $datos["id_paciente"];
     $doctor = $datos["doctor"];
@@ -55,9 +58,15 @@ function initial(){
     $p = $datos["p"];
     $peso = $datos["peso"];
     $fr = $datos["fr"];
+
+    $fc=$datos['fc'];
+    $dx=$datos['dx'];
+    $plan=$datos['plan'];
+    $altura=$datos['altura'];
+
     $id_doctor_receta = $datos['id_doctor'];
 
-    $spo2_ant = $datos["spo2"];
+    $spo2_ant = $datos["saturacion"];
     $hemoglucotest_ant = $datos["hemoglucotest"];
     $saturacion_ant = $datos["saturacion"];
     $hallazgo_fisico_ant = $datos['hallazgo_fisico'];
@@ -67,6 +76,10 @@ function initial(){
     $ingreso_hospitalario_ant = $datos['ingreso_hospitalario'];
     $indicacion_medica_ant = $datos['indicacion_medica'];
     $otros_cobros_ant = $datos['otros_cobros'];
+
+    $examenes_ultra=$datos['examenes_ultra'];
+    $dx_ultra=$datos['dx_ultra'];
+
 
 
     $query_diagnostico = _query("SELECT d.descripcion, dp.id_diagnostico FROM diagnostico_paciente as dp, diagnostico as d WHERE d.id_diagnostico=dp.id_diagnostico AND dp.id_cita='$id' AND dp.id_paciente='$id_paciente'");
@@ -99,11 +112,13 @@ function initial(){
     $sql="SELECT p.*, d.nombre_departamento, m.nombre_municipio FROM paciente AS p, departamento AS d, municipio AS m WHERE p.municipio = m.id_municipio AND m.id_departamento_municipio = d.id_departamento  AND p.id_paciente='$id_paciente'";
     $result = _query($sql);
     $numm = _num_rows($result);
+    $nombre_paciente="";
     if($numm>0)
     {
         $row = _fetch_array($result);
         $nombre=$row['nombres'];
         $apellido = $row['apellidos'];
+        $nombre_paciente=$nombre.' '.$apellido;
         $telefono1=$row["tel1"];
         $telefono2=$row["tel2"];
         if($telefono2 !="")
@@ -311,6 +326,7 @@ function initial(){
                                             <td><b>SpO2: </b></td>
                                             <td><b>Hemoglucotest: </b></td>
                                             <td><b>Saturacion: </b></td>
+                                            <td><b>FC:</b></td>
                                         </tr>
                                         <tr>
 
@@ -323,6 +339,15 @@ function initial(){
                                             <td><?php echo $hemoglucotest_ant;?>
                                             </td>
                                             <td><?php echo $saturacion_ant;?></td>
+                                            <td><b><?php echo $fc; ?></b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"><b>DX</b></td>
+                                            <td colspan="5"><b>PLAN</b></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4"><?php echo $dx ?></td>
+                                            <td colspan="5"><?php echo $plan ?></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -385,6 +410,38 @@ function initial(){
                         </div>
                     </div>
                 </div>
+                <?php } if($examenes_ultra!='') {?>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class='text-success'>Ultrasonografia</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="widget-content">
+                                        <a href="<?php echo $examenes_ultra; ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente; ?>" class="pop">
+                                            <img id="view_ultra" src="<?php echo $examenes_ultra ?>" style='width: 200px; height: 200px;'>                          
+                                         </a>
+                                    </div>                          
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
+                <?php } if($dx_ultra!='') {?>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <h4 class='text-success'>Diagnostico de Ultrasonografia</h4>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="widget-content">
+                                        <?php echo $dx_ultra; ?>
+                                    </div>                          
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
                 <?php } if($medicamento !=""){ ?>
                 <div class="row">
                     <div class="col-lg-12">

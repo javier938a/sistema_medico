@@ -21,7 +21,7 @@
 	$ini = MD($_POST["ini"]);
 	$fin = MD($_POST["fin"]);
 	$id = $_POST["id"];
-	$sql="SELECT r.*, concat(d.nombres,' ',d.apellidos) as dr, e.descripcion FROM reserva_cita as r, doctor as d, espacio as e WHERE d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND r.id_paciente='$id' AND r.estado=7 AND r.fecha_cita BETWEEN '$ini' AND '$fin' ORDER BY r.id DESC";
+	$sql="SELECT r.*, concat(d.nombres,' ',d.apellidos) as dr, e.descripcion FROM reserva_cita as r, doctor as d, espacio as e WHERE d.id_doctor=r.id_doctor AND e.id_espacio=r.id_espacio AND r.id_paciente='$id' AND r.estado=9 AND r.fecha_cita BETWEEN '$ini' AND '$fin' ORDER BY r.id DESC";
 	$result=_query($sql);
 	$count = _num_rows($result);
 	if($count>0)

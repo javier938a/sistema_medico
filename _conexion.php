@@ -12,8 +12,8 @@
 */
 	$dbname="cms";
 	$servidor = "localhost";
-	$usuario = "pma";
-	$clave = "12345";
+	$usuario = "root";
+	$clave = "";
 	DEFINE ("EXTERNAL","cmf");
 
 

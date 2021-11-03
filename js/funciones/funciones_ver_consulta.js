@@ -1,5 +1,9 @@
 $(function ()
 {
+	lightbox.option({
+      'resizeDuration': 200,
+      'wrapAround': true
+    });
 	$(document).on('hidden.bs.modal', function(e)
 	{
 		var act = $("#act").val();

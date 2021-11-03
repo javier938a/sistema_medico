@@ -50,7 +50,7 @@ $ta = $row_consulta['ta'];
 $p = $row_consulta['p'];
 $peso = $row_consulta['peso'];
 $fr = $row_consulta['fr'];
-$spo2 = $row_consulta['spo2'];
+$spo2 = $row_consulta['saturacion'];
 $hemoglucotest = $row_consulta['hemoglucotest'];
 $hallazgo_fisico = $row_consulta['hallazgo_fisico'];
 $historia_clinica = $row_consulta['historia_clinica'];
@@ -60,6 +60,15 @@ $indicacion_medica = $row_consulta['indicacion_medica'];
 $ingreso_hospitalario = $row_consulta['ingreso_hospitalario'];
 $otros_cobros = $row_consulta['otros_cobros'];
 $saturacion = $row_consulta['saturacion'];
+$examenes_ultra=$row_consulta['examenes_ultra'];
+$dx_ultra=$row_consulta['dx_ultra'];
+$dx=$row_consulta['dx'];
+$plan=$row_consulta['plan'];
+$altura=$row_consulta['altura'];
+
+$fc=$row_consulta['fc'];
+$altura=$row_consulta['altura'];
+
 
 $sql_doctor = "SELECT * FROM doctor WHERE id_doctor = '$id_doctor'";
 $query_doctor = _query($sql_doctor);
@@ -563,7 +572,7 @@ class PDF extends FPDF{
             $abajo="0";
             $str="";
           }
-          $this->Cell($data[$j]["size"][$i],4,$str,$abajo,$salto,$data[$j]["aling"][$i],1);
+          $this->Cell($data[$j]["size"][$i],7,$str,$abajo,$salto,$data[$j]["aling"][$i],1);
         }
 
         $this->setX(10);
@@ -633,7 +642,7 @@ class PDF extends FPDF{
             $this->SetFillColor(255,255,255);
             $this->Image($this->infoext['logo2'],$set_x+130,$set_y,50,50);
             $this->SetDrawColor(0,0,0);
-            $this->SetFont('Times', 'B', 14);
+            $this->SetFont('Arial', 'B', 14);
             $this->SetTextColor(25, 65, 96);
             $set_y +=10;
             $this->setY($set_y+5);
@@ -696,7 +705,7 @@ $pdf->setX(10);
 $pdf->LineWriteB($array_data);
 
 cabecera_secundaria($pdf);
-$pdf->SetFont('Times', 'B', 12);
+$pdf->SetFont('Arial', 'B', 12);
 $array_data = array(
     array("Nombre Completo",85,"C"),
     array("Direccion",105,"C"),
@@ -871,6 +880,38 @@ if($antecedente_personal != "" || $antecedente_familiar != ""){
     );
     $pdf->LineWriteB($array_data);
 
+    if($fc!='' || $altura!=''){
+        cabecera_tercearia($pdf);
+        $array_data=array(
+            array('FC', 95, "C"),
+            array('ALTURA', 95, "C")
+        );
+        $pdf->LineWriteB($array_data);
+        celda_comun($pdf);
+        $array_data=array(
+            array(utf8_decode($fc), 95, "C"),
+            array(utf8_decode($altura), 95, "C")
+        );
+        $pdf->LineWriteB($array_data);   
+    }
+
+    if($plan!='' || $dx!=''){
+        cabecera_tercearia($pdf);
+        $array_data=array(
+            array(utf8_decode('Dx'), 95, "C"),
+            array(utf8_decode('PLAN'), 95, "C"),
+        );
+        $pdf->LineWriteB($array_data);
+        celda_comun($pdf);
+        $array_data=array(
+            array(utf8_decode($dx), 95, 'L'),
+            array(utf8_decode($plan), 95, "L"),
+        );
+
+        $pdf->LineWriteB($array_data);
+    }
+
+
     if($hallazgo_fisico != ""){
         cabecera_secundaria($pdf);
         $array_data = array(
@@ -885,7 +926,8 @@ if($antecedente_personal != "" || $antecedente_familiar != ""){
     }
 
 if($num_diagnostico_ant > 0 || $diagnostico !=""){
-    espacios($pdf,5);
+    //espacios($pdf,5);
+    $pdf->AddPage();
     cabecera_principal($pdf);
     $array_data = array(
         array("DIAGNOSTICO",190,"C"),
@@ -914,6 +956,7 @@ if($num_diagnostico_ant > 0 || $diagnostico !=""){
     }
     if($diagnostico != ""){
         cabecera_secundaria($pdf);
+
         $array_data = array(
             array("Otro Diagnostico",190,"L"),
         );
@@ -968,6 +1011,35 @@ if($num_examen_ant > 0 || $examen !=""){
     }
 }
 
+if($examenes_ultra!=''){
+    $pdf->AddPage();
+    //espacios($pdf, 20);
+    cabecera_principal($pdf);
+    $array_data = array(
+        array(utf8_decode("Examenes de Ultrasonografia"),190,"C"),
+    );
+    $pdf->LineWriteB($array_data);
+    celda_comun($pdf);
+    $set_y=$pdf->GetY();
+    $set_x=$pdf->GetX();
+    $pdf->Image($examenes_ultra,$set_x, $set_y,195,200);
+
+}
+if($dx_ultra!=''){
+    $pdf->AddPage();
+    espacios($pdf, 5);
+    cabecera_principal($pdf);
+    $array_data=array(
+        array(utf8_decode("Diagnostico de la Ultrasonografia") ,190, "C"),
+    );
+    $pdf->LineWriteB($array_data);
+    celda_comun($pdf);
+    $array_data=array(
+        array(utf8_decode($dx_ultra), 190, "C"),
+    );
+    $pdf->LineWriteB($array_data);
+}
+
 if($num_receta_ant > 0 || $medicamento !=""){
     espacios($pdf,5);
     cabecera_principal($pdf);
@@ -1005,6 +1077,32 @@ if($num_receta_ant > 0 || $medicamento !=""){
         );
         $pdf->LineWriteB($array_data);
     }
+}
+
+if($ingreso_hospitalario!='' || $indicacion_medica!=''){
+    espacios($pdf, 5);
+    cabecera_principal($pdf);
+    $array_data=array(
+        array("INGRESO HOSPITALARIO", 190, "C"),
+    );
+    $pdf->LineWriteB($array_data);
+    celda_comun($pdf);
+    $array_data=array(
+        array(utf8_decode($ingreso_hospitalario), 190, "L"),
+    );
+    $pdf->LineWriteB($array_data);
+    cabecera_secundaria($pdf);
+    $array_data=array(
+        array(utf8_decode("INDICACIONES MEDICAS"), 190, "C"),
+    );
+    $pdf->LineWriteB($array_data);
+    celda_comun($pdf);
+    $array_data=array(
+        array(utf8_decode($indicacion_medica), 190, "L")
+    );
+
+    $pdf->LineWriteB($array_data);
+
 }
 
 if($numero_constancias > 0){
@@ -1167,25 +1265,25 @@ function cabecera_principal($pdf){
     $pdf->setX(10);
     $pdf->SetFillColor(25,65,96);
     $pdf->SetTextColor(255,255,255);
-    $pdf->SetFont('Times', 'B', 14);
+    $pdf->SetFont('Arial', 'B', 14);
 }
 function cabecera_secundaria($pdf){
     $pdf->setX(10);
     $pdf->SetFillColor(157,255,212);
     $pdf->SetTextColor(0,0,0);
-    $pdf->SetFont('Times', 'B', 12);
+    $pdf->SetFont('Arial', 'B', 12);
 }
 function cabecera_tercearia($pdf){
     $pdf->setX(10);
     $pdf->SetFillColor(255,217,217);
     $pdf->SetTextColor(0,0,0);
-    $pdf->SetFont('Times', 'B', 12);
+    $pdf->SetFont('Arial', 'B', 12);
 }
 function celda_comun($pdf){
     $pdf->setX(10);
     $pdf->SetFillColor(255,255,255);
     $pdf->SetTextColor(0,0,0);
-    $pdf->SetFont('Times', '', 11);
+    $pdf->SetFont('Arial', '', 11);
 }
 function espacios($pdf,$cantidad){
     $pdf->setY($pdf->getY() + $cantidad);

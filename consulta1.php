@@ -85,7 +85,7 @@ function initial(){
     $query_constancias = _query("SELECT * FROM constancia WHERE id_cita = '$id'");
     $numero_constancias = _num_rows($query_constancias);
     //echo "SELECT id, id_doctor FROM reserva_cita WHERE id_paciente='$id_paciente' AND id<'$id' AND estado='7' ORDER BY id DESC LIMIT 1";
-    $query_exis = _query("SELECT id, id_doctor FROM reserva_cita WHERE id_paciente='$id_paciente' AND id<'$id' AND estado='7' ORDER BY id DESC LIMIT 1");
+    $query_exis = _query("SELECT id, id_doctor FROM reserva_cita WHERE id_paciente='$id_paciente' AND id<'$id' AND estado='9' ORDER BY id DESC LIMIT 1");
     $n_exis_a = _num_rows($query_exis);
     if($n_exis_a > 0)
     {
@@ -121,6 +121,8 @@ function initial(){
         $ingreso_hospitalario_ant = $datos_ant['ingreso_hospitalario'];
         $indicacion_medica_ant = $datos_ant['indicacion_medica'];
         $otros_cobros_ant = $datos_ant['otros_cobros'];
+        $examenes_ultra_ant=$datos_ant['examenes_ultra'];
+        $dx_ultra_ant=$datos_ant['dx_ultra'];
 
 
         $query_diagnostico_ant = _query("SELECT d.descripcion, dp.id_diagnostico FROM diagnostico_paciente as dp, diagnostico as d WHERE d.id_diagnostico=dp.id_diagnostico AND dp.id_cita='$id_cita_ant' AND dp.id_paciente='$id_paciente'");
@@ -424,8 +426,6 @@ function initial(){
                                                                                 <td><b>Altura</b></td>
                                                                                 <td><b>Saturacion: </b></td>
                                                                                 <td><b>FC:</b></td>
-                                                                                <td><b>Dx:</b></td>
-                                                                                <td><b>Plan:</b></td>
                                                                             </tr>
                                                                             <tr>
                                                                                 <td><?php echo $t_o_ant;?></td>
@@ -438,8 +438,15 @@ function initial(){
                                                                                 <td><?php echo $altura_ant; ?></td>
                                                                                 <td><?php echo $saturacion_ant;?></td>
                                                                                 <td><?php echo $fc_ant; ?></td>
-                                                                                <td><?php echo $dx_ant; ?></td>
-                                                                                <td><?php echo $plan_ant; ?></td>
+
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="5"><b>Dx:</b></td>
+                                                                                <td colspan="4"><b>Plan:</b></td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td colspan="5"><?php echo $dx_ant; ?></td>
+                                                                                <td colspan="4"><?php echo $plan_ant; ?></td>
                                                                             </tr>
                                                                         </table>
                                                                     </div>
@@ -503,6 +510,43 @@ function initial(){
                                                             </div>
                                                         </div>
                                                     </div>
+                                                <?php }if($examenes_ultra_ant!=""){ ?>
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <h4 class='text-success'>Ultrasonografia</h4>
+                                                                </div>
+                                                                <div class="panel-body">
+                                                                    <div class="widget-content">
+                                                                        <a href="<?php echo $examenes_ultra_ant ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente.' '.$apellido_paciente ?>" class="pop">
+                                                                            <img id="view_ultra" src="<?php echo $examenes_ultra_ant ?>" style='width: 200px; height: 200px;'>                          
+                                                                        </a>
+                                                                    </div>
+                          
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                    <?php} if($dx_ultra_ant!=''){  ?>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <div class="panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <h4 class='text-success'>Diagnostico de Ultrasonografia</h4>
+                                                                </div>
+                                                                <div class="panel-body">
+                                                                    <div class="widget-content">
+                                                                        <?php echo $dx_ultra_ant; ?>
+
+                                                                    </div>
+                          
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+
                                                     <?php } if($medicamento_ant !=""){ ?>
                                                     <div class="row">
                                                         <div class="col-lg-12">
@@ -602,7 +646,7 @@ function initial(){
                                                                                         </th>
                                                                                     </tr>
                                                                                 </thead>
-                                                                                <tbody id="exam_tt">
+                                                                                <tbody>
                                                                                     <?php
                                                                     while($row = _fetch_array($query_examen_ant))
                                                                     {
@@ -679,8 +723,7 @@ function initial(){
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <?php }
-                                                    if($num_img_ant >0 || $num_img2_ant>0){ ?>
+                                                        <?php } if($num_img_ant >0 || $num_img2_ant>0){ ?>
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="panel panel-default">
@@ -707,7 +750,7 @@ function initial(){
                                                         ?>
                                                                         </div>
                                                                     </div>
-                                                                    <?php if($num_img2_ant>0){?>
+                                                                    <?php } if($num_img2_ant>0){?>
                                                                     <div class="col-lg-6"><br>
                                                                         <h4 class="text-success">Archivos</h4>
                                                                         <table class="table table-bordered">
@@ -733,12 +776,12 @@ function initial(){
                                                         ?>
                                                                         </table>
                                                                     </div>
-                                                                    <?php }?>
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <?php } if($num_referencia_ant_a >0){ ?>
+                                                    <?php} if($num_referencia_ant_a >0){ ?>
                                                     <div class="row">
                                                         <div class="col-lg-12">
                                                             <div class="panel panel-default">
@@ -1324,11 +1367,6 @@ function initial(){
 
                                 <!--ACA FINALIZA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DEL ASUNTO
                                 Y DE LA HISTORIA CLINICA DEL PACIENTE-->
-
-
-
-                                <!--ACA EMPIEZA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DEL ASUNTO
-                                Y DE LA HISTORIA CLINICA DEL PACIENTE-->
                                 <div class="tab-pane fade" id="pills-examen" role="tabpanel"
                                     aria-labelledby="pills-examen-tab">
                                     <ul class="nav nav-tabs" id="myTab6" role="tablist">
@@ -1416,6 +1454,12 @@ function initial(){
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <!--ACA EMPIEZA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DEL ASUNTO
+                                Y DE LA HISTORIA CLINICA DEL PACIENTE-->
+
+
                                 <!--ACA FINALIZA EL ESPACIO QUE SERVIRA PARA PODER VER DATOS DEL ASUNTO
                                 Y DE LA HISTORIA CLINICA DEL PACIENTE-->
 
@@ -1773,7 +1817,11 @@ function initial(){
                                                             <div class="row">
                                                                 <div class="col-lg-12">
                                                                     <a href="<?php echo $examen_ultra ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente.' '.$apellido_paciente ?>" class="pop">
-                                                                        <img id="view_ultra" src="<?php echo $examen_ultra ?>" style='width: 200px; height: 200px;'>                          
+                                                                        <?php if($examen_ultra!=''){ ?>
+                                                                            <img id="view_ultra" src="<?php echo $examen_ultra ?>" style='width: 200px; height: 200px;'>
+                                                                        <?php }else{ ?>
+                                                                           <img id="view_ultra" src="img/sinimagen.png" style='width: 200px; height: 200px;'>                                                                    
+                                                                        <?php } ?>                          
                                                                 
                                                                     </a>
                                                                 </div>

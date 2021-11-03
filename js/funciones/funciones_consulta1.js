@@ -84,6 +84,7 @@ $(document).ready(function() {
         //Se captura el evento del campo de busqueda y se llama a la funcion agregar_factura()
         updater: function(selection) {
             var data0 = selection;
+            alert(data0);
             var id = data0.split("|");
             var nombre = id[1];
             id = parseInt(id[0]);
