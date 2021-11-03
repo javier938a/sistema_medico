@@ -2,6 +2,7 @@ $(document).ready(function() {
     generar();
     setInterval(function() { generar(); }, 30000);
     $("#paciente_replace").hide();
+
     $(".select").select2();
     $(".decimal").numeric({ negative: false, decimalPlaces: 2 });
 
@@ -89,6 +90,9 @@ $(document).ready(function() {
                 required: true,
                 regexp: /^(0?[1-9]|1[012])(:[0-5]\d) [APap][mM]$/,
             },
+            id_doctor_at:{
+                required:true
+            }
         },
         messages: {
             paciente: {
@@ -112,6 +116,9 @@ $(document).ready(function() {
                 required: "Por favor ingrese la hora de entrada",
                 regexp: 'La hora de entrada no es valida',
             },
+            id_doctor_at:{
+                required:"Porfavor debe seleccionar el doctor que va a atender al paciente"
+            }
         },
         errorLabelContainer: 'paciente',
         highlight: function(element) {
@@ -380,6 +387,7 @@ function senddata() {
     let fecha_de_salida = $("#fecha_de_salida").val();
     let hora_entrada = $("#hora_entrada").val();
     let hora_salida = $("#hora_salida").val();
+    let id_doctor_at=$("#id_doctor_at").val();
 
     var id_recepcion = 0;
     if (!hora_salida.match(/^(0?[1-9]|1[012])(:[0-5]\d) [APap][mM]$/)) {
@@ -403,6 +411,8 @@ function senddata() {
                 dataString += "process=" + process + "&id_recepcion=" + id_recepcion + "&id_cuarto=" + id_habitacion;
                 dataString += "&precio_por_hora=" + precio_por_hora + "&tipo_pago=" + tipo_pago + "&fecha_de_entrada=" + fecha_de_entrada;
                 dataString += "&fecha_de_salida=" + fecha_de_salida + "&hora_entrada=" + hora_entrada + "&hora_salida=" + hora_salida;
+                dataString+="&id_doctor_at="+id_doctor_at;
+                
                 if (opciones.resultado == "1") {
                     if (estado_cuarto != "DISPONIBLE") {
                         swal({
@@ -441,6 +451,7 @@ function senddata() {
             dataString += "process=" + process + "&id_cuarto=" + id_habitacion + "&id_hospitaliza=" + id_habitacion;
             dataString += "&precio_por_hora=" + precio_por_hora + "&tipo_pago=" + tipo_pago + "&fecha_de_entrada=" + fecha_de_entrada;
             dataString += "&fecha_de_salida=" + fecha_de_salida + "&hora_entrada=" + hora_entrada + "&hora_salida=" + hora_salida + "&id_hospitalizacion=" + id_hospitalizacion;
+            dataString+="&id_doctor_at="+id_doctor_at;
             if ($("#estado_cuarto").val() != "1") {
                 swal({
                         title: "Esta a punto de editar una hospitalizacion",
@@ -469,6 +480,7 @@ function senddata() {
             dataString += "process=" + process + "&id_cuarto=" + id_habitacion + "&id_hospitaliza=" + id_habitacion;
             dataString += "&precio_por_hora=" + precio_por_hora + "&tipo_pago=" + tipo_pago;
             dataString += "&fecha_de_salida=" + fecha_de_salida + "&hora_entrada=" + hora_entrada + "&hora_salida=" + hora_salida + "&id_hospitalizacion=" + id_hospitalizacion;
+            dataString +="&id_doctor_at="+id_doctor_at;
             if ($("#estado_cuarto").val() != "1") {
                 swal({
                         title: "Esta a punto de editar una hospitalizacion",

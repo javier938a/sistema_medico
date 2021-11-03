@@ -101,13 +101,17 @@ tr .descp {
                         </div>
                         <div class="form-group has-info col-md-4">
                             <label>Facturar en Sucursal</label>
-                            <select id="id_sucursal" style="width:100%" class="" name="">
+                            <select id="id_sucursal" style="width:100%" class="" name="" disabled>
                                 <?php
                     $sql_suc = _query("SELECT * FROM ".EXTERNAL.".sucursal ");
                     while ($rows = _fetch_array($sql_suc)){
+                        if($rows['descripcion']=="BOTIQUIN SAN JOSE"){
+
                       ?>
-                                <option value="<?=$rows['id_sucursal'] ?>"><?=$rows['descripcion']?></option>
+
+                                <option value="<?=$rows['id_sucursal'] ?>" selected><?=$rows['descripcion']?></option>
                                 <?php
+                            }
                     }
                      ?>
                             </select>

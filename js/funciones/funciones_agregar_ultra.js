@@ -8,11 +8,16 @@ $(document).ready(function(){
             {  
                 required: true,           
             },
+            dx_ultra:
+            {
+            	required:true,
+            }
 
         },
         messages:
         {
 			ultra: "Debe de ingresar la imagen de la ultrasonografia del paciente",
+			dx_ultra:'Debe de ingresar la lectura de del examen'
 
 		},
 		highlight: function(element)
@@ -33,12 +38,13 @@ $(document).ready(function(){
 
     function sendUltra(){
     	var form=$("#form_ultra");
+    	//alert($("#dx_ultra").val());
 
     	var formdata=false;
     	if(window.FormData){
     		formdata= new FormData(form[0]);
     	}
-    	
+  
     	$.ajax({
     		url:'agregar_ultra.php',
     		type:'POST',

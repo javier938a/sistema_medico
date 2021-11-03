@@ -504,6 +504,7 @@ function guardar_otros() {
     var otros_cobros = $("#otros_cobros").val();
     var saturacion = $("#saturacion").val();
 
+    var dx_ultra=$("#dx_ultra").val();
     var frecuencia_cardiaca=$("#fc").val();
     var dx=$("#dx").val();
     var plan=$("#plan").val();
@@ -537,6 +538,7 @@ function guardar_otros() {
         'dx':dx,
         'plan':plan,
         'hx1':hx1,
+        'dx_ultra':dx_ultra
     };
     console.log(data);
     $.ajax({
