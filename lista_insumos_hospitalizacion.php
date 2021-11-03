@@ -97,7 +97,8 @@
 									<tr>
 										<th class="col-lg-1">Id</th>
 										<th class="col-lg-3">producto</th>
-										<th class="col-lg-1">cantidad</th>
+										<th class="col-lg-1">Precio de Venta</th>
+										<th class="col-lg-1">cantidad</th>										
 										<th class="col-lg-1">total</th>
 									</tr>
 								</thead>
@@ -131,6 +132,7 @@
 												<td>$id</td>
 												<td>$producto</td>
 												<td>$ $precio_venta</td>
+												<td> $cantidad</td>
 												<td>$ $total</td>
 												</tr>";
 
@@ -173,17 +175,20 @@
 								</tbody>		
 							</table>
 						</div>
-
+						<input type="hidden" name="referencia" id="referencia" value="<?php echo $no_referencia ?>">
+						 <input type="hidden" name="id_factura" id="id_factura" value="<?php echo $id_factura ?>">
+						 <input type="hidden" name="nombre_paciente" id="nombre_paciente" value="<?php echo $nombre_paciente ?>">
 						 <input type="hidden" name="autosave" id="autosave" value="false-0">	
 					</section>   
 					<div class="row">
+
 						<div class="col-lg-6">
 							<p>
 								<a href="admin_hospitalizaciones.php" class="btn btn-primary" role="button">Regresar</a> 
 							</p>
 						</div>
 						<div class="col-lg-6">
-							<a href="" class="btn btn-primary" role="button">
+							<a href="" id="imprimir_cuenta" class="btn btn-primary" role="button">
 								imprimir cuenta
 							</a>
 						</div>
