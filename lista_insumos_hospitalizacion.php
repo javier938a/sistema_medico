@@ -130,8 +130,8 @@
 											$body="<tr>
 												<td>$id</td>
 												<td>$producto</td>
-												<td>$precio_venta</td>
-												<td>$total</td>
+												<td>$ $precio_venta</td>
+												<td>$ $total</td>
 												</tr>";
 
 											echo $body;
@@ -158,7 +158,7 @@
 										$suma_total=$row_total['total'];
 										echo "<tr>
 												<td colspan=\"2\">Total<td>
-												<td>$suma_total</td>
+												<td>$ $suma_total</td>
 											</tr>";
 										}else{
 											echo '<div class="alert alert-success" role="alert">

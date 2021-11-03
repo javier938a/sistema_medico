@@ -74,10 +74,29 @@ function initial()
                                                     <input type="hidden" name="pacientee" id="pacientee" value=''>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-8">
+                                            <div class="col-lg-4">
                                                 <div class="form-group has-info single-line">
                                                     <label>Descripcion de la recepcion<span style="color:red;">*</span></label>
                                                     <input type="text" class="form-control" id="descripcion_recepcion" name="descripcion_recepcion" value='Primero ingrese el paciente que se recepciono.' readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group has-info single-line">
+                                                    <label>Doctor que lo atendera <span style="color:red;">*</span></label>
+                                                    <select class="select" id="id_doctor_at" name="id_doctor_at">
+                                                        <?php
+                                                            $sql_doctor="SELECT d.id_doctor, CONCAT(d.nombres, '', d.apellidos) AS nombre_doctor FROM doctor AS d";
+                                                            $query_doctor=_query($sql_doctor);
+                                                            if(_num_rows($query_doctor)>0){
+                                                                while($row_doctor=_fetch_array($query_doctor)){
+                                                        ?>
+                                                            <option value="<?=  $row_doctor['id_doctor']; ?>"><?= $row_doctor['nombre_doctor']; ?></option>
+                                                        <?php
+                                                                }
+                                                            }
+                                                        ?>                                                        
+                                                    </select>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -220,6 +239,7 @@ function insertar()
     $fecha_de_salida = $_POST['fecha_de_salida'];
     $hora_entrada = $_POST['hora_entrada'];
     $hora_salida = $_POST['hora_salida'];
+    $id_doctor_at=$_POST['id_doctor_at'];
     if($hora_salida != "00:00:00"){
         $hora_salida = _hora_media_encode($hora_salida);
     }
@@ -233,7 +253,8 @@ function insertar()
         'momento_salida' => $momento_salida,
         'precio_habitacion' => $precio_por_hora,
         'id_estado_hospitalizacion' => 1,
-        'minuto' => $tipo_pago
+        'minuto' => $tipo_pago,
+        'id_doctor_at'=>$id_doctor_at
     );
     $insert = _insert($insert_table, $form_data);
     if($insert){

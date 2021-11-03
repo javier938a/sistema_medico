@@ -21,19 +21,20 @@ $sql_details = array(
 /*SELECT factura.fecha, CONCAT(cliente.nombre,' ',cliente.apellido) AS nombre, factura.num_fact_impresa,factura.total,factura.abono,factura.saldo FROM factura JOIN cliente ON cliente.id_cliente=factura.id_cliente WHERE factura.factura=1 */
 //permiso del script
 $id_sucursal=$_SESSION['id_sucursal'];
-$joinQuery ="   FROM hospitalizacion INNER JOIN recepcion on hospitalizacion.id_recepcion = recepcion.id_recepcion INNER JOIN cuartos on cuartos.id_cuarto = hospitalizacion.id_cuarto_H INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto INNER JOIN estado_hospitalizacion on estado_hospitalizacion.id_estado_hospitalizacion = hospitalizacion.id_estado_hospitalizacion";
+$joinQuery ="   FROM hospitalizacion INNER JOIN recepcion on hospitalizacion.id_recepcion = recepcion.id_recepcion INNER JOIN cuartos on cuartos.id_cuarto = hospitalizacion.id_cuarto_H INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto INNER JOIN estado_hospitalizacion on estado_hospitalizacion.id_estado_hospitalizacion = hospitalizacion.id_estado_hospitalizacion INNER JOIN doctor ON hospitalizacion.id_doctor_at=doctor.id_doctor";
 $extraWhere = " recepcion.id_sucursal_recepcion = '$id_sucursal'  AND hospitalizacion.deleted is NULL and hospitalizacion.momento_entrada BETWEEN '$fini 00:00:00' AND '$fin 23:59:59'";/*	AND factura.fecha BETWEEN '$fechai' AND '$fechaf' */
 
 $columns = array(
     array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' => 0, 'field' => 'id_hospitalizacion' ),
     array( 'db' => "CONCAT(paciente.nombres,' ', COALESCE(paciente.apellidos,'') )", 'dt' => 1, 'field' => "paciente", 'as'=>'paciente'),
-    array( 'db' => "hospitalizacion.momento_entrada", 'dt' =>2, 'formatter' => function($momento_entrada){
+    array('db'=>"CONCAT(doctor.nombres, ' ', doctor.apellidos)", 'dt'=>2, 'field'=>"nombre_doctor", 'as'=>'nombre_doctor'),
+    array( 'db' => "hospitalizacion.momento_entrada", 'dt' =>3, 'formatter' => function($momento_entrada){
         $form = explode(" ", $momento_entrada);
         $hora = _hora_media_decode($form[1]);
         $fecha = ED($form[0]);
         return "El dia ".$fecha." a las ".$hora;
     }, 'field' => 'momento_entrada'),
-    array( 'db' => "hospitalizacion.momento_salida", 'dt' =>3, 'formatter' => function($momento_salida){
+    array( 'db' => "hospitalizacion.momento_salida", 'dt' =>4, 'formatter' => function($momento_salida){
         if ($momento_salida != "") {
             $form = explode(" ", $momento_salida);
             $hora = _hora_media_decode($form[1]);
@@ -43,7 +44,7 @@ $columns = array(
             return "No tiene tiempo de salida";
         }
     }, 'field' => 'momento_salida'),
-    array( 'db' => 'hospitalizacion.minuto', 'dt' =>4, 'formatter' => function($minuto){
+    array( 'db' => 'hospitalizacion.minuto', 'dt' =>5, 'formatter' => function($minuto){
         if($minuto == 0){
             return "<label class='badge' style='background:#FF4646; color:#FFF; font-weight:bold;'>A la hora</label>";
         }
@@ -51,7 +52,7 @@ $columns = array(
             return "<label class='badge' style='background:#2EC824; color:#FFF; font-weight:bold;'>Al minuto</label>";
         }
     }, 'field' => 'minuto' ),
-    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>5, 'formatter' => function($id_hospitalizacion){
+    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>6, 'formatter' => function($id_hospitalizacion){
         $id_sucursal = $_SESSION['id_sucursal'];
         $sql = "SELECT hospitalizacion.precio_habitacion, hospitalizacion.momento_entrada, hospitalizacion.total, hospitalizacion.minuto, hospitalizacion.id_estado_hospitalizacion FROM hospitalizacion INNER JOIN cuartos on cuartos.id_cuarto = hospitalizacion.id_cuarto_H INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto WHERE hospitalizacion.id_hospitalizacion = '$id_hospitalizacion' AND pisos.id_ubicacion_piso = '$id_sucursal'";
         $query = _query($sql);
@@ -88,7 +89,7 @@ $columns = array(
             return "x";
         }
     }, 'field' => 'id_hospitalizacion' ),
-    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>6, 'formatter' => function($id_hospitalizacion){
+    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>7, 'formatter' => function($id_hospitalizacion){
         $id_sucursal = $_SESSION['id_sucursal'];
         $sql = "SELECT cuartos.numero_cuarto, cuartos.descripcion, hospitalizacion.minuto, pisos.numero_piso, hospitalizacion.precio_habitacion FROM cuartos INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto INNER JOIN hospitalizacion on hospitalizacion.id_cuarto_H = cuartos.id_cuarto WHERE hospitalizacion.id_hospitalizacion = '$id_hospitalizacion' AND hospitalizacion.deleted is NULL AND pisos.id_ubicacion_piso = '$id_sucursal'";
         $query = _query($sql);
@@ -114,7 +115,7 @@ $columns = array(
         return $resultado;
 
     }, 'field' => 'id_hospitalizacion' ),
-    array( 'db' => 'estado_hospitalizacion.estado', 'dt' =>7, 'formatter' => function($estado){
+    array( 'db' => 'estado_hospitalizacion.estado', 'dt' =>8, 'formatter' => function($estado){
         $tablas1="";
         if($estado == 'PENDIENTE'){
             $tablas1.= "<label class='badge' style='background:#11DCD9; color:#FFF; font-weight:bold;'>PENDIENTE</label>";
@@ -130,7 +131,7 @@ $columns = array(
         }
         return $tablas1;
     }, 'field' => 'estado' ),
-    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>8, 'formatter' => function($id_hospitalizacion){
+    array( 'db' => 'hospitalizacion.id_hospitalizacion', 'dt' =>9, 'formatter' => function($id_hospitalizacion){
         $id_sucursal = $_SESSION['id_sucursal'];
         $id_user=$_SESSION["id_usuario"];
         $admin=$_SESSION["admin"];

@@ -86,6 +86,7 @@ if ($links!='NOT' || $admin=='1' )
                                     <tr>
                                         <th class="col-md-1">ID</th>
                                         <th class="col-md-3">PACIENTE</th>
+                                        <th class="col-md-3">DOCTOR QUE LO ANTIENDE</th>
                                         <th class="col-md-2">FECHA Y HORA ENTRADA</th>
                                         <th class="col-md-2">FECHA Y HORA SALIDA</th>
                                         <th class="col-md-1">TIPO</th>

@@ -41,7 +41,7 @@ function initial()
     $links=permission_usr($id_user,$filename);
     $hoy = date("d-m-Y");
 
-    $sql = "SELECT hospitalizacion.id_hospitalizacion, CONCAT(paciente.nombres, ' ', paciente.apellidos) as 'nombre_paciente', recepcion.evento, pisos.id_piso, cuartos.id_cuarto, cuartos.id_estado_cuarto_cuarto, hospitalizacion.precio_habitacion, hospitalizacion.minuto, hospitalizacion.momento_entrada, hospitalizacion.momento_salida, hospitalizacion.id_estado_hospitalizacion FROM hospitalizacion INNER JOIN recepcion on recepcion.id_recepcion = hospitalizacion.id_recepcion INNER JOIN cuartos on cuartos.id_cuarto = hospitalizacion.id_cuarto_H INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto WHERE hospitalizacion.id_hospitalizacion = '$id_hospitalizacion'";
+    $sql = "SELECT hospitalizacion.id_hospitalizacion, CONCAT(paciente.nombres, ' ', paciente.apellidos) as 'nombre_paciente', recepcion.evento, pisos.id_piso, cuartos.id_cuarto, cuartos.id_estado_cuarto_cuarto, hospitalizacion.precio_habitacion, hospitalizacion.minuto, hospitalizacion.momento_entrada, hospitalizacion.momento_salida, hospitalizacion.id_estado_hospitalizacion, id_doctor_at  FROM hospitalizacion INNER JOIN recepcion on recepcion.id_recepcion = hospitalizacion.id_recepcion INNER JOIN cuartos on cuartos.id_cuarto = hospitalizacion.id_cuarto_H INNER JOIN paciente on paciente.id_paciente = recepcion.id_paciente_recepcion INNER JOIN pisos on pisos.id_piso = cuartos.id_piso_cuarto WHERE hospitalizacion.id_hospitalizacion = '$id_hospitalizacion'";
     $query = _query($sql);
     $row = _fetch_array($query);
 
@@ -63,6 +63,7 @@ function initial()
     $fecha_salida = ED($momentos_salida[0]);
     $id_sucursal = $_SESSION['id_sucursal'];
     $id_estado_hospitalizacion = $row['id_estado_hospitalizacion'];
+    $id_doctor_at=$row['id_doctor_at'];
 
     $var1 = "";
     $var2 = "";
@@ -107,10 +108,30 @@ function initial()
                                                     <input type="text" id="paciente" name="paciente"  class="form-control usage sel" placeholder="Ingrese Paciente" data-provide="typeahead" autocomplete="off" value="<?php echo $nombre_paciente ?>" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-8">
+                                            <div class="col-lg-4">
                                                     <div class="form-group has-info single-line">
                                                         <label>Descripcion de la recepcion<span style="color:red;">*</span></label>
                                                     <input type="text" class="form-control" id="descripcion_recepcion" name="descripcion_recepcion" value="<?php echo $evento ?>" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group has-info single-line">
+                                                    <label>Doctor que lo atendera <span style="color:red;">*</span></label>
+                                                    <select class="select" id="id_doctor_at" name="id_doctor_at">
+                                                        <?php
+                                                            $sql_doctor="SELECT d.id_doctor, CONCAT(d.nombres, '', d.apellidos) AS nombre_doctor FROM doctor AS d";
+                                                            $query_doctor=_query($sql_doctor);
+                                                            if(_num_rows($query_doctor)>0){
+                                                                while($row_doctor=_fetch_array($query_doctor)){
+
+                                                        ?>
+                                                            <option value="<?=  $row_doctor['id_doctor']; ?>" <?php if($row_doctor['id_doctor']==$id_doctor_at){ echo "selected"; } ?> ><?= $row_doctor['nombre_doctor']; ?></option>
+                                                        <?php
+                                                                }
+                                                            }
+                                                        ?>                                                        
+                                                    </select>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -441,6 +462,8 @@ function insertar()
     $fecha_de_entrada = "";
     $hora_de_salida="";
     $momento_entrada = "";
+    $id_doctor_at=$_POST['id_doctor_at'];
+
     if(isset($_POST['fecha_de_entrada'])){
         $fecha_de_entrada = $_POST['fecha_de_entrada'];
         $hora_entrada = $_POST['hora_entrada'];
@@ -464,7 +487,8 @@ function insertar()
             'momento_entrada' => $momento_entrada,
             'momento_salida' => $momento_salida,
             'precio_habitacion' => $precio_por_hora,
-            'minuto' => $tipo_pago
+            'minuto' => $tipo_pago,
+            'id_doctor_at'=>$id_doctor_at
         );
     }
     else{
@@ -472,7 +496,8 @@ function insertar()
             'id_cuarto_H' => $id_cuarto,
             'momento_salida' => $momento_salida,
             'precio_habitacion' => $precio_por_hora,
-            'minuto' => $tipo_pago
+            'minuto' => $tipo_pago,
+            'id_doctor_at'=>$id_doctor_at
         );
     }
 

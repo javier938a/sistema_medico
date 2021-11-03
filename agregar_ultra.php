@@ -35,12 +35,14 @@ function initial()
   	$links=permission_usr($id_user,$filename);
 
   	$id_cita=$_GET['id_cita'];
-  	$sql_recerva_cita="SELECT rc.examenes_ultra FROM reserva_cita AS rc WHERE rc.id=$id_cita";
+  	$sql_recerva_cita="SELECT rc.examenes_ultra, rc.dx_ultra FROM reserva_cita AS rc WHERE rc.id=$id_cita";
   	$query_recerva_cita=_query($sql_recerva_cita);
   	$url_examen='';
+    $dx_ultra='';
   	if(_num_rows($query_recerva_cita)>0){
   		$row_examen=_fetch_array($query_recerva_cita);
   		$url_examen=$row_examen['examenes_ultra'];
+        $dx_ultra=$row_examen['dx_ultra'];
   	}
 ?>
 <div class="wrapper wrapper-content  animated fadeInRight" >
@@ -55,7 +57,7 @@ function initial()
                 <h3 style="color:#194160;"><i class="fa fa-user"></i> <b><?php echo $title;?></b></h3> (Los campos marcados con <span style="color:red;">*</span> son requeridos)
             </div>
             <div class="ibox-content">
-                <form name="form_ultra" id="form_ultra" autocomplete='off'>
+                <form name="form_ultra" id="form_ultra" autocomplete='off' enctype="multipart/form-data">
                     <div class="row">      
                         <div class="col-md-6">
                             <div class="form-group has-info">
@@ -67,6 +69,16 @@ function initial()
                             <div class="form-group has-info">
                                 <img id="view_ultra" src="<?php echo $url_examen ?>" style='width: 100px; height: 100px;'>
                             </div>  
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group has-info">
+                                <label>Dx</label>
+                                <textarea class="form-control" cols="5" rows="2" id="dx_ultra" name="dx_ultra">
+                                    <?= $dx_ultra ?>
+                                </textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="row">      
@@ -98,17 +110,22 @@ function guardar_ultra()
 {	require_once "class.upload.php";
 	$xdatos=[];
 	$id_cita=$_POST['id_cita'];
+    $dx_ultra=$_POST['dx_ultra'];
+
+
 	//echo $_FILES['ultra']['name'];
 	if($_FILES['ultra']['name']!=''){
+        
 		$subir=new \Verot\Upload\Upload($_FILES['ultra'],'es_ES');
 		$pref=uniqid().'_';
 		$subir->file_force_extension=false;
 		$subir->no_script=false;
 		$subir->file_name_body_pre=$pref;
 		$subir->Process('img/ultra/');
-
-
+        //echo $subir->log; 
 		if($subir->processed){
+
+            
 			$cuerpo=quitar_tildes($subir->file_src_name_body);
 			//echo $cuerpo;
 			$cuerpo=trim($cuerpo);
@@ -116,6 +133,7 @@ function guardar_ultra()
 			$tabla='reserva_cita';
 			$form_data=[
 				'examenes_ultra'=>$url_ultra,
+                'dx_ultra'=>$dx_ultra
 			];
 
 			$where_clause="id=".$id_cita;
@@ -129,6 +147,8 @@ function guardar_ultra()
 			}
 
 			$update=_update($tabla, $form_data, $where_clause);
+            
+            //echo $update;
 			if($update){
 				$xdatos['typeinfo']='Success';
 				$xdatos['msg']='ultrasonografia subida';
@@ -138,8 +158,10 @@ function guardar_ultra()
 				$xdatos['msg']='Error al guardar la imagen';
 			}
 		}
+
 	}
-	
+
+
     echo json_encode($xdatos);
 }
 
