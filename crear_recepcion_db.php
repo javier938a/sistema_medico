@@ -96,7 +96,7 @@
             estado_recepcion.estado FROM recepcion INNER JOIN estado_recepcion on 
             estado_recepcion.id_estado_recepcion=recepcion.id_estado_recepcion INNER JOIN 
             paciente on paciente.id_paciente = recepcion.id_paciente_recepcion WHERE 
-            paciente.id_paciente = $idPaciente AND (estado_recepcion.id_estado_recepcion = 1 
+            paciente.id_paciente = $idPaciente AND  recepcion.fecha_de_entrada=".date('Y-m-d')." AND (estado_recepcion.id_estado_recepcion = 1 
             OR estado_recepcion.id_estado_recepcion = 2)";
             $sql_exis1 = _query($consulta);
             $num_exis1 = _num_rows($sql_exis1);

@@ -48,7 +48,7 @@ function initial(){
     $query = _query("SELECT fecha_cita, hora_cita, id_paciente, motivo_consulta, diagnostico, 
     examen, medicamento, t_o, ta, p, peso, fr, spo2, hemoglucotest, antecedente_personal,
      antecedente_familiar, ingreso_hospitalario, indicacion_medica, otros_cobros, hallazgo_fisico, 
-     historia_clinica, saturacion, fc, dx, plan, hx, altura, examenes_ultra FROM reserva_cita WHERE id ='$id'");
+     historia_clinica, saturacion, fc, dx, plan, hx, altura, examenes_ultra, dx_ultra FROM reserva_cita WHERE id ='$id'");
     $datos = _fetch_array($query);
     $fecha_cita = nombre_dia($datos['fecha_cita']);
     $hora_cita = hora($datos['hora_cita']);
@@ -74,6 +74,7 @@ function initial(){
     $otros_cobros = $datos['otros_cobros'];
     $id_paciente_info = $datos['id_paciente'];
     $examen_ultra=$datos['examenes_ultra'];
+    $dx_ultra=$datos['dx_ultra'];
     $fc=$datos['fc'];
     $dx=$datos['dx'];
     $plan=$datos['plan'];
@@ -1769,11 +1770,24 @@ function initial(){
                                                 <div id="collapse15" class="collapse panel-collapse in">
                                                     <div class="panel-body">
                                                         <div class="widget-content">
-                                                            <a href="<?php echo $examen_ultra ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente.' '.$apellido_paciente ?>" class="pop">
-                                                                <img id="view_ultra" src="<?php echo $examen_ultra ?>" style='width: 200px; height: 200px;'>                          
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <a href="<?php echo $examen_ultra ?>" data-lightbox="image-1" data-title="Examen de Ultrasonografia de <?php echo $nombre_paciente.' '.$apellido_paciente ?>" class="pop">
+                                                                        <img id="view_ultra" src="<?php echo $examen_ultra ?>" style='width: 200px; height: 200px;'>                          
                                                                 
-                                                            </a>
-
+                                                                    </a>
+                                                                </div>
+                                                                <div class="col-lg-12 form-group">
+                                                                    <label>Diagnostico de examen:</label>
+                                                                    <textarea class="form-control" name="dx_ultra" id="dx_ultra" cols="10" rows="3">
+                                                                        <?php
+                                                                            echo $dx_ultra
+                                                                        ?>
+                                                                    </textarea>
+                                                                    <a class="btn btn-primary pull-right otr_guardar"
+                                                                style="margin-top: 10px;">Guardar</a>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2079,6 +2093,7 @@ function otr()
     $dx=$_POST['dx'];
     $plan=$_POST['plan'];
     $hx1=$_POST['hx1'];
+    $dx_ultra=$_POST['dx_ultra'];
 
     $table = "reserva_cita";
     $form_data = array(
@@ -2105,7 +2120,8 @@ function otr()
         'fc'=>$frecuencia_cardiaca,
         'dx'=>$dx,
         'plan'=>$plan,
-        'hx'=>$hx1
+        'hx'=>$hx1,
+        'dx_ultra'=>$dx_ultra
     );
     $where_clause = "id = '".$id."'";
     $update = _update($table,$form_data,$where_clause);
