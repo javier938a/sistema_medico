@@ -72,6 +72,13 @@ function dropdown($id){
 	$link=permission_usr($id_user,$filename);
 	if ($link!='NOT' || $admin=='1' )
 		$menudrop.= "<li><a data-toggle='modal' href='borrar_cita.php?id_cita=".$row['id']."&process=formDelete"."' data-target='#deleteModal' data-refresh='true'><i class=\"fa fa-eraser\"></i> Eliminar</a></li>";
+
+
+	$filename='agregar_ultra.php';
+	$link=permission_usr($id_user,$filename);
+	if ($link!='NOT' || $admin=='1' )
+		$url=$filename.'?&id_cita='.$row['id'].'&lugar=citas';
+		$menudrop.= "<li><a  href=".$url." data-target='#deleteModal' data-refresh='true'><i class=\"fa fa-eraser\"></i> Agregar Ultra</a></li>";
 	}
     $menudrop.="</ul>";
     $menudrop.=" </div>";

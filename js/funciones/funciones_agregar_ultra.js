@@ -55,11 +55,19 @@ $(document).ready(function(){
     		dataType:'json',
     		success:function(data){
                 //alert(data.typeinfo);
+                var lugar = $("#lugar").val();
     			display_notify(data.typeinfo, data.msg, data.process);
     			if(data.typeinfo=="Success"){
-    				setTimeout(function(){
-    					location.href='cola.php';
-    				}, 1500);
+    				if(lugar=="citas"){
+	    				setTimeout(function(){
+	    					location.href='admin_cita.php';
+	    				}, 1500);
+    				}else if(lugar=="colas"){
+	    				setTimeout(function(){
+	    					location.href='cola.php';
+	    				}, 1500);    					
+    				}
+
     			}
     		}
 

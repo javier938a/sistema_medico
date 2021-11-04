@@ -21,6 +21,7 @@ $(document).ready(function(){
 	$("#agregar_ultra").click(function(evt){
 		evt.preventDefault();
 		var id_cola=$("#id_cola").val();
+		
 		$.ajax({
 			type:'POST',
 			url:'cola.php',
@@ -31,7 +32,8 @@ $(document).ready(function(){
 			},
 			success:function(data){
 				var id_cita=data.id_cita;
-				window.location.href="agregar_ultra.php?&id_cita="+id_cita+"";
+				var lugar="colas";
+				window.location.href="agregar_ultra.php?&id_cita="+id_cita+"&lugar="+lugar;
 			}
 		});
 	});

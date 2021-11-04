@@ -35,6 +35,8 @@ function initial()
   	$links=permission_usr($id_user,$filename);
 
   	$id_cita=$_GET['id_cita'];
+    $lugar=$_GET['lugar'];
+
   	$sql_recerva_cita="SELECT rc.examenes_ultra, rc.dx_ultra FROM reserva_cita AS rc WHERE rc.id=$id_cita";
   	$query_recerva_cita=_query($sql_recerva_cita);
   	$url_examen='';
@@ -87,6 +89,7 @@ function initial()
                             	<input type="hidden" name="process" id="process" value="guardar_ultra">
                             	<input type="hidden" name="id_cita" id="id_cita" value="<?php echo $id_cita ?>">
                                 <input type="submit" id="guardar_cita" name="guardar_cita" value="Guardar" class="btn btn-primary m-t-n-xs pull-right" />  
+                                <input type="hidden" name="lugar" id="lugar" value="<?php echo $lugar ?>">
                             </div>
                         </div>
                     </div>      
