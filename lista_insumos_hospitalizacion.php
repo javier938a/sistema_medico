@@ -19,6 +19,7 @@
 	$_PAGE ['links'] .= '<link href="css/plugins/tour/bootstrap-tour.css" rel="stylesheet">';
 	$_PAGE ['links'] .= '<link href="css/animate.css" rel="stylesheet">';
 	$_PAGE ['links'] .= '<link href="css/style.css" rel="stylesheet">';
+	$_PAGE['links'] .= '<link href="css/plugins/sweetalert/sweetalert.css" rel="stylesheet">';
 	include_once "header.php";
 	include_once "main_menu.php";
 	
